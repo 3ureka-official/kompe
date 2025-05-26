@@ -1,0 +1,54 @@
+brand_lp:
+  title: SNS動画コンテストで、成果が出た動画だけに報酬を。
+  subtitle: クリエイターが投稿 → 成果の出た動画だけに支払う、新しいUGCプロモーション
+
+  sections:
+    - id: overview
+      heading: サービス概要
+      content: |
+        「投稿動画 × 成果報酬型」SNSキャンペーン。
+        コンテスト形式で動画が多数集まり、再生数・いいね数などの成果に応じて報酬を支払います。
+
+    - id: benefits
+      heading: ブランドにとってのメリット
+      bullets:
+        - 広告費は“バズった”動画にだけ
+        - コンテンツが複数集まる（→広告再利用にも）
+        - 投稿・拡散をユーザーが自主的に行う
+
+    - id: how_it_works
+      heading: 仕組み
+      steps:
+        - ブランドがコンテストを作成（テーマ・報酬・期間）
+        - クリエイターが動画を投稿
+        - 結果（再生数など）に応じて報酬を分配
+        - 上位動画は広告利用OK（オプション）
+
+    - id: example_campaign
+      heading: 想定事例
+      examples:
+        - title: 新商品PRキャンペーン
+          description: 「使ってみた」動画を募り、上位3名に1万円ずつ
+        - title: 店舗集客プロモーション
+          description: 来店後のレビュー動画を投稿してもらい、いいね数に応じて報酬
+
+    - id: offer
+      heading: ベータ導入ブランド募集中
+      content: |
+        現在、ベータ版テストに参加してくれるブランドを募集しています。
+        無料 or 特別価格で導入可能。事例として掲載させていただける企業様、特に歓迎します。
+
+    - id: apply
+      heading: お問い合わせ・応募
+      cta: 導入相談はこちらから
+      form_fields:
+        - label: 会社名
+          type: text
+        - label: 担当者名
+          type: text
+        - label: メールアドレス
+          type: email
+        - label: 商品・サービス概要
+          type: textarea
+        - label: 希望の施策や目的（任意）
+          type: textarea

@@ -1,0 +1,88 @@
+brand_web:
+  layout:
+    header:
+      nav_links:
+        - path: /contests
+          label: コンテスト一覧
+        - path: /contests/create
+          label: コンテスト作成
+        - path: /settings
+          label: ブランド設定
+
+  pages:
+    - path: /contests
+      name: ContestListPage
+      title: 開催中のコンテスト一覧
+      components:
+        - ContestCard (一覧表示)
+        - NewContestButton
+      data_source: firestore.collection('contests')
+      features:
+        - フィルター（開催中 / 終了済み）
+        - ソート（開始日順）
+
+    - path: /contests/create
+      name: ContestCreatePage
+      title: コンテスト作成
+      form_fields:
+        - name: title
+          label: タイトル
+          type: text
+        - name: imageUrl
+          label: イメージ画像URL
+          type: text
+        - name: description
+          label: 説明文
+          type: textarea
+        - name: startAt
+          label: 応募開始日
+          type: date
+        - name: endAt
+          label: 応募終了日
+          type: date
+        - name: prizePool
+          label: 総報酬額
+          type: number
+        - name: rewards
+          label: 順位ごとの報酬額
+          type: dynamic_list
+        - name: criteria
+          label: 審査基準
+          type: select
+          options:
+            - 再生数
+            - いいね数
+            - ブランド判断
+        - name: submit
+          label: 作成
+          type: button
+
+    - path: /contests/[id]/leaderboard
+      name: LiveLeaderboardPage
+      title: ランキング表示（リアルタイム）
+      components:
+        - RankingList
+      data_source: firestore.collection('contests').doc(id).collection('applications')
+      features:
+        - ソート（再生数順 / いいね数順）
+        - 表示項目（順位 / クリエイター / サムネイル / 再生数）
+
+    - path: /settings
+      name: BrandSettingsPage
+      title: ブランド情報設定
+      form_fields:
+        - name: name
+          label: ブランド名
+          type: text
+        - name: logoUrl
+          label: ロゴ画像URL
+          type: text
+        - name: description
+          label: ブランド紹介文
+          type: textarea
+        - name: contact
+          label: 担当者メール
+          type: email
+        - name: save
+          label: 保存
+          type: button
