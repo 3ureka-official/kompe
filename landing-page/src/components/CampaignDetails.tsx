@@ -23,7 +23,7 @@ export function CampaignDetails() {
           <div className="bg-[#222222] p-4 md:p-8 rounded-xl transform transition-transform duration-300">
             <h3 className="text-lg md:text-xl font-bold mb-4 text-white">参加資格</h3>
             <p className="text-gray-300 leading-relaxed text-base md:text-base">
-              TikTokで動画を投稿しているクリエイターなら誰でも参加OK。フォロワー数は問いません。
+              TikTokのフォロワー数が1000人以上のクリエイター
             </p>
           </div>
 
