@@ -1,5 +1,4 @@
 import React from 'react';
-import { ClipboardList } from 'lucide-react';
 
 export function ApplicationSteps() {
   const steps = [
@@ -31,7 +30,7 @@ export function ApplicationSteps() {
           {steps.map((step, index) => (
             <div 
               key={index} 
-              className="bg-[#222222] p-4 pb-6 md:p-8 rounded-xl relative transform hover:scale-[1.02] transition-transform duration-300 border border-white/30"
+              className="bg-[#222222] p-4 pb-6 md:p-8 rounded-xl relative transform transition-transform duration-300 border border-white/30"
             >
               <div className="absolute -top-4 -left-4 w-10 h-10 bg-[#25F4EE] rounded-full flex items-center justify-center text-black font-bold text-lg">
                 {index + 1}
