@@ -10,4 +10,4 @@ src/
 ├─ components/     # 共通コンポーネント  
 ├─ lib/            # Firebaseなどのクライアント
 ├─ types/          # 型定義
-└─ styles/
+├─ styles/

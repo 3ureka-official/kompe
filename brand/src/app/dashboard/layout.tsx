@@ -1,18 +1,22 @@
-import { Sidebar } from '@/components/ui/Sidebar';
-
+import { AuthGuard } from '@/components/auth/AuthGuard';
+import { Sidebar } from '@/components/dashboard/Sidebar';
+import { Header } from '@/components/dashboard/Header';
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar />
-      <div className="pl-64">
-        <main className="p-8">
-          {children}
+    <AuthGuard requireAuth={true} requireBrand={true}>
+      <div className="flex h-screen bg-gray-50">
+        <Sidebar />
+        <main className="flex-1 ml-45 overflow-y-auto">
+          <Header />
+          <div className="p-8">
+            {children}
+          </div>
         </main>
       </div>
-    </div>
+    </AuthGuard>
   );
 } 
