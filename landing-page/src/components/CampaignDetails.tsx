@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Star, Crown } from 'lucide-react';
+import { Star, Crown } from 'lucide-react';
 
 export function CampaignDetails() {
   return (
