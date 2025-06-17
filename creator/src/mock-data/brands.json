@@ -1,0 +1,124 @@
+{
+  "brands": [
+    {
+      "id": "brand-001",
+      "email": "contact@beauty-brand.com",
+      "company_name": "Beauty Brand Co., Ltd.",
+      "contact_name": "田中 美香",
+      "phone": "03-1234-5678",
+      "website": "https://beauty-brand.com",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-02-20T14:30:00Z"
+    },
+    {
+      "id": "brand-002",
+      "email": "info@fashion-forward.jp",
+      "company_name": "Fashion Forward Inc.",
+      "contact_name": "佐藤 雅人",
+      "phone": "03-2345-6789",
+      "website": "https://fashion-forward.jp",
+      "created_at": "2024-01-20T11:30:00Z",
+      "updated_at": "2024-03-10T16:45:00Z"
+    },
+    {
+      "id": "brand-003",
+      "email": "hello@home-cafe.co.jp",
+      "company_name": "Home Cafe Corporation",
+      "contact_name": "鈴木 咲子",
+      "phone": "03-3456-7890",
+      "website": "https://home-cafe.co.jp",
+      "created_at": "2024-02-01T09:15:00Z",
+      "updated_at": "2024-03-25T12:20:00Z"
+    },
+    {
+      "id": "brand-004",
+      "email": "support@tech-review.com",
+      "company_name": "Tech Review Media",
+      "contact_name": "高橋 健太",
+      "phone": "03-4567-8901",
+      "website": "https://tech-review.com",
+      "created_at": "2024-02-10T13:45:00Z",
+      "updated_at": "2024-04-05T10:15:00Z"
+    },
+    {
+      "id": "brand-005",
+      "email": "contact@pet-life.jp",
+      "company_name": "Pet Life Japan",
+      "contact_name": "山田 愛子",
+      "phone": "03-5678-9012",
+      "website": "https://pet-life.jp",
+      "created_at": "2024-02-15T15:20:00Z",
+      "updated_at": "2024-04-10T11:40:00Z"
+    },
+    {
+      "id": "brand-006",
+      "email": "info@fitness-pro.com",
+      "company_name": "Fitness Pro Corporation",
+      "contact_name": "中村 剛志",
+      "phone": "03-6789-0123",
+      "website": "https://fitness-pro.com",
+      "created_at": "2024-03-01T08:30:00Z",
+      "updated_at": "2024-04-20T14:50:00Z"
+    },
+    {
+      "id": "brand-007",
+      "email": "hello@travel-gourmet.jp",
+      "company_name": "Travel Gourmet Media",
+      "contact_name": "小林 恵美",
+      "phone": "03-7890-1234",
+      "website": "https://travel-gourmet.jp",
+      "created_at": "2024-03-10T12:00:00Z",
+      "updated_at": "2024-05-15T09:25:00Z"
+    },
+    {
+      "id": "brand-008",
+      "email": "contact@edutech.co.jp",
+      "company_name": "EduTech Solutions",
+      "contact_name": "伊藤 智也",
+      "phone": "03-8901-2345",
+      "website": "https://edutech.co.jp",
+      "created_at": "2024-03-20T10:45:00Z",
+      "updated_at": "2024-05-25T13:10:00Z"
+    },
+    {
+      "id": "brand-009",
+      "email": "info@music-stage.com",
+      "company_name": "Music Stage Entertainment",
+      "contact_name": "渡辺 優子",
+      "phone": "03-9012-3456",
+      "website": "https://music-stage.com",
+      "created_at": "2024-04-01T14:15:00Z",
+      "updated_at": "2024-06-10T16:30:00Z"
+    },
+    {
+      "id": "brand-010",
+      "email": "hello@craft-studio.jp",
+      "company_name": "Craft Studio Japan",
+      "contact_name": "松本 直美",
+      "phone": "03-0123-4567",
+      "website": "https://craft-studio.jp",
+      "created_at": "2024-04-10T11:20:00Z",
+      "updated_at": "2024-06-20T15:45:00Z"
+    },
+    {
+      "id": "brand-011",
+      "email": "contact@comedy-central.jp",
+      "company_name": "Comedy Central Japan",
+      "contact_name": "吉田 和彦",
+      "phone": "03-1234-5679",
+      "website": "https://comedy-central.jp",
+      "created_at": "2024-04-20T09:50:00Z",
+      "updated_at": "2024-07-01T12:35:00Z"
+    },
+    {
+      "id": "brand-012",
+      "email": "info@green-future.org",
+      "company_name": "Green Future Foundation",
+      "contact_name": "森田 環",
+      "phone": "03-2345-6780",
+      "website": "https://green-future.org",
+      "created_at": "2024-05-01T13:25:00Z",
+      "updated_at": "2024-07-15T10:20:00Z"
+    }
+  ]
+} 

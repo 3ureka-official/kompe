@@ -106,7 +106,7 @@ export function BrandCaseStudies() {
                     <div>
                       <h4 className="text-xl font-bold mb-6 text-gray-900">お客様の声</h4>
                       <div className="bg-gray-100 p-6 rounded-xl">
-                        <div className="text-4xl text-gray-400 mb-4">"</div>
+                        <div className="text-4xl text-gray-400 mb-4">&quot;</div>
                         <p className="text-gray-700 text-lg italic leading-relaxed mb-4">
                           {study.testimonial}
                         </p>

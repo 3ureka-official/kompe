@@ -22,6 +22,19 @@ export interface Prize {
   description?: string
 }
 
+// ランキング情報
+export interface RankingEntry {
+  rank: number
+  accountName: string
+  accountHandle: string
+  avatarUrl?: string
+  likeCount: number
+  commentCount: number
+  shareCount: number
+  submissionUrl: string
+  submissionThumbnailUrl?: string
+}
+
 // コンテスト基本情報
 export interface Contest {
   id: string
@@ -33,6 +46,7 @@ export interface Contest {
   thumbnailUrl: string
   bannerUrl?: string
   brandLogoUrl?: string
+  imageVideoUrl?: string // イメージ動画URL
   
   // ブランド情報
   brandName: string
@@ -59,6 +73,9 @@ export interface Contest {
   // 応募条件
   requirements: string[]
   guidelines: string[]
+  
+  // ランキング情報
+  ranking?: RankingEntry[]
   
   // メタデータ
   createdAt: string

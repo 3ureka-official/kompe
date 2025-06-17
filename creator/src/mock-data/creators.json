@@ -1,0 +1,213 @@
+{
+  "creators": [
+    {
+      "id": "creator-001",
+      "email": "mai.beauty@example.com",
+      "firebase_uid": "firebase-uid-001",
+      "tiktok_id": "mai_beauty_official",
+      "tiktok_username": "mai_beauty",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1494790108755-2616c6f01fcc?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "三菱UFJ銀行",
+        "branch_name": "新宿支店",
+        "account_type": "普通",
+        "account_number": "1234567",
+        "account_holder": "タナカ マイ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-01-10T09:30:00Z",
+      "updated_at": "2024-03-15T14:20:00Z"
+    },
+    {
+      "id": "creator-002",
+      "email": "sakura.cosme@example.com",
+      "firebase_uid": "firebase-uid-002",
+      "tiktok_id": "sakura_cosme_lover",
+      "tiktok_username": "sakura_cosme",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "みずほ銀行",
+        "branch_name": "渋谷支店",
+        "account_type": "普通",
+        "account_number": "2345678",
+        "account_holder": "サトウ サクラ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-01-15T11:45:00Z",
+      "updated_at": "2024-03-20T16:30:00Z"
+    },
+    {
+      "id": "creator-003",
+      "email": "yuu.makeup@example.com",
+      "firebase_uid": "firebase-uid-003",
+      "tiktok_id": "yuu_makeup_artist",
+      "tiktok_username": "yuu_makeup",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "三井住友銀行",
+        "branch_name": "池袋支店",
+        "account_type": "普通",
+        "account_number": "3456789",
+        "account_holder": "スズキ ユウ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-01-20T13:15:00Z",
+      "updated_at": "2024-03-25T10:45:00Z"
+    },
+    {
+      "id": "creator-004",
+      "email": "hina.review@example.com",
+      "firebase_uid": "firebase-uid-004",
+      "tiktok_id": "hina_cosme_review",
+      "tiktok_username": "hina_review",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "りそな銀行",
+        "branch_name": "大阪支店",
+        "account_type": "普通",
+        "account_number": "4567890",
+        "account_holder": "タカハシ ヒナ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-01-25T15:20:00Z",
+      "updated_at": "2024-04-01T12:10:00Z"
+    },
+    {
+      "id": "creator-005",
+      "email": "ayaka.puchipura@example.com",
+      "firebase_uid": "firebase-uid-005",
+      "tiktok_id": "ayaka_puchipura_beauty",
+      "tiktok_username": "ayaka_puchipura",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "ゆうちょ銀行",
+        "branch_name": "〇一八支店",
+        "account_type": "普通",
+        "account_number": "5678901",
+        "account_holder": "ヤマダ アヤカ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-02-01T10:30:00Z",
+      "updated_at": "2024-04-05T14:25:00Z"
+    },
+    {
+      "id": "creator-006",
+      "email": "rina.fashion@example.com",
+      "firebase_uid": "firebase-uid-006",
+      "tiktok_id": "rina_fashion_blogger",
+      "tiktok_username": "rina_fashion",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "三菱UFJ銀行",
+        "branch_name": "原宿支店",
+        "account_type": "普通",
+        "account_number": "6789012",
+        "account_holder": "ナカムラ リナ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-02-05T12:45:00Z",
+      "updated_at": "2024-04-10T11:15:00Z"
+    },
+    {
+      "id": "creator-007",
+      "email": "mio.puchipura@example.com",
+      "firebase_uid": "firebase-uid-007",
+      "tiktok_id": "mio_puchipura_coord",
+      "tiktok_username": "mio_puchipura",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "みずほ銀行",
+        "branch_name": "表参道支店",
+        "account_type": "普通",
+        "account_number": "7890123",
+        "account_holder": "コバヤシ ミオ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-02-10T14:20:00Z",
+      "updated_at": "2024-04-15T09:40:00Z"
+    },
+    {
+      "id": "creator-008",
+      "email": "kei.stylist@example.com",
+      "firebase_uid": "firebase-uid-008",
+      "tiktok_id": "kei_professional_stylist",
+      "tiktok_username": "kei_stylist",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "三井住友銀行",
+        "branch_name": "青山支店",
+        "account_type": "普通",
+        "account_number": "8901234",
+        "account_holder": "イトウ ケイ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-02-15T16:10:00Z",
+      "updated_at": "2024-04-20T13:55:00Z"
+    },
+    {
+      "id": "creator-009",
+      "email": "aoi.cooking@example.com",
+      "firebase_uid": "firebase-uid-009",
+      "tiktok_id": "aoi_cooking_researcher",
+      "tiktok_username": "aoi_cooking",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "りそな銀行",
+        "branch_name": "恵比寿支店",
+        "account_type": "普通",
+        "account_number": "9012345",
+        "account_holder": "ワタナベ アオイ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-02-20T11:30:00Z",
+      "updated_at": "2024-04-25T15:20:00Z"
+    },
+    {
+      "id": "creator-010",
+      "email": "momoka.cafe@example.com",
+      "firebase_uid": "firebase-uid-010",
+      "tiktok_id": "momoka_cafe_lover",
+      "tiktok_username": "momoka_cafe",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "ゆうちょ銀行",
+        "branch_name": "〇〇八支店",
+        "account_type": "普通",
+        "account_number": "0123456",
+        "account_holder": "マツモト モモカ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-02-25T13:45:00Z",
+      "updated_at": "2024-04-30T10:35:00Z"
+    },
+    {
+      "id": "creator-011",
+      "email": "yuki.home@example.com",
+      "firebase_uid": "firebase-uid-011",
+      "tiktok_id": "yuki_home_time",
+      "tiktok_username": "yuki_home",
+      "tiktok_avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+      "bank_info": {
+        "bank_name": "三菱UFJ銀行",
+        "branch_name": "中野支店",
+        "account_type": "普通",
+        "account_number": "1234560",
+        "account_holder": "ヨシダ ユキ"
+      },
+      "is_minor": false,
+      "parent_consent_file_url": null,
+      "created_at": "2024-03-01T15:15:00Z",
+      "updated_at": "2024-05-05T12:50:00Z"
+    }
+  ]
+} 
