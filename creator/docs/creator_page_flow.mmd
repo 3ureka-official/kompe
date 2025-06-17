@@ -1,0 +1,55 @@
+%% クリエイター側ページ遷移図
+graph TD
+    subgraph "🎬 クリエイター側ページ遷移"
+        %% スタイル定義
+        classDef publicPage fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+        classDef authPage fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+        classDef privatePage fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+        classDef actionPage fill:#fce4ec,stroke:#e91e63,stroke-width:2px
+        
+        %% 公開ページ
+        C_TOP[ランディングページ /]:::publicPage
+        
+        %% プライベートページ（ログイン必須）
+        C_CONTESTS[コンテスト一覧 /contests]:::privatePage
+        C_CONTEST_DETAIL[コンテスト詳細 /contests/:id]:::privatePage
+        
+        %% 認証ページ
+        C_LOGIN[TikTokログイン /auth/login]:::authPage
+        C_AUTH_CALLBACK[認証コールバック /auth/callback]:::authPage
+        
+        %% プライベートページ
+        C_DASHBOARD[マイページ /dashboard]:::privatePage
+        C_PROFILE[プロフィール編集 /profile]:::privatePage
+        C_BANK[銀行口座編集 /settings/bank]:::privatePage
+        C_SUBMISSIONS[応募履歴 /my-submissions]:::privatePage
+        C_SUBMISSION_DETAIL[応募詳細 /submissions/:id]:::privatePage
+        
+        %% アクションページ
+        C_APPLY[応募ページ /contests/:id/apply]:::actionPage
+        C_APPLY_CONFIRM[応募確認 /contests/:id/apply/confirm]:::actionPage
+        C_APPLY_COMPLETE[応募完了 /contests/:id/apply/complete]:::actionPage
+        
+        %% ページ遷移
+        C_TOP --> C_LOGIN
+        
+        C_LOGIN --> C_AUTH_CALLBACK
+        C_AUTH_CALLBACK --> C_DASHBOARD
+        
+        C_CONTESTS --> C_CONTEST_DETAIL
+        C_CONTEST_DETAIL --> C_APPLY
+        
+        C_APPLY --> C_APPLY_CONFIRM
+        C_APPLY_CONFIRM --> C_APPLY_COMPLETE
+        C_APPLY_COMPLETE --> C_DASHBOARD
+        C_APPLY_COMPLETE --> C_CONTEST_DETAIL
+        
+        C_DASHBOARD --> C_PROFILE
+        C_DASHBOARD --> C_SUBMISSIONS
+        C_DASHBOARD --> C_CONTESTS
+        
+        C_PROFILE --> C_BANK
+        
+        C_SUBMISSIONS --> C_SUBMISSION_DETAIL
+        C_SUBMISSION_DETAIL --> C_CONTEST_DETAIL
+    end
