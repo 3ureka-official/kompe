@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { BrandApplicationForm } from '@/types/brand';
-import { FormContainer, FormField, Input, Select, Textarea, Button } from './ui';
+import { FormContainer, FormField, Input, Select, Textarea } from './ui';
+import { Button } from '@/components/ui/button';
 
 type Props = {
   onSubmit: (formData: BrandApplicationForm) => void;
@@ -130,7 +131,6 @@ export function BrandApplicationFormComponent({ onSubmit, onSwitchToLogin }: Pro
 
         <Button
           type="submit"
-          loading={isSubmitting}
           className="w-full"
         >
           {isSubmitting ? '申請中...' : '申請を送信'}

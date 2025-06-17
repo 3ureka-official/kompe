@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components_/ui/Button';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
