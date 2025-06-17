@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { Logo } from '@/components/ui/Logo';
-import { FormField, Input, Select, Textarea, Button, FileUpload, SnsLinkField } from './ui';
+import { FormField, Input, Select, Textarea, FileUpload, SnsLinkField } from './ui';
+import { Button } from '@/components/ui/button';
 import { BrandCreationData } from '@/types/brand';
 
 type Props = {
@@ -199,7 +200,6 @@ export function BrandCreationForm({ onSubmit, onBack, userEmail }: Props) {
             <div className="flex justify-end pt-6">
               <Button
                 type="submit"
-                loading={isSubmitting}
                 variant="primary"
                 className="px-6 py-2"
               >

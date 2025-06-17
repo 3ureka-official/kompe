@@ -9,7 +9,7 @@ export default function BrandPage() {
   const [currentBrand, setCurrentBrand] = useState<Brand>(mockBrands[0]);
 
   // ブランド情報保存処理
-  const handleSave = (section: string, updatedData: Partial<Brand>) => {
+  const handleSave = ( updatedData: Partial<Brand>) => {
     const updatedBrand = {
       ...currentBrand,
       ...updatedData,
@@ -19,18 +19,8 @@ export default function BrandPage() {
     setCurrentBrand(updatedBrand);
     
     // TODO: APIに保存リクエストを送信
-    console.log(`${section}セクションを更新:`, updatedData);
-    alert(`${getSectionName(section)}を保存しました`);
-  };
-
-  const getSectionName = (section: string) => {
-    switch (section) {
-      case 'basic': return 'ブランド基本情報';
-      case 'contact': return '連絡先情報';
-      case 'sns': return 'SNSリンク';
-      case 'public': return '公開情報';
-      default: return '情報';
-    }
+    console.log('保存しました', updatedData);
+    alert('保存しました');
   };
 
   return (
@@ -42,7 +32,7 @@ export default function BrandPage() {
       
       <BrandInfoDisplay 
         brand={currentBrand}
-        onSave={handleSave}
+        onSave={(updatedData) => handleSave(updatedData)}
       />
     </div>
   );

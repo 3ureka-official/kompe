@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { useState } from 'react';
 
 const categories = [
@@ -16,21 +17,11 @@ type Props = {
 
 export function BasicInfo({ onNext }: Props) {
   const [coverImage, setCoverImage] = useState<File | null>(null);
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setCoverImage(file);
-    }
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+  const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('');
 
   return (
     <div>
@@ -40,12 +31,6 @@ export function BasicInfo({ onNext }: Props) {
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
               コンテストタイトル
             </label>
-            {/* <input
-              type="text"
-              id="title"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0.5 focus:ring-gray-900 focus:border-gray-900"
-              placeholder="例：夏の思い出フォトコンテスト"
-            /> */}
             <Input
               id="title"
               placeholder="例：夏の思い出フォトコンテスト"
@@ -83,65 +68,67 @@ export function BasicInfo({ onNext }: Props) {
             カバー画像
           </label>
           
-          {coverImage ? (
-            <div className="flex gap-4">
-              <img
-                src={URL.createObjectURL(coverImage)}
-                alt="カバー画像"
-                className="w-48 h-27 object-cover rounded-lg border border-gray-200"
-              />
-              <div className="mt-2 w-full text-sm text-gray-500 flex flex-col justify-around">
-                <p className="text-base text-black font-bold">{coverImage.name}</p>
-                <p className="text-sm text-gray-700">{formatFileSize(coverImage.size)}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setCoverImage(null)}
-                className="p-1 cursor-pointer"
-              >
-                <svg className="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </div>
-          ) : (
-            <div className="flex justify-center rounded-lg border border-dashed border-gray-300 px-6 py-10">
-              <div className="text-center">
-                <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <div className="mt-4 flex text-sm text-gray-600">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer rounded-md font-medium text-primary-400 hover:text-primary-500"
-                  >
-                    <span>画像をアップロード</span>
-                    <input 
-                      id="file-upload" 
-                      name="file-upload" 
-                      type="file" 
-                      className="sr-only" 
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                    />
-                  </label>
-                  <p className="pl-1">またはドラッグ＆ドロップ</p>
-                </div>
-                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+          <FileUpload
+            file={coverImage}
+            preview={coverImagePreview}
+            onFileChange={setCoverImage}
+            onPreviewChange={setCoverImagePreview}
+            accept="image/*"
+            maxSize={5 * 1024 * 1024}
+            placeholder="カバー画像をアップロード"
+            className="w-full"
+          />
+        </div>
+
+        {/* 開催期間設定 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-4">
+            開催期間
+          </label>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 開始日時 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">
+                開始日時
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="flex-1"
+                />
+                <Input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="w-32"
+                />
               </div>
             </div>
-          )}
+
+            {/* 終了日時 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-2">
+                終了日時
+              </label>
+              <div className="flex gap-2">
+                <Input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="flex-1"
+                />
+                <Input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="w-32"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

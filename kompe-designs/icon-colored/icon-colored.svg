@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32.63 30.27">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-2 {
+        fill: url(#Sky);
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="0" y1="20.74" x2="32.63" y2="20.74" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8ecae6"/>
+      <stop offset=".16" stop-color="#84c6e2"/>
+      <stop offset=".42" stop-color="#6bbbd8"/>
+      <stop offset=".76" stop-color="#42abc8"/>
+      <stop offset=".99" stop-color="#219ebc"/>
+    </linearGradient>
+    <linearGradient id="Sky" x1="16.31" y1="30.27" x2="16.31" y2="3.07" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#cce0f4"/>
+      <stop offset=".06" stop-color="#c2dcf2"/>
+      <stop offset=".17" stop-color="#a9d2ee"/>
+      <stop offset=".31" stop-color="#7fc2e7"/>
+      <stop offset=".46" stop-color="#46abdd"/>
+      <stop offset=".57" stop-color="#1e9cd7"/>
+      <stop offset=".87" stop-color="#0075be"/>
+      <stop offset=".99" stop-color="#005b97"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="13.24" y1="3.07" x2="19.38" y2="3.07" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fb8500"/>
+      <stop offset="1" stop-color="#ffb703"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <path class="cls-3" d="M1,11.2c-.71,0-1.19.72-.92,1.37.79,1.93,2.18,5.47,2.71,7.99.89,4.22.87,9.71.87,9.71h25.31s-.02-5.49.87-9.71c.53-2.52,1.92-6.06,2.71-7.99.27-.66-.21-1.37-.92-1.37H1Z"/>
+    <path class="cls-2" d="M15.5,3.47L2.99,19.63c-.36.46-.26,1.13.21,1.47l12.51,8.98c.36.26.84.26,1.2,0l12.51-8.98c.47-.34.57-1.01.21-1.47L17.13,3.47c-.41-.53-1.22-.53-1.63,0Z"/>
+    <circle class="cls-1" cx="16.31" cy="3.07" r="3.07"/>
+  </g>
+</svg>

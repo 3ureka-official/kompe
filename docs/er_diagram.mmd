@@ -1,0 +1,166 @@
+erDiagram
+    %% ブランド関連
+    brands {
+        uuid id PK
+        string email UK
+        string password_hash
+        string company_name
+        string contact_name
+        string phone
+        string website
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    %% クリエイター関連
+    creators {
+        uuid id PK
+        string email UK
+        string firebase_uid UK
+        string tiktok_id UK
+        string tiktok_username
+        string tiktok_avatar_url
+        jsonb bank_info
+        boolean is_minor
+        string parent_consent_file_url
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    %% コンテスト関連
+    contests {
+        uuid id PK
+        uuid brand_id FK
+        string title
+        text description
+        string category
+        jsonb requirements
+        timestamp start_date
+        timestamp end_date
+        enum evaluation_type "views or engagement"
+        jsonb prize_structure
+        decimal total_prize
+        decimal platform_fee
+        enum status
+        string payment_intent_id
+        timestamp created_at
+        timestamp published_at
+        timestamp updated_at
+    }
+    
+    contest_assets {
+        uuid id PK
+        uuid contest_id FK
+        string file_name
+        string file_type
+        integer file_size
+        string file_url
+        boolean is_downloadable
+        integer display_order
+        timestamp uploaded_at
+    }
+    
+    %% 応募関連
+    submissions {
+        uuid id PK
+        uuid contest_id FK
+        uuid creator_id FK
+        string video_url
+        string video_id
+        jsonb initial_metrics
+        jsonb final_metrics
+        integer final_rank
+        decimal prize_amount
+        timestamp submitted_at
+        boolean is_valid
+        string disqualified_reason
+    }
+    
+    video_metrics_history {
+        uuid id PK
+        uuid submission_id FK
+        integer view_count
+        integer like_count
+        integer comment_count
+        integer share_count
+        decimal engagement_rate
+        timestamp fetched_at
+    }
+    
+    %% 決済関連
+    payments {
+        uuid id PK
+        uuid contest_id FK
+        enum type "collection or payout"
+        string stripe_payment_intent_id
+        decimal amount
+        decimal fee
+        enum status
+        text error_message
+        timestamp created_at
+        timestamp completed_at
+    }
+    
+    payouts {
+        uuid id PK
+        uuid submission_id FK
+        decimal amount
+        date bank_transfer_date
+        string bank_transfer_ref
+        enum status "pending, paid, failed"
+        timestamp created_at
+        timestamp paid_at
+    }
+    
+    %% 利用規約・通知関連
+    brand_terms_agreements {
+        uuid id PK
+        uuid brand_id FK
+        string terms_version
+        timestamp agreed_at
+        inet ip_address
+    }
+    
+    creator_terms_agreements {
+        uuid id PK
+        uuid creator_id FK
+        string terms_version
+        timestamp agreed_at
+        inet ip_address
+    }
+    
+    brand_notifications {
+        uuid id PK
+        uuid brand_id FK
+        string type
+        string title
+        text content
+        uuid related_contest_id
+        boolean is_read
+        timestamp sent_at
+    }
+    
+    creator_notifications {
+        uuid id PK
+        uuid creator_id FK
+        string type
+        string title
+        text content
+        uuid related_contest_id
+        uuid related_submission_id
+        boolean is_read
+        timestamp sent_at
+    }
+    
+    %% リレーションシップ
+    brands ||--o{ contests : "hosts"
+    contests ||--o{ contest_assets : "has"
+    contests ||--o{ submissions : "receives"
+    creators ||--o{ submissions : "submits"
+    submissions ||--o{ video_metrics_history : "tracks"
+    contests ||--o{ payments : "has"
+    submissions ||--o| payouts : "receives"
+    brands ||--o{ brand_terms_agreements : "agrees"
+    creators ||--o{ creator_terms_agreements : "agrees"
+    brands ||--o{ brand_notifications : "receives"
+    creators ||--o{ creator_notifications : "receives"

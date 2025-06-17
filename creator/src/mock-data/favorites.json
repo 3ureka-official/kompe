@@ -1,0 +1,62 @@
+[
+  {
+    "id": "fav_001",
+    "contestId": "contest-001",
+    "userId": "user_001",
+    "favoriteAt": "2024-02-12T09:30:00Z"
+  },
+  {
+    "id": "fav_002",
+    "contestId": "contest-002",
+    "userId": "user_001",
+    "favoriteAt": "2024-02-10T14:15:00Z"
+  },
+  {
+    "id": "fav_003",
+    "contestId": "contest-004",
+    "userId": "user_001",
+    "favoriteAt": "2024-02-05T11:20:00Z"
+  },
+  {
+    "id": "fav_004",
+    "contestId": "contest-006",
+    "userId": "user_001",
+    "favoriteAt": "2024-01-28T16:45:00Z"
+  },
+  {
+    "id": "fav_005",
+    "contestId": "contest-008",
+    "userId": "user_001",
+    "favoriteAt": "2024-02-01T10:10:00Z"
+  },
+  {
+    "id": "fav_006",
+    "contestId": "contest-011",
+    "userId": "user_001",
+    "favoriteAt": "2024-01-25T13:30:00Z"
+  },
+  {
+    "id": "fav_007",
+    "contestId": "contest-003",
+    "userId": "user_001",
+    "favoriteAt": "2024-01-20T15:00:00Z"
+  },
+  {
+    "id": "fav_008",
+    "contestId": "contest-005",
+    "userId": "user_001",
+    "favoriteAt": "2024-02-08T12:25:00Z"
+  },
+  {
+    "id": "fav_009",
+    "contestId": "contest-007",
+    "userId": "user_001",
+    "favoriteAt": "2024-01-30T09:45:00Z"
+  },
+  {
+    "id": "fav_010",
+    "contestId": "contest-010",
+    "userId": "user_001",
+    "favoriteAt": "2024-02-03T17:15:00Z"
+  }
+] 

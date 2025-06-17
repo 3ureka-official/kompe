@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { AuthGuard } from '@/components/auth/AuthGuard';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components_/ui/Button';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
