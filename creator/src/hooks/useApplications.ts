@@ -35,7 +35,6 @@ interface UseApplicationsReturn {
   } | null
   
   // Actions
-  fetchApplications: () => Promise<void>
   refresh: () => Promise<void>
   reset: () => void
   setPage: (page: number) => void
@@ -117,36 +116,6 @@ export function useApplications(options: UseApplicationsOptions = {}): UseApplic
     }
   }, [autoFetch])
 
-  // Manual fetch function for external use
-  const manualFetch = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const [applicationsResponse, statsResponse] = await Promise.all([
-        getUserApplications({
-          userId,
-          page,
-          limit,
-          tab,
-          filters: initialFilters,
-          search
-        }),
-        getApplicationStats(userId)
-      ])
-
-      setContests(applicationsResponse.contests)
-      setTotal(applicationsResponse.total)
-      setStats(statsResponse)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '応募コンテストの取得に失敗しました')
-      setContests([])
-      setTotal(0)
-    } finally {
-      setLoading(false)
-    }
-  }, [userId, page, tab, initialFilters, search, limit])
-
   return {
     contests,
     loading,
@@ -158,7 +127,6 @@ export function useApplications(options: UseApplicationsOptions = {}): UseApplic
     search,
     stats,
     
-    fetchApplications: manualFetch,
     refresh,
     reset,
     setPage,

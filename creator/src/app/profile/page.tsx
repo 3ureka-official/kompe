@@ -6,28 +6,26 @@ import { ProfileService } from '@/lib/api/profile';
 import { UserProfile } from '@/types/profile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { AlertCircle, User, CreditCard, Edit, Settings } from 'lucide-react';
+import { AlertCircle, User, CreditCard, Edit, Settings, LogOut } from 'lucide-react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { logout } = useAuth();
-  const router = useRouter();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
-      await logout()
-      setIsMobileMenuOpen(false)
-      router.push('/')
+      await logout();
+      router.push('/auth/login');
     } catch (error) {
-      console.error('Logout failed:', error)
+      console.error('Logout failed:', error);
     }
-  }
+  };
 
   // プロフィール情報を取得
   useEffect(() => {
@@ -245,13 +243,27 @@ export default function ProfilePage() {
               </Card>
             )}
 
-            <Card className="py-2">
-                <button 
-                    onClick={handleLogout}
-                    className="text-red-500 block w-full text-left px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
+            {/* ログアウト */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <LogOut className="w-5 h-5" />
+                  アカウント
+                </CardTitle>
+                <CardDescription>
+                  アカウントからログアウトします
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  onClick={handleLogout}
+                  variant="destructive"
+                  className="w-full"
                 >
-                    ログアウト
-                </button>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  ログアウト
+                </Button>
+              </CardContent>
             </Card>
           </div>
         </div>

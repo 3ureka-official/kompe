@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProfileService } from '@/lib/api/profile';
-import { UserProfile, ProfileFormData } from '@/types/profile';
+import { ProfileFormData } from '@/types/profile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -15,7 +15,6 @@ import Link from 'next/link';
 export default function ProfileEditPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +35,6 @@ export default function ProfileEditPage() {
         const profileData = await ProfileService.getUserProfile(user.id);
         
         if (profileData) {
-          setProfile(profileData);
           setFormData({
             name: profileData.name,
             email: profileData.email,
@@ -73,8 +71,7 @@ export default function ProfileEditPage() {
       setSaving(true);
       setError(null);
 
-      const updatedProfile = await ProfileService.updateProfile(user.id, formData);
-      setProfile(updatedProfile);
+      await ProfileService.updateProfile(user.id, formData);
       setSuccess('プロフィールを更新しました');
       
       // 成功時は2秒後にプロフィールページに戻る
