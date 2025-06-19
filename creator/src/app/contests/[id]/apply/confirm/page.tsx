@@ -49,13 +49,6 @@ export default function ConfirmPage() {
     }
   }, [user, router, contestId]);
 
-  // URL入力がない場合は前のページへリダイレクト
-  useEffect(() => {
-    if (!loading && !formData.tiktokUrl) {
-      router.push(`/contests/${contestId}/apply`);
-    }
-  }, [loading, formData.tiktokUrl, router, contestId]);
-
   // 応募を送信
   const handleSubmit = async () => {
     if (!canSubmit) return;

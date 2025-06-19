@@ -509,7 +509,7 @@ app/contests/[id]/apply/complete/page.tsx:
 - URL直接アクセス時の適切なリダイレクト
 ```
 
-### [] タスク13: ダッシュボード実装
+### [✅] タスク13: ダッシュボード実装
 ```
 app/dashboard/page.tsxを作成：
 - ウェルカムメッセージ

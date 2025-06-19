@@ -2,14 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import Image from 'next/image'
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const router = useRouter()
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   
   const isAuthenticated = !!user
 
@@ -17,23 +16,12 @@ export default function Header() {
     { name: 'コンテスト一覧', href: '/contests' },
     { name: '応募履歴', href: '/applications' },
     { name: 'お気に入り', href: '/favorites' },
-    { name: 'プロフィール', href: '/profile' },
   ]
 
   const isActive = (href: string) => pathname === href
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
-
-  const handleLogout = async () => {
-    try {
-      await logout()
-      setIsMobileMenuOpen(false)
-      router.push('/')
-    } catch (error) {
-      console.error('Logout failed:', error)
-    }
   }
 
   const getUserInitial = () => {
@@ -73,13 +61,11 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <Link
-                  href="/dashboard"
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                >
-                  マイページ
-                </Link>
                 <div className="flex items-center space-x-2">
+                  <Link
+                    href="/profile"
+                    className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  >
                   {user?.avatar ? (
                     <Image
                       src={user.avatar}
@@ -87,23 +73,15 @@ export default function Header() {
                       width={32}
                       height={32}
                       className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-sm font-medium text-primary">
-                        {getUserInitial()}
-                      </span>
-                    </div>
-                  )}
-                  <span className="text-sm font-medium text-foreground">
-                    {user?.name}
-                  </span>
-                  <button 
-                    onClick={handleLogout}
-                    className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    ログアウト
-                  </button>
+                      />
+                    ) : (
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-sm font-medium text-primary">
+                          {getUserInitial()}
+                        </span>
+                      </div>
+                    )}
+                  </Link>
                 </div>
               </div>
             ) : (
@@ -172,38 +150,28 @@ export default function Header() {
                 {isAuthenticated ? (
                   <div className="space-y-2">
                     <div className="flex items-center space-x-3 px-3 py-2">
-                      {user?.avatar ? (
-                        <Image
-                          src={user.avatar}
-                          alt={user?.name || 'User avatar'}
-                          width={32}
-                          height={32}
-                          className="rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-sm font-medium text-primary">
-                            {getUserInitial()}
-                          </span>
-                        </div>
-                      )}
-                      <span className="text-base font-medium text-foreground">
-                        {user?.name}
-                      </span>
+                      <Link
+                        href="/profile"
+                        className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {user?.avatar ? (
+                          <Image
+                            src={user.avatar}
+                            alt={user?.name || 'User avatar'}
+                            width={32}
+                            height={32}
+                            className="rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="text-sm font-medium text-primary">
+                              {getUserInitial()}
+                            </span>
+                          </div>
+                        )}
+                      </Link>
                     </div>
-                    <Link
-                      href="/dashboard"
-                      className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      マイページ
-                    </Link>
-                    <button 
-                      onClick={handleLogout}
-                      className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
-                    >
-                      ログアウト
-                    </button>
                   </div>
                 ) : (
                   <div className="space-y-2">

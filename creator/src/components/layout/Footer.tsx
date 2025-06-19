@@ -40,7 +40,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4">サポート</h4>
             <ul className="space-y-2">
-              <li>
+              {/* <li>
                 <Link href="/help" className="text-gray-300 hover:text-white transition-colors">
                   ヘルプ
                 </Link>
@@ -49,14 +49,14 @@ export function Footer() {
                 <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
                   お問い合わせ
                 </Link>
-              </li>
+              </li> */}
               <li>
-                <Link href="/terms" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="https://kompedocs.vercel.app/terms" target="_blank" className="text-gray-300 hover:text-white transition-colors">
                   利用規約
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors">
+                <Link href="https://kompedocs.vercel.app/privacy" target="_blank" className="text-gray-300 hover:text-white transition-colors">
                   プライバシーポリシー
                 </Link>
               </li>

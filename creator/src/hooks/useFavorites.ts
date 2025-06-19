@@ -32,7 +32,6 @@ interface UseFavoritesReturn {
   } | null
   
   // Actions
-  fetchFavorites: () => Promise<void>
   refresh: () => Promise<void>
   reset: () => void
   setPage: (page: number) => void
@@ -112,37 +111,7 @@ export function useFavorites(options: UseFavoritesOptions = {}): UseFavoritesRet
     if (autoFetch) {
       fetchFavorites()
     }
-  }, [autoFetch, fetchFavorites])
-
-  // Manual fetch function for external use
-  const manualFetch = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const [favoritesResponse, statsResponse] = await Promise.all([
-        getUserFavorites({
-          userId,
-          page,
-          limit,
-          tab,
-          filters: initialFilters,
-          search
-        }),
-        getFavoriteStats(userId)
-      ])
-
-      setContests(favoritesResponse.contests)
-      setTotal(favoritesResponse.total)
-      setStats(statsResponse)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'お気に入りコンテストの取得に失敗しました')
-      setContests([])
-      setTotal(0)
-    } finally {
-      setLoading(false)
-    }
-  }, [userId, page, tab, initialFilters, search, limit])
+  }, [autoFetch])
 
   return {
     contests,
@@ -154,8 +123,6 @@ export function useFavorites(options: UseFavoritesOptions = {}): UseFavoritesRet
     tab,
     search,
     stats,
-    
-    fetchFavorites: manualFetch,
     refresh,
     reset,
     setPage,

@@ -20,10 +20,6 @@ export function ApplicationSteps({ steps, className = '' }: ApplicationStepsProp
               <div className="flex items-center justify-center mb-2">
                 {step.isCompleted ? (
                   <CheckCircle2 className="w-8 h-8 text-green-500" />
-                ) : step.isActive ? (
-                  <div className="w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-semibold text-sm">
-                    {step.id}
-                  </div>
                 ) : (
                   <Circle className="w-8 h-8 text-gray-300" />
                 )}
