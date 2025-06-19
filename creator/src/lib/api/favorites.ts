@@ -1,5 +1,4 @@
 import { 
-  ContestSummary, 
   ContestListResponse, 
   UserFavorite, 
   FavoriteTab,

@@ -7,7 +7,6 @@ import { useContest } from '@/hooks/useContest'
 import { ContestHero } from '@/components/contest/ContestHero'
 import { ContestDescription } from '@/components/contest/ContestDescription'
 import { ContestGuidelines } from '@/components/contest/ContestGuidelines'
-import { ContestVideo } from '@/components/contest/ContestVideo'
 import { ContestRanking } from '@/components/contest/ContestRanking'
 import { ContestSidebar } from '@/components/contest/ContestSidebar'
 
@@ -77,7 +76,6 @@ export default function ContestDetailPage() {
           <div className="lg:col-span-2 space-y-8">
             <ContestDescription contest={contest} />
             <ContestGuidelines contest={contest} />
-            <ContestVideo contest={contest} />
             <ContestRanking contest={contest} />
           </div>
 

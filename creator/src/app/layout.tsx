@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import { Footer } from "@/components/layout/Footer";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -81,13 +82,15 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${notoSansJP.variable} font-sans min-h-screen bg-background text-foreground antialiased`}
       >
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <AuthProvider>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

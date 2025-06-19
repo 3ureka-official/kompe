@@ -1,6 +1,5 @@
 import { Trophy } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { Contest } from '@/types/contest'
 
 interface ContestDescriptionProps {
@@ -29,29 +28,15 @@ export function ContestDescription({ contest }: ContestDescriptionProps) {
               総額 ¥{contest.totalPrizeAmount.toLocaleString()}
             </div>
             <div className="space-y-2">
-              {contest.prizes.map((prize) => (
-                <div key={prize.rank} className="flex items-center justify-between p-2 bg-white/50 rounded">
-                  <div>
-                    <div className="font-medium text-yellow-800">{prize.title}</div>
-                    {prize.description && (
-                      <div className="text-sm text-yellow-600">{prize.description}</div>
-                    )}
-                  </div>
+              {contest.prizeStructure.map((prize, index) => (
+                <div key={index} className="flex items-center justify-between p-2 bg-white/50 rounded">
+                  <div className="text-sm text-yellow-600">{index + 1}位</div>
                   <div className="font-bold text-yellow-700">
-                    ¥{prize.amount.toLocaleString()}
+                    ¥{prize}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-          
-          {/* タグ */}
-          <div className="flex flex-wrap gap-2">
-            {contest.tags.map((tag) => (
-              <Badge key={tag} variant="outline">
-                #{tag}
-              </Badge>
-            ))}
           </div>
         </div>
       </CardContent>

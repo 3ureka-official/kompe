@@ -5,6 +5,7 @@ import { Calendar, Users, Clock, Trophy, Heart, Share2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Contest } from '@/types/contest'
+import { useRouter } from 'next/navigation'
 
 interface ContestSidebarProps {
   contest: Contest
@@ -17,7 +18,7 @@ export function ContestSidebar({ contest }: ContestSidebarProps) {
     minutes: number
     seconds: number
   } | null>(null)
-
+  const router = useRouter()
   // カウントダウンタイマー
   useEffect(() => {
     if (contest.status !== 'active') return
@@ -44,6 +45,10 @@ export function ContestSidebar({ contest }: ContestSidebarProps) {
 
     return () => clearInterval(interval)
   }, [contest])
+
+  const handleApply = () => {
+    router.push(`/contests/${contest.id}/apply`)
+  }
 
   return (
     <div className="space-y-6">
@@ -169,7 +174,7 @@ export function ContestSidebar({ contest }: ContestSidebarProps) {
           <CardContent className="pt-6">
             <div className="space-y-4">
               {contest.status === 'active' ? (
-                <Button size="lg" className="w-full" variant="primary">
+                <Button size="lg" className="w-full" variant="primary" style={{ cursor: 'pointer' }} onClick={handleApply}>
                   <Trophy className="h-5 w-5 mr-2" />
                   このコンテストに応募する
                 </Button>

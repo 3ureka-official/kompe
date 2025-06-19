@@ -2,14 +2,16 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-
+import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
+import Image from 'next/image'
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, logout } = useAuth()
   
-  // TODO: 実際の認証状態を取得
-  const isAuthenticated = false
+  const isAuthenticated = !!user
 
   const navigation = [
     { name: 'コンテスト一覧', href: '/contests' },
@@ -24,6 +26,21 @@ export default function Header() {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
+  const handleLogout = async () => {
+    try {
+      await logout()
+      setIsMobileMenuOpen(false)
+      router.push('/')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
+
+  const getUserInitial = () => {
+    if (!user?.name) return 'U'
+    return user.name.charAt(0).toUpperCase()
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,12 +48,7 @@ export default function Header() {
           {/* ロゴ */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="brand-gradient h-8 w-8 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">K</span>
-              </div>
-              <span className="brand-gradient-text text-xl font-bold">
-                Kompe
-              </span>
+              <Image src="/images/logo/logo-coloredhdpi.png" alt="Kompe" width={128} height={128} />
             </Link>
           </div>
 
@@ -68,12 +80,28 @@ export default function Header() {
                   マイページ
                 </Link>
                 <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-sm font-medium text-primary">
-                      U
-                    </span>
-                  </div>
-                  <button className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+                  {user?.avatar ? (
+                    <Image
+                      src={user.avatar}
+                      alt={user.name || 'User avatar'}
+                      width={32}
+                      height={32}
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-sm font-medium text-primary">
+                        {getUserInitial()}
+                      </span>
+                    </div>
+                  )}
+                  <span className="text-sm font-medium text-foreground">
+                    {user?.name}
+                  </span>
+                  <button 
+                    onClick={handleLogout}
+                    className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  >
                     ログアウト
                   </button>
                 </div>
@@ -143,6 +171,26 @@ export default function Header() {
               <div className="pt-4 border-t">
                 {isAuthenticated ? (
                   <div className="space-y-2">
+                    <div className="flex items-center space-x-3 px-3 py-2">
+                      {user?.avatar ? (
+                        <Image
+                          src={user.avatar}
+                          alt={user?.name || 'User avatar'}
+                          width={32}
+                          height={32}
+                          className="rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-sm font-medium text-primary">
+                            {getUserInitial()}
+                          </span>
+                        </div>
+                      )}
+                      <span className="text-base font-medium text-foreground">
+                        {user?.name}
+                      </span>
+                    </div>
                     <Link
                       href="/dashboard"
                       className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
@@ -150,7 +198,10 @@ export default function Header() {
                     >
                       マイページ
                     </Link>
-                    <button className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted transition-colors">
+                    <button 
+                      onClick={handleLogout}
+                      className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
+                    >
                       ログアウト
                     </button>
                   </div>

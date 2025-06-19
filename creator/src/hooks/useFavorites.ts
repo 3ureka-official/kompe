@@ -112,7 +112,7 @@ export function useFavorites(options: UseFavoritesOptions = {}): UseFavoritesRet
     if (autoFetch) {
       fetchFavorites()
     }
-  }, [page, tab, search, autoFetch])
+  }, [autoFetch, fetchFavorites])
 
   // Manual fetch function for external use
   const manualFetch = useCallback(async () => {

@@ -14,6 +14,9 @@ export type ContestCategory =
   | 'education'
   | 'other'
 
+// 評価タイプ
+export type EvaluationType = 'views' | 'likes' | 'comments' | 'shares' | 'combined'
+
 // 賞金情報
 export interface Prize {
   rank: number
@@ -22,17 +25,40 @@ export interface Prize {
   description?: string
 }
 
-// ランキング情報
+// クリエイター情報
+export interface Creator {
+  id: string
+  name: string
+  avatar: string
+  tiktokId: string
+}
+
+// 動画メトリクス
+export interface VideoMetrics {
+  views: number
+  likes: number
+  comments: number
+  shares: number
+}
+
+// ランキング情報（新しいDB構造対応）
 export interface RankingEntry {
   rank: number
-  accountName: string
-  accountHandle: string
-  avatarUrl?: string
-  likeCount: number
-  commentCount: number
-  shareCount: number
-  submissionUrl: string
-  submissionThumbnailUrl?: string
+  creator: Creator
+  score: number
+  videoUrl: string
+  metrics: VideoMetrics
+  prizeAmount: number
+}
+
+// ブランド詳細情報
+export interface BrandInfo {
+  id: string
+  name: string
+  contactName: string
+  email: string
+  phone: string
+  website: string
 }
 
 // コンテスト基本情報
@@ -44,13 +70,10 @@ export interface Contest {
   
   // 画像・メディア
   thumbnailUrl: string
-  bannerUrl?: string
-  brandLogoUrl?: string
-  imageVideoUrl?: string // イメージ動画URL
   
   // ブランド情報
   brandName: string
-  brandId: string
+  brandInfo?: BrandInfo
   
   // カテゴリ・タグ
   category: ContestCategory
@@ -58,7 +81,7 @@ export interface Contest {
   
   // 賞金・参加者情報
   totalPrizeAmount: number
-  prizes: Prize[]
+  prizeStructure: number[]
   participantCount: number
   maxParticipants?: number
   
@@ -71,20 +94,22 @@ export interface Contest {
   status: ContestStatus
   
   // 応募条件
-  requirements: string[]
-  guidelines: string[]
+  requirements: string
+  inspirations: string
   
-  // ランキング情報
+  // 評価・ランキング情報
+  evaluationType: EvaluationType
   ranking?: RankingEntry[]
   
   // メタデータ
   createdAt: string
   updatedAt: string
+  publishedAt?: string | null
   
   // 統計情報
   viewCount: number
   likeCount: number
-  shareCount: number
+  shareCount?: number
 }
 
 // コンテスト一覧用の軽量版
