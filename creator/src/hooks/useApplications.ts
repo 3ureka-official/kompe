@@ -115,7 +115,7 @@ export function useApplications(options: UseApplicationsOptions = {}): UseApplic
     if (autoFetch) {
       fetchApplications()
     }
-  }, [autoFetch, fetchApplications])
+  }, [autoFetch])
 
   // Manual fetch function for external use
   const manualFetch = useCallback(async () => {

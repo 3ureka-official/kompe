@@ -92,6 +92,8 @@ function ApplicationsPageContent() {
   // 総ページ数を計算
   const totalPages = Math.ceil(total / limit)
 
+  // console.log('contests', contests)
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
