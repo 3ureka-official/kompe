@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import ContestGrid from '@/components/contest/ContestGrid'
 import { ContestFilters } from '@/components/contest/ContestFilters'
 import { Pagination } from '@/components/ui/Pagination'
@@ -8,7 +8,7 @@ import { useContests } from '@/hooks/useContests'
 import { useUrlParams } from '@/hooks/useUrlParams'
 import { ContestFilters as ContestFiltersType, ContestSortBy } from '@/types/contest'
 
-export default function ContestsPage() {
+function ContestsPageContent() {
   const { getFiltersFromUrl, updateUrlParams, clearUrlParams } = useUrlParams()
   const [isInitialized, setIsInitialized] = useState(false)
 
@@ -180,5 +180,20 @@ export default function ContestsPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function ContestsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">読み込み中...</p>
+        </div>
+      </div>
+    }>
+      <ContestsPageContent />
+    </Suspense>
   )
 } 

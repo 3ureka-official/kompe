@@ -69,23 +69,14 @@ export function ContestFilters({
   const handlePrizeAmountToggle = (amount: number) => {
     const currentAmounts = filters.prizeAmounts || []
     const newAmounts = currentAmounts.includes(amount)
-      ? currentAmounts.filter((a: number) => a !== amount)
+      ? currentAmounts.filter(a => a !== amount)
       : [...currentAmounts, amount]
     
     onFiltersChange({
       ...filters,
       prizeAmounts: newAmounts.length > 0 ? newAmounts : undefined,
-      // 古いフィルターをクリア
       minPrizeAmount: undefined,
       maxPrizeAmount: undefined
-    })
-  }
-
-  const handlePrizeAmountChange = (type: 'min' | 'max', value: string) => {
-    const numValue = value ? parseInt(value) : undefined
-    onFiltersChange({
-      ...filters,
-      [type === 'min' ? 'minPrizeAmount' : 'maxPrizeAmount']: numValue
     })
   }
 

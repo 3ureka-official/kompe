@@ -38,14 +38,14 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
           if (React.isValidElement(child)) {
             if (child.type === TabsList || child.type === TabsTrigger) {
               return React.cloneElement(child, {
-                // @ts-ignore
+                // @ts-expect-error - React cloneElement type inference issue with custom props
                 value: currentValue,
                 onValueChange: handleValueChange,
               })
             }
             if (child.type === TabsContent) {
               return React.cloneElement(child, {
-                // @ts-ignore
+                // @ts-expect-error - React cloneElement type inference issue with custom props
                 currentValue: currentValue,
               })
             }
@@ -80,7 +80,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
           if (React.isValidElement(child)) {
             if (child.type === TabsTrigger) {
               return React.cloneElement(child, {
-                // @ts-ignore
+                // @ts-expect-error - React cloneElement type inference issue with custom props
                 currentValue: value,
                 onValueChange,
               })
@@ -100,11 +100,10 @@ interface TabsTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
   value: string
   currentValue?: string
   onValueChange?: (value: string) => void
-  asChild?: boolean
 }
 
 const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({ className, value, currentValue, onValueChange, asChild = false, ...props }, ref) => {
+  ({ className, value, currentValue, onValueChange, ...props }, ref) => {
     const isActive = currentValue === value
 
     const handleClick = () => {
@@ -140,8 +139,6 @@ interface TabsContentProps extends React.HTMLAttributes<HTMLDivElement> {
 const TabsContent = forwardRef<HTMLDivElement, TabsContentProps>(
   ({ className, value, currentValue, forceMount = false, ...props }, ref) => {
     const isActive = currentValue === value
-
-    console.log('isActive', isActive)
 
     if (!isActive && !forceMount) {
       return null

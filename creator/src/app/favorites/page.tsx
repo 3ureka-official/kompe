@@ -1,14 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { Suspense } from 'react'
 import ContestGrid from '@/components/contest/ContestGrid'
 import { Pagination } from '@/components/ui/Pagination'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import { useFavorites } from '@/hooks/useFavorites'
 import { FavoriteTab, FAVORITE_TABS } from '@/types/contest'
 
-export default function FavoritesPage() {
+function FavoritesPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -27,11 +28,9 @@ export default function FavoritesPage() {
     tab,
     search,
     stats,
-    fetchFavorites,
     setPage,
     setTab,
-    setSearch,
-    reset
+    setSearch
   } = useFavorites({
     initialPage,
     initialTab,
@@ -88,12 +87,6 @@ export default function FavoritesPage() {
     setPage(newPage)
     updateUrlParams({ page: newPage })
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  // リセット処理
-  const handleReset = () => {
-    reset()
-    router.push('/favorites')
   }
 
   // 総ページ数を計算
@@ -202,48 +195,49 @@ export default function FavoritesPage() {
                     </svg>
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    {key === 'upcoming' && 'お気に入りの開催予定コンテストはありません'}
-                    {key === 'active' && 'お気に入りの開催中コンテストはありません'}  
-                    {key === 'ended' && 'お気に入りの終了したコンテストはありません'}
+                    お気に入りコンテストが見つかりません
                   </h3>
-                  <p className="text-gray-500 mb-4">
-                    {key === 'upcoming' && '開催予定のコンテストをお気に入りに追加すると、ここに表示されます。'}
-                    {key === 'active' && '気になるコンテストをお気に入りに追加してみましょう！'}
-                    {key === 'ended' && '過去にお気に入りに追加したコンテストがここに表示されます。'}
+                  <p className="text-gray-600 mb-4">
+                    コンテストをお気に入りに追加してみましょう。
                   </p>
-                  {(key === 'upcoming' || key === 'active') && (
-                    <a
-                      href="/contests"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                    >
-                      コンテストを探す
-                    </a>
-                  )}
+                  <Link
+                    href="/contests/"
+                    className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                  >
+                    コンテストを探す
+                  </Link>
+                </div>
+              )}
+
+              {/* ページネーション */}
+              {totalPages > 1 && (
+                <div className="flex justify-center">
+                  <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
                 </div>
               )}
             </TabsContent>
           ))}
         </Tabs>
-
-        {/* ページネーション */}
-        {!loading && !error && totalPages > 1 && (
-          <div className="mt-8">
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              className="justify-center"
-            />
-          </div>
-        )}
-
-        {/* ページ情報 */}
-        {!loading && !error && contests.length > 0 && (
-          <div className="mt-4 text-center text-sm text-gray-500">
-            {total}件中 {(page - 1) * limit + 1}〜{Math.min(page * limit, total)}件を表示
-          </div>
-        )}
       </div>
     </div>
+  )
+}
+
+export default function FavoritesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">読み込み中...</p>
+        </div>
+      </div>
+    }>
+      <FavoritesPageContent />
+    </Suspense>
   )
 } 

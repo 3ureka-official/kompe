@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Trophy, Heart, MessageCircle, Share, ExternalLink } from 'lucide-react'
+import { Trophy, Heart, MessageCircle, ExternalLink, Eye } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Contest } from '@/types/contest'
@@ -25,10 +25,12 @@ export function ContestRanking({ contest }: ContestRankingProps) {
             <thead>
               <tr className="border-b border-gray-200">
                 <th className="text-left py-3 px-2 font-semibold text-gray-700">順位</th>
-                <th className="text-left py-3 px-2 font-semibold text-gray-700">アカウント</th>
+                <th className="text-left py-3 px-2 font-semibold text-gray-700">クリエイター</th>
+                <th className="text-center py-3 px-2 font-semibold text-gray-700">スコア</th>
+                <th className="text-center py-3 px-2 font-semibold text-gray-700">再生数</th>
                 <th className="text-center py-3 px-2 font-semibold text-gray-700">いいね</th>
                 <th className="text-center py-3 px-2 font-semibold text-gray-700">コメント</th>
-                <th className="text-center py-3 px-2 font-semibold text-gray-700">シェア</th>
+                <th className="text-center py-3 px-2 font-semibold text-gray-700">賞金</th>
                 <th className="text-center py-3 px-2 font-semibold text-gray-700">動画</th>
               </tr>
             </thead>
@@ -50,49 +52,62 @@ export function ContestRanking({ contest }: ContestRankingProps) {
                   </td>
                   <td className="py-4 px-2">
                     <div className="flex items-center gap-3">
-                      {entry.avatarUrl && (
+                      {entry.creator.avatar && (
                         <div className="relative w-10 h-10 rounded-full overflow-hidden">
                           <Image
-                            src={entry.avatarUrl}
-                            alt={entry.accountName}
+                            src={entry.creator.avatar}
+                            alt={entry.creator.name}
                             fill
                             className="object-cover"
                           />
                         </div>
                       )}
                       <div>
-                        <div className="font-medium text-gray-900">{entry.accountName}</div>
-                        <div className="text-sm text-gray-500">{entry.accountHandle}</div>
+                        <div className="font-medium text-gray-900">{entry.creator.name}</div>
+                        <div className="text-sm text-gray-500">@{entry.creator.tiktokId}</div>
                       </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-2 text-center">
+                    <span className="font-bold text-lg text-blue-600">
+                      {entry.score.toLocaleString()}
+                    </span>
+                  </td>
+                  <td className="py-4 px-2 text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Eye className="h-4 w-4 text-purple-500" />
+                      <span className="font-medium">{entry.metrics.views.toLocaleString()}</span>
                     </div>
                   </td>
                   <td className="py-4 px-2 text-center">
                     <div className="flex items-center justify-center gap-1">
                       <Heart className="h-4 w-4 text-red-500" />
-                      <span className="font-medium">{entry.likeCount.toLocaleString()}</span>
+                      <span className="font-medium">{entry.metrics.likes.toLocaleString()}</span>
                     </div>
                   </td>
                   <td className="py-4 px-2 text-center">
                     <div className="flex items-center justify-center gap-1">
                       <MessageCircle className="h-4 w-4 text-blue-500" />
-                      <span className="font-medium">{entry.commentCount.toLocaleString()}</span>
+                      <span className="font-medium">{entry.metrics.comments.toLocaleString()}</span>
                     </div>
                   </td>
                   <td className="py-4 px-2 text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      <Share className="h-4 w-4 text-green-500" />
-                      <span className="font-medium">{entry.shareCount.toLocaleString()}</span>
-                    </div>
+                    {entry.prizeAmount > 0 ? (
+                      <span className="font-bold text-green-600">
+                        ¥{entry.prizeAmount.toLocaleString()}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
                   </td>
                   <td className="py-4 px-2 text-center">
                     <Button
                       variant="outline"
                       size="sm"
-                      asChild
                       className="text-xs"
                     >
                       <a
-                        href={entry.submissionUrl}
+                        href={entry.videoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -106,9 +121,17 @@ export function ContestRanking({ contest }: ContestRankingProps) {
             </tbody>
           </table>
         </div>
-        <p className="text-sm text-gray-500 mt-4">
-          ※ランキングは定期的に更新されます。最新の順位は参考情報です。
-        </p>
+        <div className="mt-4 space-y-2">
+          <p className="text-sm text-gray-500">
+            ※ランキングは{contest.evaluationType === 'views' ? '再生数' : 
+              contest.evaluationType === 'likes' ? 'いいね数' : 
+              contest.evaluationType === 'comments' ? 'コメント数' : 
+              contest.evaluationType === 'shares' ? 'シェア数' : '総合評価'}に基づいて決定されます。
+          </p>
+          <p className="text-sm text-gray-500">
+            ※ランキングは定期的に更新されます。最新の順位は参考情報です。
+          </p>
+        </div>
       </CardContent>
     </Card>
   )

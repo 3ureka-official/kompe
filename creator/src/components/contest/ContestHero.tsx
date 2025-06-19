@@ -22,7 +22,7 @@ export function ContestHero({ contest }: ContestHeroProps) {
       {/* バナー画像 */}
       <div className="relative h-64 md:h-80 lg:h-96 overflow-hidden">
         <Image
-          src={contest.bannerUrl || contest.thumbnailUrl}
+          src={contest.thumbnailUrl}
           alt={contest.title}
           fill
           className="object-cover"
@@ -62,16 +62,6 @@ export function ContestHero({ contest }: ContestHeroProps) {
             
             <div className="flex items-center gap-6 text-white/90">
               <div className="flex items-center gap-2">
-                {contest.brandLogoUrl && (
-                  <div className="relative h-8 w-8 rounded-full overflow-hidden">
-                    <Image
-                      src={contest.brandLogoUrl}
-                      alt={contest.brandName}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                )}
                 <span className="font-medium">{contest.brandName}</span>
               </div>
               

@@ -242,18 +242,15 @@ API制限対策：
 - Supabase Storage（素材管理）
 
 ### 5.3 認証
-- Firebase Auth（TikTok OAuth）
-- Supabase Auth（メール認証）
+- Supabase Auth（メール認証, TikTok OAuth）
 
 ### 5.4 外部API
 - TikTok API v2
 - Stripe API
-- SendGrid（メール送信）
 
 ### 5.5 インフラ
 - Vercel（フロントエンド）
 - Supabase Cloud（DB・ストレージ）
-- Cloudflare（CDN）
 
 ## 6. データベース設計
 
