@@ -22,7 +22,7 @@ export function CreatorHowItWorks() {
                     01
                   </div>
                   <h3 className="text-2xl font-bold mb-4 text-gray-900 text-center md:text-left">
-                    好きなコンテスト選ぶ
+                    好きなコンテストを選ぶ
                   </h3>
                   <p className="text-sm md:text-lg text-gray-600 mb-6 text-center md:text-left">
                     美容、ファッション、グルメ...あなたの得意分野から選んで参加
@@ -50,7 +50,7 @@ export function CreatorHowItWorks() {
                     02
                   </div>
                   <h3 className="text-2xl font-bold mb-4 text-gray-900 text-center md:text-left">
-                    動画作って投稿
+                    動画を作って投稿
                   </h3>
                   <p className="text-sm md:text-lg text-gray-600 mb-6 text-center md:text-left">
                     企業の要望を確認して、素材を使って動画を作成・TikTokに投稿

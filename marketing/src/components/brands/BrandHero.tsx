@@ -13,7 +13,7 @@ export function BrandHero() {
           </h1>
           
           <p className="text-lg md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
-            コンテスト形式で良質なUGCを大量獲得。<br />
+            コンテスト形式で商品をバズらせる<br />
             従来の広告とは一線を画す、効果的なマーケティングソリューション
           </p>
 
@@ -24,7 +24,7 @@ export function BrandHero() {
           </div>
           
           <div className="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-8 text-center mb-12 max-w-2xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm p-2 md:p-6 rounded-xl">
+            {/* <div className="bg-white/10 backdrop-blur-sm p-2 md:p-6 rounded-xl">
               <div className="md:text-3xl font-bold text-blue-400 mb-2">成果報酬</div>
               <div className="text-sm opacity-80">料金体系</div>
             </div>
@@ -35,7 +35,7 @@ export function BrandHero() {
             <div className="bg-white/10 backdrop-blur-sm p-2 md:p-6 rounded-xl">
               <div className="md:text-3xl font-bold text-blue-400 mb-2">10%</div>
               <div className="text-sm opacity-80">手数料</div>
-            </div>
+            </div> */}
             {/* <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
               <div className="text-3xl font-bold text-cyan-400 mb-2">50社+</div>
               <div className="text-sm opacity-80">導入実績</div>

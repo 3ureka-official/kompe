@@ -1,5 +1,5 @@
 import Link from 'next/link'
-
+import Image from 'next/image'
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
 
@@ -77,24 +77,19 @@ export const Footer = () => {
     <footer className="bg-muted/30 border-t">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* メインフッターコンテンツ */}
-        <div className="py-12">
+        <div className="py-6">
           {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8"> */}
             {/* ブランド情報 */}
             <div className="lg:col-span-1">
               <Link href="/" className="flex items-center space-x-2 mb-4">
-                <div className="brand-gradient h-8 w-8 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">K</span>
-                </div>
-                <span className="brand-gradient-text text-xl font-bold">
-                  Kompe
-                </span>
+                <Image src="/images/logo/logo-coloredhdpi.png" alt="Kompe" width={100} height={100} />
               </Link>
               <p className="text-sm text-muted-foreground mb-4 max-w-xs">
                 TikTokコンテストプラットフォーム。クリエイターとブランドをつなぎ、素晴らしいコンテンツを生み出します。
               </p>
               
               {/* ソーシャルリンク */}
-              <div className="flex space-x-4">
+              {/* <div className="flex space-x-4">
                 {socialLinks.map((social) => (
                   <Link
                     key={social.name}
@@ -107,8 +102,8 @@ export const Footer = () => {
                     {social.icon}
                   </Link>
                 ))}
+              </div> */}
               {/* </div> */}
-            </div>
 
             {/* リンクセクション */}
             {/* {Object.entries(footerLinks).map(([key, section]) => (
