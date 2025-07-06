@@ -38,7 +38,7 @@ export function CreatorFinalCTA() {
             <h3 className="text-2xl font-bold mb-8">
               ✨ あなたの才能を待っている企業がいます
             </h3>
-            <div className="flex flex-wrap justify-center gap-4 opacity-80 mb-8">
+            {/* <div className="flex flex-wrap justify-center gap-4 opacity-80 mb-8">
               <span className="bg-white/20 px-4 py-2 rounded-full text-sm">#美容コスメ</span>
               <span className="bg-white/20 px-4 py-2 rounded-full text-sm">#ファッション</span>
               <span className="bg-white/20 px-4 py-2 rounded-full text-sm">#グルメ</span>
@@ -46,7 +46,7 @@ export function CreatorFinalCTA() {
               <span className="bg-white/20 px-4 py-2 rounded-full text-sm">#エンタメ</span>
               <span className="bg-white/20 px-4 py-2 rounded-full text-sm">#ゲーム</span>
               <span className="bg-white/20 px-4 py-2 rounded-full text-sm">#Webサービス・アプリ</span>
-            </div>
+            </div> */}
           </div>
           
           <div className="text-center mb-12">
@@ -57,12 +57,12 @@ export function CreatorFinalCTA() {
             </p>
             
             <div className="flex flex-col gap-4 justify-center max-w-md mx-auto">
-              <button className="bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl">
-                TikTokで無料登録
+              <button className="cursor-pointer bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl">
+                今すぐ始める
               </button>
-              <p className="text-sm opacity-70">
+              {/* <p className="text-sm opacity-70">
                 登録は30秒で完了 | いつでも退会OK
-              </p>
+              </p> */}
             </div>
           </div>
           

@@ -81,18 +81,18 @@ export function BrandSolutionSection() {
                       <tr className="border-b border-white/10">
                         <td className="py-3 text-gray-300">制作期間</td>
                         <td className="py-3 text-center text-red-400 line-through">1〜3ヶ月</td>
-                        <td className="py-3 text-center text-green-400 font-bold">1〜2週間</td>
+                        <td className="py-3 text-center text-green-400 font-bold">1〜3週間</td>
                       </tr>
                       <tr className="border-b border-white/10">
                         <td className="py-3 text-gray-300">動画本数</td>
                         <td className="py-3 text-center text-red-400 line-through">1〜3本</td>
                         <td className="py-3 text-center text-green-400 font-bold">15〜25本以上</td>
                       </tr>
-                      <tr className="border-b border-white/10">
+                      {/* <tr className="border-b border-white/10">
                         <td className="py-3 text-gray-300">初期費用</td>
                         <td className="py-3 text-center text-red-400 line-through">あり</td>
                         <td className="py-3 text-center text-green-400 font-bold">なし</td>
-                      </tr>
+                      </tr> */}
                       <tr>
                         <td className="py-3 text-gray-300">効果測定</td>
                         <td className="py-3 text-center text-red-400 line-through">曖昧</td>

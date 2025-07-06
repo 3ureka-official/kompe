@@ -1,4 +1,10 @@
+'use client';
+
+// import { useRouter } from 'next/navigation';
+
 export function CreatorHero() {
+  // const router = useRouter();
+
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-[#FE2C55] via-[#FF0050] to-[#25F4EE] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
@@ -17,11 +23,20 @@ export function CreatorHero() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <button className="bg-white text-[#FE2C55] px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-colors">
+            {/* <button className="bg-white text-[#FE2C55] px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-colors">
               TikTokで無料登録
             </button>
             <button className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-[#FE2C55] transition-colors">
               コンテストを見る
+            </button> */}
+
+            {/* <button onClick={() => {
+              router.push('/pre-register');
+            }} className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-[#FE2C55] transition-colors">
+              事前登録
+            </button> */}
+            <button className="cursor-pointer bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl">
+              今すぐ始める
             </button>
           </div>
           
