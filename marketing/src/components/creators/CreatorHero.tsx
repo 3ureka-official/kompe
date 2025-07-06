@@ -1,9 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 export function CreatorHero() {
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-[#FE2C55] via-[#FF0050] to-[#25F4EE] flex items-center justify-center overflow-hidden">
