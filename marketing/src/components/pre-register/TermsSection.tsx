@@ -4,7 +4,7 @@ interface TermsSectionProps {
     hasReadPrivacy?: boolean;
   };
   errors?: { [key: string]: string };
-  updateFormData?: (updates: any) => void;
+  updateFormData?: (updates: Record<string, boolean | string>) => void;
 }
 
 export function TermsSection({ formData, errors, updateFormData }: TermsSectionProps) {

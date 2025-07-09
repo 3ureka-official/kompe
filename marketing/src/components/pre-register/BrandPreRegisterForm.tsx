@@ -27,7 +27,7 @@ export function BrandPreRegisterForm() {
 
     if (!formData.email.trim()) {
       newErrors.email = 'メールアドレスを入力してください';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/\S+@\S+/.test(formData.email)) {
       newErrors.email = '有効なメールアドレスを入力してください';
     }
 
@@ -65,13 +65,25 @@ export function BrandPreRegisterForm() {
 
     setIsSubmitting(true);
     try {
-      await savePreBrand({
+      const brandData: {
+        email: string;
+        name: string;
+        brandName: string;
+        website?: string;
+        industry: string;
+      } = {
         email: formData.email,
         name: formData.name,
         brandName: formData.brandName,
-        website: formData.website || undefined,
         industry: formData.industry,
-      });
+      };
+
+      // websiteが空でない場合のみ追加
+      if (formData.website.trim()) {
+        brandData.website = formData.website;
+      }
+
+      await savePreBrand(brandData);
       
       setIsSubmitted(true);
     } catch (error) {
