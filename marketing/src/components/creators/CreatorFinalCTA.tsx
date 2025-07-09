@@ -57,9 +57,13 @@ export function CreatorFinalCTA() {
             </p>
             
             <div className="flex flex-col gap-4 justify-center max-w-md mx-auto">
-              <button className="cursor-pointer bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl">
+              <a href="/pre-register/creator" className="cursor-pointer bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl text-center">
+                事前登録はこちら
+              </a>
+              
+              {/* <button className="cursor-pointer bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl">
                 今すぐ始める
-              </button>
+              </button> */}
               {/* <p className="text-sm opacity-70">
                 登録は30秒で完了 | いつでも退会OK
               </p> */}

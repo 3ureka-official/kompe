@@ -1,5 +1,6 @@
-import { Creator } from '@/types/contest';
+import { Creator } from '@/types/creator';
 import { Button } from '@/components/ui/button';
+import { formatNumber } from '@/utils/format';
 
 type Props = {
   creators: Creator[];
@@ -7,10 +8,6 @@ type Props = {
 };
 
 export const CreatorTable = ({ creators, onCreatorClick }: Props) => {
-  const formatNumber = (num: number) => {
-    return num.toLocaleString('ja-JP');
-  };
-
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="overflow-x-auto">

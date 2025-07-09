@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function HomePage() {
-  const { user, userProfile, loading } = useAuth();
+  const { user, userProfile, userBrand, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && userProfile !== null) {
+    if (!loading) {
       if (user) {
         // ログインしている場合
-        if (userProfile?.hasBrand) {
+        if (userBrand) {
           // ブランド作成済みの場合はコンテスト一覧にリダイレクト
           router.push('/dashboard/contests');
         } else {
@@ -24,10 +24,10 @@ export default function HomePage() {
         router.push('/auth/login');
       }
     }
-  }, [user, userProfile, loading, router]);
+  }, [user, userProfile, userBrand, loading, router]);
 
   // ローディング中は何も表示しない
-  if (loading || userProfile === null) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

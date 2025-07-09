@@ -11,36 +11,30 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children, requireAuth = true, requireBrand = false }: AuthGuardProps) {
-  const { user, userProfile, loading } = useAuth();
+  const { user, userProfile, userBrand, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && userProfile !== null) {
+    if (!loading) {
       if (requireAuth && !user) {
         // 認証が必要だがユーザーがログインしていない場合
         router.push('/auth/login');
       } else if (!requireAuth && user) {
         // 認証が不要だがユーザーがログインしている場合（ログイン/サインアップページなど）
-        if (userProfile?.hasBrand) {
+        if (userBrand) {
           router.push('/dashboard/contests');
         } else {
           router.push('/auth/brand-creation');
         }
-      } else if (requireAuth && user) {
-        // 認証済みユーザーの場合
-        if (requireBrand && !userProfile?.hasBrand) {
-          // ブランドが必要だが作成していない場合
-          router.push('/auth/brand-creation');
-        } else if (!requireBrand && userProfile?.hasBrand && window.location.pathname === '/auth/brand-creation') {
-          // ブランド作成済みだがブランド作成ページにいる場合
-          router.push('/dashboard/contests');
-        }
+      } else if (requireAuth && user && requireBrand && !userBrand) {
+        // 認証済みだがブランドが必要で未作成の場合
+        router.push('/auth/brand-creation');
       }
     }
-  }, [user, userProfile, loading, requireAuth, requireBrand, router]);
+  }, [user, userProfile, userBrand, loading, router, requireAuth, requireBrand]);
 
   // ローディング中は何も表示しない
-  if (loading || userProfile === null) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -52,17 +46,5 @@ export function AuthGuard({ children, requireAuth = true, requireBrand = false }
   }
 
   // 認証状態に応じてコンテンツを表示
-  if (requireAuth && !user) {
-    return null; // リダイレクト中
-  }
-
-  if (!requireAuth && user) {
-    return null; // リダイレクト中
-  }
-
-  if (requireBrand && !userProfile?.hasBrand) {
-    return null; // リダイレクト中
-  }
-
   return <>{children}</>;
 } 

@@ -1,12 +1,23 @@
 import { Button } from '@/components/ui/button';
 import { RichTextEditor } from '../ui/RichTextEditer';
+import { CreateContestFormData } from '@/types/contest';
 
 type Props = {
+  data: CreateContestFormData;
+  onUpdate: (stepData: Partial<CreateContestFormData>) => void;
   onNext: () => void;
   onPrev: () => void;
 };
 
-export function Brief({ onNext, onPrev }: Props) {
+export function Brief({ data, onUpdate, onNext, onPrev }: Props) {
+  const handleDescriptionChange = (value: string) => {
+    onUpdate({ description: value });
+  };
+
+  const handleRequirementsChange = (value: string) => {
+    onUpdate({ requirements: value });
+  };
+
   return (
     <div>
       <div className="bg-white rounded-lg p-8 shadow-sm">
@@ -14,14 +25,20 @@ export function Brief({ onNext, onPrev }: Props) {
         <div className="mb-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">プロジェクト概要</h3>
           
-          <RichTextEditor value={''} onChange={() => {}} />
+          <RichTextEditor 
+            value={data.description} 
+            onChange={handleDescriptionChange} 
+          />
         </div>
 
         {/* Set rules */}
         <div className="mb-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">ルール設定</h3>
           
-          <RichTextEditor value={''} onChange={() => {}} />
+          <RichTextEditor 
+            value={data.requirements} 
+            onChange={handleRequirementsChange} 
+          />
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { useState } from 'react';
+import { CreateContestFormData } from '@/types/contest';
 
 const categories = [
   { id: 'video', label: '動画' },
@@ -12,16 +13,21 @@ const categories = [
 ];
 
 type Props = {
+  data: CreateContestFormData;
+  onUpdate: (stepData: Partial<CreateContestFormData>) => void;
   onNext: () => void;
 };
 
-export function BasicInfo({ onNext }: Props) {
-  const [coverImage, setCoverImage] = useState<File | null>(null);
+export function BasicInfo({ data, onUpdate, onNext }: Props) {
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
-  const [startDate, setStartDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [endTime, setEndTime] = useState('');
+
+  const handleInputChange = (field: keyof CreateContestFormData, value: any) => {
+    onUpdate({ [field]: value });
+  };
+
+  const handleFileChange = (file: File | null) => {
+    handleInputChange('thumbnail', file);
+  };
 
   return (
     <div>
@@ -34,6 +40,8 @@ export function BasicInfo({ onNext }: Props) {
             <Input
               id="title"
               placeholder="例：夏の思い出フォトコンテスト"
+              value={data.title}
+              onChange={(e) => handleInputChange('title', e.target.value)}
             />
           </div>
 
@@ -44,7 +52,8 @@ export function BasicInfo({ onNext }: Props) {
             <div className="relative">
               <select
                 id="category"
-                defaultValue=""
+                value={data.category}
+                onChange={(e) => handleInputChange('category', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:outline-none focus:ring-0.5 focus:ring-gray-900 focus:border-gray-900 appearance-none cursor-pointer"
               >
                 <option value="" disabled>カテゴリーを選択してください</option>
@@ -69,9 +78,9 @@ export function BasicInfo({ onNext }: Props) {
           </label>
           
           <FileUpload
-            file={coverImage}
+            file={data.thumbnail}
             preview={coverImagePreview}
-            onFileChange={setCoverImage}
+            onFileChange={handleFileChange}
             onPreviewChange={setCoverImagePreview}
             accept="image/*"
             maxSize={5 * 1024 * 1024}
@@ -95,15 +104,9 @@ export function BasicInfo({ onNext }: Props) {
               <div className="flex gap-2">
                 <Input
                   type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  value={data.startDate}
+                  onChange={(e) => handleInputChange('startDate', e.target.value)}
                   className="flex-1"
-                />
-                <Input
-                  type="time"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className="w-32"
                 />
               </div>
             </div>
@@ -116,15 +119,9 @@ export function BasicInfo({ onNext }: Props) {
               <div className="flex gap-2">
                 <Input
                   type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  value={data.endDate}
+                  onChange={(e) => handleInputChange('endDate', e.target.value)}
                   className="flex-1"
-                />
-                <Input
-                  type="time"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className="w-32"
                 />
               </div>
             </div>

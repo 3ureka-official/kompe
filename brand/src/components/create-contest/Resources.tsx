@@ -2,18 +2,30 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Textarea } from '../ui/textarea';
 import { Input } from '../ui/input';
+import { CreateContestFormData } from '@/types/contest';
 
 type Props = {
+  data: CreateContestFormData;
+  onUpdate: (stepData: Partial<CreateContestFormData>) => void;
   onNext: () => void;
   onPrev: () => void;
 };
 
-export function Resources({ onNext, onPrev }: Props) {
+export function Resources({ data, onUpdate, onNext, onPrev }: Props) {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [externalLink, setExternalLink] = useState('');
   const [description, setDescription] = useState('');
   const [inspirationContent, setInspirationContent] = useState('');
   const [inspirationDescription, setInspirationDescription] = useState('');
+
+  const handleResourcesUpdate = (resources: Partial<CreateContestFormData['resources']>) => {
+    onUpdate({
+      resources: {
+        ...data.resources,
+        ...resources
+      }
+    });
+  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);

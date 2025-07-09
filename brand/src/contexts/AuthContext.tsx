@@ -10,19 +10,20 @@ import {
   sendPasswordResetEmail,
   updateProfile,
 } from 'firebase/auth';
+import { serverTimestamp } from 'firebase/firestore';
 import { auth } from '@/lib/firebase';
 import { 
-  getUserProfile, 
-  createUserProfile, 
-  getUserBrand,
-  UserProfile,
-  BrandData 
+  getUser, 
+  createUser, 
 } from '@/services/userService';
+import { getUserBrand } from '@/services/brandService';
+import { Brand } from '@/types/brand';
+import { User as UserProfile } from '@/types/user';
 
 interface AuthContextType {
   user: User | null;
   userProfile: UserProfile | null;
-  userBrand: BrandData | null;
+  userBrand: Brand | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName: string) => Promise<void>;
@@ -44,28 +45,16 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [userBrand, setUserBrand] = useState<BrandData | null>(null);
+  const [userBrand, setUserBrand] = useState<Brand | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ユーザーデータを更新する関数
   const refreshUserData = async () => {
     if (user) {
-      try {
-        const profile = await getUserProfile(user.uid);
-        setUserProfile(profile);
+      const profile = await getUser(user.uid);
+      setUserProfile(profile);
 
-        if (profile?.hasBrand) {
-          const brand = await getUserBrand(user.uid);
-          setUserBrand(brand);
-        } else {
-          setUserBrand(null);
-        }
-      } catch (error) {
-        console.error('ユーザーデータ更新エラー:', error);
-      }
-    } else {
-      setUserProfile(null);
-      setUserBrand(null);
+      const brand = await getUserBrand(user.uid);
+      setUserBrand(brand);
     }
   };
 
@@ -76,19 +65,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (user) {
         try {
           // ユーザープロフィールを取得または作成
-          let profile = await getUserProfile(user.uid);
+          let profile = await getUser(user.uid);
           if (!profile) {
-            profile = await createUserProfile(user);
+            const newProfile: UserProfile = {
+              id: user.uid,
+              email: user.email || '',
+              name: user.displayName || '',
+              profileImage: user.photoURL || '',
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+            };
+            profile = await createUser(newProfile);
           }
           setUserProfile(profile);
 
-          // ブランド情報を取得
-          if (profile.hasBrand) {
-            const brand = await getUserBrand(user.uid);
-            setUserBrand(brand);
-          } else {
-            setUserBrand(null);
-          }
+          // ブランド情報を作成
+          let brand = await getUserBrand(user.uid);
+          setUserBrand(brand);
+
         } catch (error) {
           console.error('ユーザーデータ取得エラー:', error);
         }

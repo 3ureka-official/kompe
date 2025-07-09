@@ -4,7 +4,6 @@ import React from "react"
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { mockContests } from '@/types/contest';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   NavigationMenu,
@@ -21,20 +20,9 @@ type BreadcrumbItem = {
 
 export function Header() {
   const pathname = usePathname();
-  const [contestName, setContestName] = useState<string>('');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { user, logout } = useAuth();
   const isDashboard = pathname.startsWith('/dashboard');
-
-  // コンテスト詳細ページの場合、コンテスト名を取得
-  useEffect(() => {
-    const segments = pathname.split('/').filter(Boolean);
-    if (segments[0] === 'dashboard' && segments[1] === 'contests' && segments[2]) {
-      const contestId = segments[2];
-      const contest = mockContests.find(c => c.id === contestId);
-      setContestName(contest?.title || 'コンテスト詳細');
-    }
-  }, [pathname]);
 
   const handleLogout = async () => {
     try {
@@ -60,7 +48,7 @@ export function Header() {
             if (segments[2]) {
               if (segments[3]) {
                 // コンテスト詳細の子ページ
-                items.push({ label: contestName || 'コンテスト詳細', href: `/dashboard/contests/${segments[2]}` });
+                items.push({ label: 'コンテスト詳細', href: `/dashboard/contests/${segments[2]}` });
                 switch (segments[3]) {
                   case 'contents':
                     items.push({ label: 'コンテンツ' });
@@ -76,7 +64,7 @@ export function Header() {
                 }
               } else {
                 // コンテスト詳細ページ
-                items.push({ label: contestName || 'コンテスト詳細' });
+                items.push({ label: 'コンテスト詳細' });
               }
             }
             break;

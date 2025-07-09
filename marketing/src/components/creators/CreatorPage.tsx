@@ -15,7 +15,7 @@ export default function CreatorsPage() {
       <CreatorSolutionSection />
       <CreatorHowItWorks />
       {/* <CreatorCredibilitySection /> */}
-      <CreatorCurrentContests />
+      {/* <CreatorCurrentContests /> */}
       <CreatorFAQ />
       <CreatorFinalCTA />
     </div>

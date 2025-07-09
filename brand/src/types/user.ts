@@ -1,11 +1,13 @@
+import { FieldValue, serverTimestamp } from "firebase/firestore";
+
 // ユーザー関連の型定義
 export interface User {
   id: string;
   name: string;
   email: string;
   profileImage?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: FieldValue;
+  updatedAt: FieldValue;
 }
 
 export interface NotificationSettings {
@@ -29,8 +31,8 @@ export const mockUser: User = {
   name: '田中太郎',
   email: 'tanaka@example.com',
   profileImage: 'https://placehold.co/100x100',
-  createdAt: '2024-01-01T00:00:00Z',
-  updatedAt: '2024-01-15T10:30:00Z'
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp()
 };
 
 export const mockNotificationSettings: NotificationSettings = {

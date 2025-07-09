@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { CreateContestFormData } from '@/types/contest';
 
 const prizeOptions = [
   { 
@@ -36,11 +37,13 @@ const prizeOptions = [
 ];
 
 type Props = {
+  data: CreateContestFormData;
+  onUpdate: (stepData: Partial<CreateContestFormData>) => void;
   onPrev: () => void;
   onSubmit: () => void;
 };
 
-export function Prize({ onPrev, onSubmit }: Props) {
+export function Prize({ data, onUpdate, onPrev, onSubmit }: Props) {
   const [winners, setWinners] = useState([
     { rank: '1位', amount: 100000 },
     { rank: '2位', amount: 50000 },
@@ -48,7 +51,13 @@ export function Prize({ onPrev, onSubmit }: Props) {
   ]);
 
   const [totalPrize, setTotalPrize] = useState(0);
-  const [selectedPrizeOption, setSelectedPrizeOption] = useState<string | number>('');
+  const [selectedPrizeOption, setSelectedPrizeOption] = useState<string | number>(data.prizePool || '');
+
+  const handlePrizePoolChange = (value: number) => {
+    setSelectedPrizeOption(value);
+    setTotalPrize(value);
+    onUpdate({ prizePool: value });
+  };
 
   const addWinner = () => {
     if (winners.length < 10) {
@@ -92,10 +101,7 @@ export function Prize({ onPrev, onSubmit }: Props) {
                 value={option.value}
                 className="sr-only"
                 checked={selectedPrizeOption === option.value}
-                onChange={() => {
-                  setSelectedPrizeOption(option.value);
-                  setTotalPrize(option.value as number);
-                }}
+                onChange={() => handlePrizePoolChange(option.value as number)}
               />
               <span className="flex flex-col items-center w-full justify-center">
                 <div className="mb-2">

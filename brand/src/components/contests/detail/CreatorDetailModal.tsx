@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Creator } from '@/types/contest';
+import { Button } from '@/components/ui/button';
+import { Creator } from '@/types/creator';
+import { formatNumber } from '@/utils/format';
 
 type Props = {
   creator: Creator | null;
@@ -16,10 +18,6 @@ export function CreatorDetailModal({ creator, isOpen, onClose }: Props) {
     console.log('Modal not showing because:', { isOpen, hasCreator: !!creator });
     return null;
   }
-
-  const formatNumber = (num: number) => {
-    return num.toLocaleString('ja-JP');
-  };
 
   console.log('Modal should be visible now');
 

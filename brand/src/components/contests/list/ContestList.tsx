@@ -1,7 +1,7 @@
 'use client';
 
 import { Contest } from '@/types';
-import { ContestCard } from '@/components/contests/ContestCard';
+import { ContestCard } from '@/components/contests/list/ContestCard';
 
 interface ContestListProps {
   contests: Contest[];
@@ -47,8 +47,8 @@ export function ContestList({ contests, isLoading = false }: ContestListProps) {
 
   return (
     <div className="grid gap-6 mt-2">
-      {contests.map((contest) => (
-        <ContestCard key={contest.id} contest={contest} />
+      {contests.map((contest, index) => (
+        <ContestCard key={index} contest={contest} />
       ))}
     </div>
   );
