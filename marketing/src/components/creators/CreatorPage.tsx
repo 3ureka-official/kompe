@@ -3,7 +3,7 @@ import { CreatorProblemSection } from '@/components/creators/CreatorProblemSecti
 import { CreatorSolutionSection } from '@/components/creators/CreatorSolutionSection';
 import { CreatorHowItWorks } from '@/components/creators/CreatorHowItWorks';
 // import { CreatorCredibilitySection } from '@/components/creators/CreatorCredibilitySection';
-import { CreatorCurrentContests } from '@/components/creators/CreatorCurrentContests';
+// import { CreatorCurrentContests } from '@/components/creators/CreatorCurrentContests';
 import { CreatorFAQ } from '@/components/creators/CreatorFAQ';
 import { CreatorFinalCTA } from '@/components/creators/CreatorFinalCTA';
 
@@ -15,7 +15,7 @@ export default function CreatorsPage() {
       <CreatorSolutionSection />
       <CreatorHowItWorks />
       {/* <CreatorCredibilitySection /> */}
-      <CreatorCurrentContests />
+      {/* <CreatorCurrentContests /> */}
       <CreatorFAQ />
       <CreatorFinalCTA />
     </div>

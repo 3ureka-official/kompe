@@ -1,4 +1,4 @@
-import { Creator } from '@/types/contest';
+import { Creator } from '@/types/creator';
 import { CreatorTable } from './CreatorTable';
 
 type Props = {

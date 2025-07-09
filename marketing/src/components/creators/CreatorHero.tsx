@@ -30,14 +30,12 @@ export function CreatorHero() {
               コンテストを見る
             </button> */}
 
-            {/* <button onClick={() => {
-              router.push('/pre-register');
-            }} className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-[#FE2C55] transition-colors">
-              事前登録
-            </button> */}
-            <button className="cursor-pointer bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl">
+            <a href="/pre-register/creator" className="cursor-pointer bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl text-center inline-block">
+              事前登録はこちら
+            </a>
+            {/* <button className="cursor-pointer bg-white text-[#FE2C55] px-10 py-5 rounded-full font-bold text-xl hover:bg-gray-100 transition-colors shadow-2xl">
               今すぐ始める
-            </button>
+            </button> */}
           </div>
           
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 text-center max-w-2xl mx-auto">

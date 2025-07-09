@@ -1,70 +1,72 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { createBrand } from '@/services/brandService';
 import { Logo } from '@/components/ui/Logo';
 import { FormField, Input, Select, Textarea, FileUpload, SnsLinkField } from './ui';
 import { Button } from '@/components/ui/button';
-import { BrandCreationData } from '@/types/brand';
+import { Brand } from '@/types/brand';
+import { serverTimestamp } from 'firebase/firestore';
+import { businessTypeOptions, howDidYouHearOptions } from '@/constants/brand-creation';
 
-type Props = {
-  onSubmit: (brandData: BrandCreationData) => void;
-  onBack?: () => void;
-  userEmail?: string;
-};
-
-const businessTypeOptions = [
-  { value: '', label: '会社規模を選択してください' },
-  { value: '1-10', label: '1-10名' },
-  { value: '11-50', label: '11-50名' },
-  { value: '51-200', label: '51-200名' },
-  { value: '201-500', label: '201-500名' },
-  { value: '500+', label: '500名以上' }
-];
-
-const howDidYouHearOptions = [
-  { value: '', label: '選択してください' },
-  { value: 'X', label: 'X (Twitter)' },
-  { value: 'Youtube', label: 'YouTube' },
-  { value: 'Google Search', label: 'Google検索' },
-  { value: 'Instagram', label: 'Instagram' },
-  { value: 'Referred by a friend', label: '友人からの紹介' },
-  { value: 'Other', label: 'その他' }
-];
-
-export function BrandCreationForm({ onSubmit, onBack, userEmail }: Props) {
-  const [formData, setFormData] = useState<BrandCreationData>({
+export function BrandCreationForm() {
+  const { user, refreshUserData } = useAuth();
+  const router = useRouter();
+  const [formData, setFormData] = useState<Brand>({
+    id: '',
+    userId: '',
     name: '',
-    logoFile: null,
-    contactEmail: userEmail || '',
+    logoUrl: '',
+    contactEmail: user?.email || '',
     phoneNumber: '',
     businessType: '',
-    website: '',
-    publicProfile: '',
+    howDidYouHear: '',
     snsLinks: {
       twitter: '',
       instagram: '',
       facebook: '',
       website: ''
     },
-    tiktokHandle: '',
-    howDidYouHear: ''
+    description: '',
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
   });
 
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    
     setIsSubmitting(true);
     
     try {
-      await onSubmit(formData);
+      await createBrand(user.uid, {
+        name: formData.name,
+        logoUrl: formData.logoUrl,
+        contactEmail: formData.contactEmail,
+        phoneNumber: formData.phoneNumber,
+        description: formData.description,
+        snsLinks: formData.snsLinks,
+        businessType: formData.businessType,
+        howDidYouHear: formData.howDidYouHear,
+      });
+      
+      await refreshUserData();
+      router.push('/contests');
+    } catch (error) {
+      console.error('ブランド作成エラー:', error);
+      // エラーハンドリング
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleChange = (field: keyof BrandCreationData, value: any) => {
+  const handleChange = (field: keyof Brand, value: any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -119,9 +121,9 @@ export function BrandCreationForm({ onSubmit, onBack, userEmail }: Props) {
               description="推奨サイズ: 200x200"
             >
               <FileUpload
-                file={formData.logoFile}
+                file={logoFile}
                 preview={logoPreview}
-                onFileChange={(file) => handleChange('logoFile', file)}
+                onFileChange={(file) => handleChange('logoUrl', file)}
                 onPreviewChange={setLogoPreview}
                 placeholder="ロゴ画像をアップロード"
               />
@@ -157,11 +159,11 @@ export function BrandCreationForm({ onSubmit, onBack, userEmail }: Props) {
             <FormField 
               label="ブランド紹介" 
               required
-              description={`${formData.publicProfile.length}/240文字`}
+              description={`${formData.description.length}/240文字`}
             >
               <Textarea
-                value={formData.publicProfile}
-                onChange={(value) => handleChange('publicProfile', value)}
+                value={formData.description}
+                onChange={(value) => handleChange('description', value)}
                 placeholder="あなたのブランドについて教えてください"
                 maxLength={240}
                 showCharCount={false}

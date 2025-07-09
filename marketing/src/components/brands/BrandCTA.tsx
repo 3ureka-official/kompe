@@ -64,9 +64,12 @@ export function BrandCTA() {
               <strong className="text-xl text-blue-400">貴社のビジネス成長を加速させませんか？</strong>
             </p>
             <div className="flex flex-col gap-4 justify-center max-w-md mx-auto">
-              <button className="bg-white text-gray-900 px-10 py-5 rounded-2xl font-bold text-xl hover:bg-gray-300 transition-colors shadow-2xl">
+              <a href="/pre-register/brand" className="bg-white text-gray-900 px-10 py-5 rounded-2xl font-bold text-xl hover:bg-gray-300 transition-colors shadow-2xl">
+                事前登録はこちら
+              </a>
+              {/* <button className="bg-white text-gray-900 px-10 py-5 rounded-2xl font-bold text-xl hover:bg-gray-300 transition-colors shadow-2xl">
                 今すぐ始める
-              </button>
+              </button> */}
             </div>
 
             {/* <p className="text-sm opacity-70 mt-4">

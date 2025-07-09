@@ -18,9 +18,12 @@ export function BrandHero() {
           </p>
 
           <div className="flex flex-col gap-4 justify-center max-w-md mx-auto mb-8">
-            <button className="bg-white text-gray-900 px-8 py-4 rounded-2xl font-bold text-xl hover:bg-gray-300 transition-colors shadow-2xl">
+            <a href="/pre-register/brand" className="bg-white text-gray-900 px-8 py-4 rounded-2xl font-bold text-xl hover:bg-gray-300 transition-colors shadow-2xl">
+              事前登録はこちら
+            </a>
+            {/* <button className="bg-white text-gray-900 px-8 py-4 rounded-2xl font-bold text-xl hover:bg-gray-300 transition-colors shadow-2xl">
               今すぐ始める
-            </button>
+            </button> */}
           </div>
           
           <div className="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-8 text-center mb-12 max-w-2xl mx-auto">
