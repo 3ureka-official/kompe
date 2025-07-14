@@ -59,10 +59,6 @@ export function BrandCTA() {
           </div> */}
           
           <div className="text-center mb-8">
-            <p className="text-lg opacity-90 mb-6 max-w-3xl mx-auto">
-              競合に差をつける新しいマーケティング手法で、<br />
-              <strong className="text-xl text-blue-400">貴社のビジネス成長を加速させませんか？</strong>
-            </p>
             <div className="flex flex-col gap-4 justify-center max-w-md mx-auto">
               <a href="/pre-register/brand" className="bg-white text-gray-900 px-10 py-5 rounded-2xl font-bold text-xl hover:bg-gray-300 transition-colors shadow-2xl">
                 事前登録はこちら

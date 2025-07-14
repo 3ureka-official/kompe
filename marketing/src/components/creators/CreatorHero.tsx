@@ -12,7 +12,7 @@ export function CreatorHero() {
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
         <div className="max-w-4xl mx-auto pt-10">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            バズらなくても<br />
+            バズったら<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#25F4EE] to-white">
               稼げる！
             </span>

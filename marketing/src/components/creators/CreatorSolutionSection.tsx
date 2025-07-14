@@ -17,7 +17,7 @@ export function CreatorSolutionSection() {
                 実力勝負
               </h3>
               <p className="text-lg opacity-90 mb-4">
-                フォロワー100人でもOK
+                フォロワー少なくてもOK
               </p>
               <ul className="text-left space-y-2 opacity-80">
                 <li>• 動画の質で評価</li>
@@ -35,7 +35,7 @@ export function CreatorSolutionSection() {
                 参加するだけでもチャンス
               </p>
               <ul className="text-left space-y-2 opacity-80">
-                <li>• 最低1万円〜最高10万円</li>
+                <li>• 最低総賞金額10万円から</li>
                 <li>• 複数入賞枠あり</li>
                 <li>• 登録ボーナスも</li>
               </ul>
