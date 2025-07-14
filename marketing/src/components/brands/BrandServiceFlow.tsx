@@ -9,7 +9,6 @@ export function BrandServiceFlow() {
         "商品・サービスの説明入力",
         "動画の要望入力",
         "賞金設定",
-        "コンテストのルール設定"
       ],
       duration: "1時間",
       color: "from-blue-500 to-cyan-500"
@@ -33,7 +32,6 @@ export function BrandServiceFlow() {
       description: "順位に応じて賞金を支払い、動画を入手します。",
       details: [
         "再生数集計",
-        "エンゲージメント集計",
         "賞金の支払い",
         "動画の入手"
       ],
@@ -46,13 +44,10 @@ export function BrandServiceFlow() {
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-8">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
               サービスの流れ
             </h2>
-            <p className="text-xl text-gray-600">
-              プロフェッショナルチームが、企画から効果測定まで一貫サポート
-            </p>
           </div>
           
           <div className="relative">
@@ -63,20 +58,22 @@ export function BrandServiceFlow() {
               {steps.map((step, index) => (
                 <div key={index} className="relative">
                   {/* ステップ番号 */}
-                  <div className={`absolute left-0 top-0 w-24 h-24 bg-gradient-to-r ${step.color} rounded-full flex items-center justify-center text-white font-bold text-xl z-10`}>
+                  <div className={`sm:flex hidden absolute left-0 top-0 w-24 h-24 bg-gradient-to-r ${step.color} rounded-full flex items-center justify-center text-white font-bold text-xl z-10`}>
                     {step.number}
                   </div>
                   
                   {/* コンテンツ */}
-                  <div className="ml-32 lg:ml-40">
+                  <div className="sm:ml-32 lg:ml-40">
                     <div className="bg-white rounded-2xl shadow-lg p-8 border-l-4 border-gray-300">
                       <div className="grid lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-1 flex flex-col justify-around">
-                          <h3 className="text-2xl font-bold text-gray-900 mb-2">{step.title}</h3>
-                          {/* <div className="text-lg text-gray-600 mb-4">{step.subtitle}</div> */}
-                          <div className={`inline-block bg-gradient-to-r ${step.color} text-white px-4 py-2 rounded-full text-sm font-medium w-fit`}>
-                            期間: {step.duration}
-                          </div>
+                          
+                          <h3 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+                            <div className="block sm:hidden">
+                            <div className={`w-12 h-12 bg-gradient-to-r ${step.color} rounded-full flex items-center justify-center text-white font-bold text-xl`}>
+                              {step.number}
+                            </div>
+                          </div>{step.title}</h3>
                         </div>
                         
                         <div className="lg:col-span-2">
@@ -98,25 +95,6 @@ export function BrandServiceFlow() {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-          
-          <div className="mt-16 text-center">
-            <div className="bg-gradient-to-r from-gray-900 to-blue-900 text-white p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold mb-4">
-                ⚡ 最短1週間でスタート可能
-              </h3>
-              <p className="text-lg opacity-90 mb-6">
-                お急ぎの案件や季節商品のプロモーションにも柔軟に対応いたします
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-white text-gray-900 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors">
-                  具体的なスケジュールを相談
-                </button>
-                <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-gray-900 transition-colors">
-                  過去の実施例を見る
-                </button>
-              </div>
             </div>
           </div>
         </div>

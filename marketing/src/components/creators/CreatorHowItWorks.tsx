@@ -92,24 +92,9 @@ export function CreatorHowItWorks() {
                       <span className="text-[#25F4EE]">✓</span>
                       自動集計で公平
                     </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-[#25F4EE]">✓</span>
-                      5営業日以内振込
-                    </li>
                   </ul>
                 </div>
               </div>
-            </div>
-          </div>
-          
-          <div className="text-center mt-16 max-w-3xl mx-auto">
-            <div className="bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] text-white p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold mb-4">
-                完全公平なシステム
-              </h3>
-              <p className="text-lg opacity-90">
-                再生数・いいね数・コメント数を自動集計。人為的な操作一切なし！
-              </p>
             </div>
           </div>
         </div>
