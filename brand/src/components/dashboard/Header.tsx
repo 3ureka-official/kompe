@@ -4,14 +4,9 @@ import React from "react"
 import Link from "next/link"
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
+import { logout } from "@/services/userService";
 
 type BreadcrumbItem = {
   label: string;
@@ -21,8 +16,8 @@ type BreadcrumbItem = {
 export function Header() {
   const pathname = usePathname();
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const { user, logout } = useAuth();
-  const isDashboard = pathname.startsWith('/dashboard');
+  const { user, profile, loading } = useContext(AuthContext);
+  const isDashboard = pathname.startsWith('/');  
 
   const handleLogout = async () => {
     try {
@@ -44,11 +39,11 @@ export function Header() {
       if (segments.length > 1) {
         switch (segments[1]) {
           case 'contests':
-            items.push({ label: 'コンテスト', href: '/dashboard/contests' });
+            items.push({ label: 'コンテスト', href: '/contests' });
             if (segments[2]) {
               if (segments[3]) {
                 // コンテスト詳細の子ページ
-                items.push({ label: 'コンテスト詳細', href: `/dashboard/contests/${segments[2]}` });
+                items.push({ label: 'コンテスト詳細', href: `/contests/${segments[2]}` });
                 switch (segments[3]) {
                   case 'contents':
                     items.push({ label: 'コンテンツ' });
@@ -167,10 +162,10 @@ export function Header() {
                 >
                   <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
                     <span className="text-sm font-medium text-gray-700">
-                      {user?.displayName?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                      {profile?.email?.charAt(0) || 'U'}
                     </span>
                   </div>
-                  <span className="text-sm font-medium">{user?.displayName || user?.email}</span>
+                  <span className="text-sm font-medium">{profile?.email}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>

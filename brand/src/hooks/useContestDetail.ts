@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Contest, Application } from '@/types';
-import { useAuth } from '@/contexts/AuthContext';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 import { getContests } from '@/services/contentestService';
 import { getApplicationsByContestId } from '@/services/applicationService';
 
@@ -25,7 +26,7 @@ export function useContests(): UseContestsReturn {
   const [contests, setContests] = useState<ContestWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user, userBrand } = useAuth();
+  const { user, profile } = useContext(AuthContext);
 
   // アプリケーションの統計情報を集計
   const calculateContestStats = async (contest: Contest): Promise<ContestWithStats> => {
@@ -64,8 +65,8 @@ export function useContests(): UseContestsReturn {
       setLoading(true);
       setError(null);
       
-      if (userBrand?.id) {
-        const userContests = await getContests(userBrand.id);
+      if (profile?.id) {
+        const userContests = await getContests(profile.id);
         console.log('userContests', userContests);
         
         // 各コンテストの統計情報を集計
@@ -87,13 +88,13 @@ export function useContests(): UseContestsReturn {
   };
 
   useEffect(() => {
-    if (user && userBrand) {
+    if (user && profile) {
       fetchContests();
     } else if (user) {
       // ユーザーはログインしているがブランドがない場合
       setLoading(false);
     }
-  }, [user, userBrand]);
+  }, [user, profile]);
 
   return {
     contests,

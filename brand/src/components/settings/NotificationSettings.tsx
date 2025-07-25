@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { NotificationSettings } from '@/types/user';
+import { NotificationSettings } from '@/types/User';
 
 type Props = {
   settings: NotificationSettings;

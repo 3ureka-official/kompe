@@ -1,75 +1,59 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { FormField } from './FormField';
 import { ErrorMessage } from './ErrorMessage';
+import { useSignIn } from '@/hooks/auth/useSignIn';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { loginUserSchema } from '@/schema/loginUserSchema';
 
 export function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const { signIn } = useAuth();
-  const router = useRouter();
+  const { mutate: signIn, isPending, error } = useSignIn();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  const { control, handleSubmit, getValues } = useForm({
+    resolver: yupResolver(loginUserSchema),
+    mode: 'onBlur',
+  });
 
-    try {
-      await signIn(email, password);
-      router.push('/dashboard/contests');
-    } catch (error: any) {
-      setError(getErrorMessage(error.code));
-    } finally {
-      setLoading(false);
-    }
+  const onSubmit = () => {
+    const data = getValues();
+    signIn({ email: data.email, password: data.password });
   };
 
-  const getErrorMessage = (errorCode: string) => {
-    switch (errorCode) {
-      case 'auth/user-not-found':
-        return 'このメールアドレスは登録されていません。';
-      case 'auth/wrong-password':
-        return 'パスワードが間違っています。';
-      case 'auth/invalid-email':
-        return 'メールアドレスの形式が正しくありません。';
-      case 'auth/too-many-requests':
-        return 'ログイン試行回数が多すぎます。しばらく待ってから再試行してください。';
-      default:
-        return 'ログインに失敗しました。';
-    }
-  };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit}>
-      <ErrorMessage error={error} />
+    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+      <ErrorMessage error={error?.message} />
 
-      <FormField
-        id="email"
-        label="メールアドレス"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="your@example.com"
-        autoComplete="email"
-        required
+      <Controller
+        control={control}
+        name="email"
+        render={({ field }) => (
+          <FormField  
+            label="メールアドレス"
+            type="email"
+            placeholder="your@example.com"
+            autoComplete="email"
+            {...field}
+          />
+        )}
       />
 
-      <FormField
-        id="password"
-        label="パスワード"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="パスワードを入力"
-        autoComplete="current-password"
-        required
+      <Controller
+        control={control}
+        name="password"
+        render={({ field }) => (
+          <FormField
+            label="パスワード"
+            type="password"
+            placeholder="パスワードを入力"
+            autoComplete="current-password"
+            {...field}
+          />
+        )}
       />
 
       <div className="flex items-center justify-between">
@@ -83,11 +67,16 @@ export function LoginForm() {
       <div>
         <Button
           type="submit"
-          disabled={loading}
+          disabled={isPending}
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50"
         >
-          {loading ? 'ログイン中...' : 'ログイン'}
+          {isPending ? 'ログイン中...' : 'ログイン'}
         </Button>
+      </div>
+      <div className="text-sm">
+        <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500">
+          アカウントを作成
+        </Link>
       </div>
     </form>
   );

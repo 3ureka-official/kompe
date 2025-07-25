@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { PaymentInfo } from '@/types/user';
+import { PaymentInfo } from '@/types/User';
 
 type Props = {
   paymentInfo: PaymentInfo;

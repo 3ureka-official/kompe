@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 import { createBrand } from '@/services/brandService';
 import { Logo } from '@/components/ui/Logo';
 import { FormField, Input, Select, Textarea, FileUpload, SnsLinkField } from './ui';
@@ -12,14 +13,14 @@ import { serverTimestamp } from 'firebase/firestore';
 import { businessTypeOptions, howDidYouHearOptions } from '@/constants/brand-creation';
 
 export function BrandCreationForm() {
-  const { user, refreshUserData } = useAuth();
+  const { user, profile } = useContext(AuthContext);
   const router = useRouter();
   const [formData, setFormData] = useState<Brand>({
     id: '',
     userId: '',
     name: '',
     logoUrl: '',
-    contactEmail: user?.email || '',
+    contactEmail: profile?.email || '',
     phoneNumber: '',
     businessType: '',
     howDidYouHear: '',
@@ -40,12 +41,12 @@ export function BrandCreationForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!profile) return;
     
     setIsSubmitting(true);
     
     try {
-      await createBrand(user.uid, {
+      await createBrand(profile.id, {
         name: formData.name,
         logoUrl: formData.logoUrl,
         contactEmail: formData.contactEmail,
@@ -56,7 +57,6 @@ export function BrandCreationForm() {
         howDidYouHear: formData.howDidYouHear,
       });
       
-      await refreshUserData();
       router.push('/contests');
     } catch (error) {
       console.error('ブランド作成エラー:', error);

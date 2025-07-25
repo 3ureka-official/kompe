@@ -1,19 +1,35 @@
 'use client';
 
 import { useState } from 'react';
-import { BrandLoginForm } from '@/types/brand';
+import { Brand } from '@/types/brand';
 import { FormContainer, FormField, Input, PasswordInput } from './ui';
 import { Button } from '@/components/ui/button';
+import { serverTimestamp } from 'firebase/firestore';
 
 type Props = {
-  onSubmit: (formData: BrandLoginForm) => void;
+    onSubmit: (formData: Brand) => void;
   onSwitchToApplication: () => void;
 };
 
 export function BrandLoginFormComponent({ onSubmit, onSwitchToApplication }: Props) {
-  const [formData, setFormData] = useState<BrandLoginForm>({
-    email: '',
-    password: ''
+  const [formData, setFormData] = useState<Brand>({
+    id: '',
+    userId: '',
+    name: '',
+    logoUrl: '',
+    contactEmail: '',
+    phoneNumber: '',
+    businessType: '',
+    howDidYouHear: '',
+    snsLinks: {
+      twitter: '',
+      instagram: '',
+      facebook: '',
+      website: ''
+    },
+    description: '',
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,7 +45,7 @@ export function BrandLoginFormComponent({ onSubmit, onSwitchToApplication }: Pro
     }
   };
 
-  const handleChange = (field: keyof BrandLoginForm, value: string) => {
+  const handleChange = (field: keyof Brand, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -45,8 +61,8 @@ export function BrandLoginFormComponent({ onSubmit, onSwitchToApplication }: Pro
         <FormField label="メールアドレス">
           <Input
             type="email"
-            value={formData.email}
-            onChange={(value) => handleChange('email', value)}
+            value={formData.contactEmail}
+            onChange={(value) => handleChange('contactEmail', value)}
             placeholder="contact@example.com"
             required
           />
@@ -54,8 +70,8 @@ export function BrandLoginFormComponent({ onSubmit, onSwitchToApplication }: Pro
 
         <FormField label="パスワード">
           <PasswordInput
-            value={formData.password}
-            onChange={(value) => handleChange('password', value)}
+            value={formData.phoneNumber}
+            onChange={(value) => handleChange('phoneNumber', value)}
             required
           />
         </FormField>
