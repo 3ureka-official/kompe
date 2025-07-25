@@ -1,5 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { Brand } from '@/types/brand';
 
 /**
@@ -11,7 +10,7 @@ import { Brand } from '@/types/brand';
 export async function createBrand(
   userId: string, 
   brandData: Omit<Brand, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
-): Promise<string> {
+  ): Promise<Brand> {
   try {
     if (!userId) {
       throw new Error('ユーザーIDが必要です');
@@ -31,19 +30,20 @@ export async function createBrand(
       throw new Error('既にブランドが登録されています');
     }
 
-    const brandId = doc(collection(db, 'brands')).id;
-    const brand: Brand = {
-      ...brandData,
-      id: brandId,
-      userId: userId,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    };
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase.from('brands').insert(brandData).select('*').single();
+
+    if (error) {
+      throw new Error('ブランド作成エラー:', error);
+    }
 
     // ブランドを作成
-    await setDoc(doc(db, 'brands', brandId), brand);
-
-    return brandId;
+    const brand: Brand = {
+      ...data,
+      userId: userId,
+    };
+    
+    return brand;
   } catch (error) {
     console.error('ブランド作成エラー:', error);
     throw error;
@@ -61,20 +61,14 @@ export async function getUserBrand(uid: string): Promise<Brand | null> {
       return null;
     }
 
-    const brandsQuery = query(
-      collection(db, 'brands'),
-      where('userId', '==', uid)
-    );
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase.from('brands').select('*').eq('user_id', uid).single();
 
-    const querySnapshot = await getDocs(brandsQuery);
-    
-    if (!querySnapshot.empty) {
-      const brandDoc = querySnapshot.docs[0];
-      const data = brandDoc.data();
-      return data as Brand;
+    if (error) {
+      throw new Error('ブランド情報取得エラー:', error);
     }
     
-    return null;
+    return data as Brand;
   } catch (error) {
     console.error('ブランド情報取得エラー:', error);
     throw error;

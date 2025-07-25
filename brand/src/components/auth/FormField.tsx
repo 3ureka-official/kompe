@@ -1,10 +1,10 @@
 import React from 'react';
 
 interface FormFieldProps {
-  id: string;
+  name: string;
   label: string;
   type: string;
-  value: string;
+  value?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
@@ -13,25 +13,24 @@ interface FormFieldProps {
 }
 
 export function FormField({
-  id,
+  name,
   label,
   type,
-  value,
+  value = '',
   onChange,
   placeholder,
   required = false,
-  autoComplete,
+  autoComplete = 'off',
   className
 }: FormFieldProps) {
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
       <div className="mt-1">
         <input
-          id={id}
-          name={id}
+          name={name}
           type={type}
           autoComplete={autoComplete}
           required={required}

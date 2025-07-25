@@ -1,5 +1,4 @@
-import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, query, where, getDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getSupabaseClient } from '@/lib/supabase';
 import { Contest } from '@/types/contest';
 
 /** 
@@ -9,8 +8,9 @@ import { Contest } from '@/types/contest';
  */
 export const createContest = async (contestData: Omit<Contest, 'id'>) => {
     try {
-        const docRef = await addDoc(collection(db, 'contests'), contestData);
-        return docRef.id;
+        const supabase = getSupabaseClient();
+        const { data, error } = await supabase.from('contests').insert(contestData).select('*').single();
+        return data?.id;
     } catch (error) {
         console.error('コンテスト作成エラー:', error);
         throw new Error('コンテストの作成に失敗しました');
@@ -24,8 +24,9 @@ export const createContest = async (contestData: Omit<Contest, 'id'>) => {
  */
 export const updateContest = async (contestData: Contest) => {
     try {
-        const docRef = await updateDoc(doc(db, 'contests', contestData.id), contestData);
-        return docRef;
+        const supabase = getSupabaseClient();
+        const { data, error } = await supabase.from('contests').update(contestData).eq('id', contestData.id).select('*').single();
+        return data?.id;
     } catch (error) {
         console.error('コンテスト作成エラー:', error);
         throw new Error('コンテストの作成に失敗しました');
@@ -38,9 +39,9 @@ export const updateContest = async (contestData: Contest) => {
  * @returns ユーザーのコンテスト
  */
 export const getContests = async (brandId: string) => {
-    const contestsQuery = query(collection(db, 'contests'), where('brandId', '==', brandId));
-    const querySnapshot = await getDocs(contestsQuery);
-    return querySnapshot.docs.map(doc => doc.data() as Contest);
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase.from('contests').select('*').eq('brandId', brandId);
+    return data as Contest[];
 };
 
 /**
@@ -49,14 +50,9 @@ export const getContests = async (brandId: string) => {
  * @returns コンテスト
  */
 export const getContestById = async (id: string) => {
-    const docRef = doc(db, 'contests', id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        return docSnap.data() as Contest;
-    } else {
-        throw new Error('Contest not found');
-    }
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase.from('contests').select('*').eq('id', id).single();
+    return data as Contest;
 };
 
 /**
@@ -64,8 +60,11 @@ export const getContestById = async (id: string) => {
  * @param id コンテストID
  */
 export const deleteContest = async (id: string) => {
-    const docRef = doc(db, 'contests', id);
-    await deleteDoc(docRef);
+    const supabase = getSupabaseClient();
+    const { error } = await supabase.from('contests').delete().eq('id', id);
+    if (error) {
+        throw new Error('コンテストの削除に失敗しました');
+    }
 };
 
 /**
@@ -74,7 +73,7 @@ export const deleteContest = async (id: string) => {
  * @returns コンテストの統計情報
  */
 export const getContestCount = async (brandId: string) => {
-    const contestsQuery = query(collection(db, 'contests'), where('brandId', '==', brandId));
-    const querySnapshot = await getDocs(contestsQuery);
-    return querySnapshot.size;
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase.from('contests').select('*', { count: 'exact' }).eq('brandId', brandId);
+    return data?.length;
 };

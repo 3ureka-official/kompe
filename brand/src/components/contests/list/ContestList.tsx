@@ -32,7 +32,7 @@ export function ContestList({ contests, isLoading = false }: ContestListProps) {
     );
   }
 
-  if (contests.length === 0) {
+  if (contests && contests.length === 0) {
     return (
       <div className="text-center py-16">
         <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
@@ -47,7 +47,7 @@ export function ContestList({ contests, isLoading = false }: ContestListProps) {
 
   return (
     <div className="grid gap-6 mt-2">
-      {contests.map((contest, index) => (
+      {contests && contests.map((contest, index) => (
         <ContestCard key={index} contest={contest} />
       ))}
     </div>
