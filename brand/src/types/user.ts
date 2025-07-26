@@ -5,7 +5,6 @@ export interface User {
   profile_image: string | null;
   brand_id: string | null;
   created_at: string | Date;
-  updated_at: string | Date;
 }
 
 // モックデータ
@@ -15,5 +14,4 @@ export const mockUser: User = {
   brand_id: null,
   profile_image: 'https://placehold.co/100x100',
   created_at: new Date(),
-  updated_at: new Date()
 };

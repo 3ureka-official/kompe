@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { FormField } from './FormField';
-import { ErrorMessage } from './ErrorMessage';
+import { FormField } from '../ui/FormField';
+import { ErrorMessage } from '../ui/ErrorMessage';
 import { useSignUp } from '@/hooks/auth/useSignUp';
 import { createUserSchema } from '@/schema/createUserSchema';
 import { Controller, useForm } from 'react-hook-form';
@@ -30,8 +30,6 @@ export function SignupForm() {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <ErrorMessage error={error?.message} />
-
       <div className="flex gap-4">
         <Controller
           control={control}
@@ -114,6 +112,9 @@ export function SignupForm() {
           {isPending ? 'アカウント作成中...' : 'アカウント作成'}
         </Button>
       </div>
+
+      <ErrorMessage error={error?.message} />
+
       <div className="text-sm">
         <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
           ログイン

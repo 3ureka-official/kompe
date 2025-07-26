@@ -10,7 +10,6 @@ type Props = {
   onPreviewChange: (preview: string | null) => void;
   accept?: string;
   maxSize?: number; // bytes
-  placeholder?: string;
   className?: string;
 };
 
@@ -21,7 +20,6 @@ export function FileUpload({
   onPreviewChange,
   accept = 'image/*',
   maxSize = 5 * 1024 * 1024, // 5MB
-  placeholder = 'ファイルを選択',
   className = ''
 }: Props) {
   const [dragOver, setDragOver] = useState(false);
@@ -78,7 +76,7 @@ export function FileUpload({
       {/* ファイル選択エリア */}
       <div
         className={`
-          border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
+          flex flex-col items-center border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
           ${dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
         `}
         onDrop={handleDrop}
@@ -107,7 +105,7 @@ export function FileUpload({
           </div>
         ) : (
           <div className="space-y-2">
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+            <div className="mx-auto w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
               <svg
                   className="w-6 h-6 text-gray-400"
                   fill="none"

@@ -1,8 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Brand } from '@/types/brand';
-import { getSupabaseClient } from '@/lib/supabase';
+import { Brand } from '@/types/Brand';
 import { getUserBrand } from '@/services/brandService';
 import { AuthContext } from '@/contexts/AuthContext';
 
@@ -24,8 +23,7 @@ export function BrandProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!userLoading) {
       if (profile?.brand_id) {
-        getUserBrand(profile.id).then((brand) => {
-          console.log('brand', brand);
+        getUserBrand(profile.brand_id).then((brand) => {
           setBrand(brand);
         });
       }

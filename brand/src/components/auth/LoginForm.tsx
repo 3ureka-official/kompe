@@ -3,8 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { FormField } from './FormField';
-import { ErrorMessage } from './ErrorMessage';
+import { FormField } from '../ui/FormField';
+import { ErrorMessage } from '../ui/ErrorMessage';
 import { useSignIn } from '@/hooks/auth/useSignIn';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';

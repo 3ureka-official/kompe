@@ -1,47 +1,30 @@
 import { getSupabaseClient } from '@/lib/supabase';
-import { Brand } from '@/types/brand';
+import { Brand } from '@/types/Brand';
+import { updateUser } from './userService';
 
 /**
  * ブランドを作成
- * @param userId ユーザーID
- * @param brandData ブランドデータ
+ * @param user_id ユーザーID
+ * @param brand_data ブランドデータ
  * @returns 作成されたブランドのID
  */
 export async function createBrand(
   userId: string, 
-  brandData: Omit<Brand, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
+  brandData: Omit<Brand, 'id' | 'created_at'>
   ): Promise<Brand> {
   try {
-    if (!userId) {
-      throw new Error('ユーザーIDが必要です');
-    }
 
-    // 必須フィールドのバリデーション
-    if (!brandData.name?.trim()) {
-      throw new Error('ブランド名が必要です');
-    }
-    if (!brandData.contactEmail?.trim()) {
-      throw new Error('連絡先メールアドレスが必要です');
-    }
-
-    // 既存のブランドが存在するかチェック
-    const existingBrand = await getUserBrand(userId);
-    if (existingBrand) {
-      throw new Error('既にブランドが登録されています');
-    }
+    console.log('userId', userId);
+    console.log('brandData', brandData);
 
     const supabase = getSupabaseClient();
-    const { data, error } = await supabase.from('brands').insert(brandData).select('*').single();
+    const { data: brand, error } = await supabase.from('brands').insert(brandData).select('*').single();
 
     if (error) {
-      throw new Error('ブランド作成エラー:', error);
+      throw error;
     }
 
-    // ブランドを作成
-    const brand: Brand = {
-      ...data,
-      userId: userId,
-    };
+    await updateUser(userId, { brand_id: brand.id });
     
     return brand;
   } catch (error) {
@@ -52,20 +35,16 @@ export async function createBrand(
 
 /**
  * ユーザーのブランド情報を取得
- * @param uid ユーザーID
+ * @param brandId ユーザーID
  * @returns ブランド情報
  */
-export async function getUserBrand(uid: string): Promise<Brand | null> {
+export async function getUserBrand(brandId: string): Promise<Brand | null> {
   try {
-    if (!uid) {
-      return null;
-    }
-
     const supabase = getSupabaseClient();
-    const { data, error } = await supabase.from('brands').select('*').eq('user_id', uid).single();
+    const { data, error } = await supabase.from('brands').select('*').eq('id', brandId).single();
 
     if (error) {
-      throw new Error('ブランド情報取得エラー:', error);
+      throw error;
     }
     
     return data as Brand;

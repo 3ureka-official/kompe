@@ -1,6 +1,4 @@
-import { BrandGate } from '@/components/brand/BrandGate';
 import { Sidebar } from '@/components/dashboard/Sidebar';
-import { Header } from '@/components/dashboard/Header';
 import { BrandProvider } from '@/contexts/BrandContext';
 
 export default function DashboardLayout({

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Brand } from '@/types/brand';
+import { Brand } from '@/types/Brand';
 import { FormField, Input, Textarea, FileUpload, SnsLinkField } from './ui';
 import { Button } from '@/components/ui/button';
 
