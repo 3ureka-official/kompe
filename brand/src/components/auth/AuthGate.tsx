@@ -20,9 +20,7 @@ export function AuthGate({ children }: AuthGateProps) {
       } else {
         if (!profile?.brand_id) {
           router.push('/brand/create');
-        } else {
-          router.push('/contests');
-        } 
+        }
       }
     }
   }, [user, loading, profile]);
