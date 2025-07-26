@@ -18,7 +18,8 @@ export const brandCreateSchema = yup.object().shape({
   website: yup
     .string()
     .url('正しいURLを入力してください')
-    .required('ブランドウェブサイトを入力してください'),
+    .nullable()
+    .default(null),
   
   description: yup
     .string()
@@ -27,11 +28,13 @@ export const brandCreateSchema = yup.object().shape({
   
   tiktok_username: yup
     .string()
-    .default(''), // デフォルト値を設定
+    .nullable()
+    .default(null),
   
   instagram_url: yup
     .string()
-    .default('') // デフォルト値を設定
+    .nullable()
+    .default(null)
     .test('url-optional', '正しいURLを入力してください', function(value) {
       if (!value || value.length === 0) {
         return true; // 空の場合はOK

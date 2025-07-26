@@ -1,51 +1,74 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AuthContext } from '@/contexts/AuthContext';
 import { Logo } from '@/components/ui/Logo';
 import { FormField, Input, Textarea, FileUpload, SnsLinkField } from './ui';
 import { Button } from '@/components/ui/button';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { brandCreateSchema } from '@/schema/brandCreateSchema';
-import { useCreateBrand } from '@/hooks/brand/useCreateBrand';
+import { useUpdateBrand } from '@/hooks/brand/useUpdateBrand';
+import { BrandContext } from '@/contexts/BrandContext';
+import { Brand } from '@/types/brand';
 
-export function BrandCreateForm() {
-  const { user, profile } = useContext(AuthContext);
-  const router = useRouter();
+export function BrandUpdateForm() {
+  const { brand } = useContext(BrandContext);
 
-  const { mutate: createBrand, isPending, error } = useCreateBrand();
+  const { mutate: updateBrand, isPending, error } = useUpdateBrand();
 
-  const { control, handleSubmit, watch, getValues } = useForm({
+  const getDefaultValues = (brand: Partial<Brand>) => ({
+    email: brand?.email || '',
+    name: brand?.name || '',
+    phonenumber: brand?.phonenumber || '',
+    website: brand?.website || null,
+    description: brand?.description || '',
+    tiktok_username: brand?.tiktok_username || null,
+    instagram_url: brand?.instagram_url || null,
+  });
+
+  const { control, handleSubmit, watch, getValues, reset, formState: { isDirty } } = useForm({
     resolver: yupResolver(brandCreateSchema),
     mode: 'onBlur',
-    defaultValues: {
-      email: user?.email || '',
-      name: '',
-      phonenumber: '',
-      website: null,
-      description: '',
-      tiktok_username: null,
-      instagram_url: null,
-    }
-  })
+    defaultValues: getDefaultValues({})
+  });
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(brand?.logo_url || null);
+  const [isLogoChanged, setIsLogoChanged] = useState(false);
 
-  const description = watch('description');
+  const descriptionCount = watch('description')?.length || 0;
+
+  useEffect(() => {
+    if (brand) {
+      reset(getDefaultValues(brand));
+      setLogoFile(null);
+      setLogoPreview(brand?.logo_url || null);
+    }
+  }, [brand, reset]);
+
+  const handleLogoChange = (file: File | null) => {
+    setLogoFile(file);
+    setIsLogoChanged(true);
+  
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setLogoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setLogoPreview(brand?.logo_url || null);
+    }
+  };
 
   const onSubmit = async () => {
-    if (!profile) return;
-
     const data = getValues();
 
     try {
-      await createBrand({
-        userId: profile.id,
+      await updateBrand({
+        brandId: brand?.id,
         brandData: {
           name: data.name,
           logo_url: logoPreview || null,
@@ -58,11 +81,12 @@ export function BrandCreateForm() {
         }
       }, {
         onSuccess: () => {
-          router.push('/contests');
+          setIsLogoChanged(false);
+          reset(getDefaultValues(data));
         }
       });
     } catch (error) {
-      console.error('ブランド作成エラー:', error);
+      console.error('ブランド更新エラー:', error);
     }
   };
 
@@ -113,7 +137,7 @@ export function BrandCreateForm() {
               <FileUpload
                 file={logoFile}
                 preview={logoPreview}
-                onFileChange={setLogoFile}
+                onFileChange={handleLogoChange}
                 onPreviewChange={setLogoPreview}
               />
             </FormField>
@@ -141,7 +165,7 @@ export function BrandCreateForm() {
                 <FormField 
                   label="ブランド紹介" 
                   required
-                  description={`${description?.length || 0}/240文字`}
+                  description={`${descriptionCount}/240文字`}
                   error={fieldState.error?.message}
                 >
                   <Textarea
@@ -204,9 +228,9 @@ export function BrandCreateForm() {
                 type="submit"
                 variant="primary"
                 className="px-6 py-2"
-                disabled={isPending}
+                disabled={isPending || !(isDirty || isLogoChanged)}
               >
-                {isPending ? '作成中...' : '続ける'}
+                {isPending ? '更新中...' : '更新する'}
               </Button>
             </div>
 
