@@ -18,14 +18,14 @@ export function AuthGate({ children }: AuthGateProps) {
       if (!user) {
         router.push('/auth/login');
       } else {
-        if (profile?.brand_id) {
-          router.push('/contests');
-        } else {
+        if (!profile?.brand_id) {
           router.push('/brand/create');
+        } else {
+          router.push('/contests');
         } 
       }
     }
-  }, [user, loading]);
+  }, [user, loading, profile]);
 
   // ローディング中は何も表示しない
   if (loading) {

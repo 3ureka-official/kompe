@@ -29,10 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (session?.user) {
         setUser(session.user);
         getUser(session.user.id).then((profile) => {
-          setProfile(profile || null);
+          setProfile(profile);
+        }).finally(() => {
+          setLoading(false);
         });
       }
-      setLoading(false);
     });
     return () => {
       subscription?.unsubscribe();

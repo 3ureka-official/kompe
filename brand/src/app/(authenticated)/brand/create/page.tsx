@@ -1,9 +1,9 @@
 'use client';
 
-import { BrandCreationForm } from '@/components/brand/BrandCreationForm';
+import { BrandCreateForm } from '@/components/brand/BrandCreateForm';
 
-export default function BrandCreationPage() {
+export default function BrandCreatePage() {
   return (
-    <BrandCreationForm />
+    <BrandCreateForm />
   );
 } 

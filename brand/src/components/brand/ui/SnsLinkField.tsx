@@ -2,7 +2,7 @@
 
 import { Input } from './Input';
 
-type SnsType = 'twitter' | 'instagram' | 'facebook' | 'tiktok' | 'website';
+type SnsType = 'instagram' | 'tiktok' | 'website';
 
 type Props = {
   type: SnsType;
@@ -10,19 +10,10 @@ type Props = {
   onChange: (value: string) => void;
   placeholder?: string;
   required?: boolean;
+  error?: string; // この行を追加
 };
 
 const snsConfig = {
-  twitter: {
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-      </svg>
-    ),
-    label: 'X (Twitter)',
-    color: 'text-gray-900',
-    defaultPlaceholder: 'https://twitter.com/username'
-  },
   instagram: {
     icon: (
       <svg className="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
@@ -32,16 +23,6 @@ const snsConfig = {
     label: 'Instagram',
     color: 'text-pink-500',
     defaultPlaceholder: 'https://instagram.com/username'
-  },
-  facebook: {
-    icon: (
-      <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-      </svg>
-    ),
-    label: 'Facebook',
-    color: 'text-blue-600',
-    defaultPlaceholder: 'https://facebook.com/username'
   },
   tiktok: {
     icon: (
@@ -65,7 +46,7 @@ const snsConfig = {
   }
 };
 
-export function SnsLinkField({ type, value, onChange, placeholder, required = false }: Props) {
+export function SnsLinkField({ type, value, onChange, placeholder, required = false, error }: Props) {
   const config = snsConfig[type];
   const finalPlaceholder = placeholder || config.defaultPlaceholder;
 
@@ -77,17 +58,19 @@ export function SnsLinkField({ type, value, onChange, placeholder, required = fa
         </div>
         <label className="block text-sm font-medium text-gray-700 ml-2">
           {config.label}
-          {type === 'tiktok' && <span className="text-gray-400 text-xs ml-1">@なしで入力</span>}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       </div>
       <Input
-        type={type === 'website' || type === 'twitter' || type === 'instagram' || type === 'facebook' ? 'url' : 'text'}
+        type={type === 'website' || type === 'instagram' ? 'url' : 'text'}
         value={value}
         onChange={onChange}
         placeholder={finalPlaceholder}
         required={required}
       />
+      {error && (
+        <p className="mt-1 text-sm text-red-600">{error}</p>
+      )}
     </div>
   );
 } 

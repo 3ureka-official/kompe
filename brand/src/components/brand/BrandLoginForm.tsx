@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Brand } from '@/types/brand';
+import { Brand } from '@/types/Brand';
 import { FormContainer, FormField, Input, PasswordInput } from './ui';
 import { Button } from '@/components/ui/button';
 import { serverTimestamp } from 'firebase/firestore';

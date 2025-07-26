@@ -4,13 +4,13 @@ import { getSupabaseClient } from '@/lib/supabase';
 
 /**
  * ユーザープロフィールを取得
- * @param uid ユーザーID
+ * @param userId ユーザーID
  * @returns ユーザープロフィール
  */
-export async function getUser(uid: string): Promise<User | null> {
+export async function getUser(userId: string): Promise<User | null> {
   try {
     const supabase = getSupabaseClient();
-    const { data, error } = await supabase.from('users').select('*').eq('id', uid).single();
+    const { data, error } = await supabase.from('users').select('*').eq('id', userId).single();
 
     if (error) {
       console.error('ユーザープロフィール取得エラー:', error);
@@ -20,30 +20,19 @@ export async function getUser(uid: string): Promise<User | null> {
   } catch (error) {
     console.error('ユーザープロフィール取得エラー:', error);
     throw error;
-  }
+  } 
 }
 
 /**
  * ユーザープロフィールを作成
- * @param user ユーザーデータ
+ * @param user_data ユーザーデータ
  * @returns 作成されたユーザープロフィール
  */
-export async function createUser(user: {
-  id: string;
-  email: string;
-}): Promise<User> {
+export async function createUser(user_data: Partial<Omit<User, 'created_at' | 'brand_id' | 'profile_image'>>): Promise<User> {
   try {
-    const userData: User = {
-      ...user,
-      profile_image: '',
-      brand_id: null,
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
-
     const supabase = getSupabaseClient();
     
-    const { data, error } = await supabase.from('users').insert(userData).select('*').single();
+    const { data, error } = await supabase.from('users').insert(user_data).select('*').single();
     if (error) {
       console.error('ユーザープロフィール作成エラー:', error);
       throw error;
@@ -52,6 +41,27 @@ export async function createUser(user: {
     return data as User;
   } catch (error) {
     console.error('ユーザープロフィール作成エラー:', error);
+    throw error;
+  }
+}
+
+/**
+ * ユーザーの編集
+ * @param userId ユーザーID
+ * @param userData ユーザーデータ
+ * @returns 編集されたユーザープロフィール
+ */
+export async function updateUser(userId: string, userData: Partial<Omit<User, 'id' | 'created_at'>>): Promise<User> {
+  try { 
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase.from('users').update(userData).eq('id', userId).select('*').single();
+    if (error) {
+      console.error('ユーザー編集エラー:', error);
+      throw error;
+    }
+    return data as User;
+  } catch (error) {
+    console.error('ユーザー編集エラー:', error);
     throw error;
   }
 }
@@ -78,7 +88,6 @@ export const signIn = async (email: string, password: string) => {
  * サインアップ
  * @param email メールアドレス
  * @param password パスワード
- * @param displayName 表示名
  */
 export const signUp = async (email: string, password: string) => {
   try {
