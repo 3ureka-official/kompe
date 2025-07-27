@@ -10,29 +10,31 @@ const PUBLIC_PATHS = ['/auth/login', '/auth/signup'];
 const ONBOARD_PATHS = ['/brand/create'];
 
 export function AppGate({ children }: { children: React.ReactNode }) {
-  const { user, profile } = useContext(AuthContext);
+  const { user, profile, loading } = useContext(AuthContext);
   const router = useRouter();
   const path = usePathname();
 
   useEffect(() => {
+    if (loading) return;
+    
     const isPublic    = PUBLIC_PATHS.includes(path);
     const isOnboard   = ONBOARD_PATHS.includes(path);
     const isLoggedIn  = !!user;
     const hasBrand    = !!profile?.brand_id;
 
-    // 1) 未認証かつ保護ルート → /login
     if (!isLoggedIn && !isPublic) {
       router.replace('/auth/login');
     }
-    // 2) 認証済かつ公開ルート → /dashboard
+
     else if (isLoggedIn && isPublic) {
+      console.log('isLoggedIn && isPublic');
       router.replace('/contests');
     }
-    // 3) 認証済かつブランド未作成かつ非オンボードルート → /brand/create
+
     else if (isLoggedIn && profile && !hasBrand && !isOnboard) {
       router.replace('/brand/create');
     }
-    // 4) 認証済かつブランド作成済かつオンボードルート → /dashboard
+
     else if (isLoggedIn && hasBrand && isOnboard) {
       router.replace('/contests');
     }
@@ -48,6 +50,9 @@ export function AppGate({ children }: { children: React.ReactNode }) {
   if (isRedirecting) {
     return null;
   }
+
+
+  if (loading) return <div>Loading...</div>;
 
   return <>{children}</>;
 }

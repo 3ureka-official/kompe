@@ -1,5 +1,6 @@
-import { getSupabaseClient } from '@/lib/supabase';
+import supabase from '@/lib/supabase';
 import { Contest } from '@/types/contest';
+
 
 /** 
  * コンテストを作成
@@ -8,12 +9,16 @@ import { Contest } from '@/types/contest';
  */
 export const createContest = async (contestData: Omit<Contest, 'id'>) => {
     try {
-        const supabase = getSupabaseClient();
         const { data, error } = await supabase.from('contests').insert(contestData).select('*').single();
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
         return data?.id;
     } catch (error) {
         console.error('コンテスト作成エラー:', error);
-        throw new Error('コンテストの作成に失敗しました');
+        throw error;
     }
 };
 
@@ -24,12 +29,16 @@ export const createContest = async (contestData: Omit<Contest, 'id'>) => {
  */
 export const updateContest = async (contestData: Contest) => {
     try {
-        const supabase = getSupabaseClient();
         const { data, error } = await supabase.from('contests').update(contestData).eq('id', contestData.id).select('*').single();
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
         return data?.id;
     } catch (error) {
         console.error('コンテスト作成エラー:', error);
-        throw new Error('コンテストの作成に失敗しました');
+        throw error;
     }
 };
 
@@ -39,8 +48,7 @@ export const updateContest = async (contestData: Contest) => {
  * @returns ユーザーのコンテスト
  */
 export const getContests = async (brandId: string) => {
-    const supabase = getSupabaseClient();
-    const { data, error } = await supabase.from('contests').select('*').eq('brandId', brandId);
+    const { data } = await supabase.from('contests').select('*').eq('brandId', brandId);
     return data as Contest[];
 };
 
@@ -50,8 +58,7 @@ export const getContests = async (brandId: string) => {
  * @returns コンテスト
  */
 export const getContestById = async (id: string) => {
-    const supabase = getSupabaseClient();
-    const { data, error } = await supabase.from('contests').select('*').eq('id', id).single();
+    const { data } = await supabase.from('contests').select('*').eq('id', id).single();
     return data as Contest;
 };
 
@@ -60,10 +67,9 @@ export const getContestById = async (id: string) => {
  * @param id コンテストID
  */
 export const deleteContest = async (id: string) => {
-    const supabase = getSupabaseClient();
     const { error } = await supabase.from('contests').delete().eq('id', id);
     if (error) {
-        throw new Error('コンテストの削除に失敗しました');
+        throw new Error(error.message);
     }
 };
 
@@ -72,8 +78,10 @@ export const deleteContest = async (id: string) => {
  * @param contestId コンテストID
  * @returns コンテストの統計情報
  */
-export const getContestCount = async (brandId: string) => {
-    const supabase = getSupabaseClient();
+export const getContestCount = async (brandId: string) => { 
     const { data, error } = await supabase.from('contests').select('*', { count: 'exact' }).eq('brandId', brandId);
+    if (error) {
+        throw new Error(error.message);
+    }
     return data?.length;
 };

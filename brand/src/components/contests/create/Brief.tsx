@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { RichTextEditor } from '../ui/RichTextEditer';
+import { RichTextEditor } from '@/components/ui/RichTextEditer';
 import { CreateContestFormData } from '@/types/contest';
 
 type Props = {

@@ -1,9 +1,5 @@
-export { FormField } from './FormField';
-export { Input } from './Input';
-export { Textarea } from './Textarea';
-export { Select } from './Select';
-export { FileUpload } from '../../ui/FileUpload';
-export { FormContainer } from './FormContainer';
-export { Card } from './Card';
-export { SnsLinkField } from './SnsLinkField';
-export { PasswordInput } from './PasswordInput'; 
+export { FormField } from '@/components/brand/ui/FormField';
+export { Input } from '@/components/brand/ui/Input';
+export { Textarea } from '@/components/brand/ui/Textarea';
+export { Select } from '@/components/brand/ui/Select';
+export { SnsLinkField } from '@/components/brand/ui/SnsLinkField';

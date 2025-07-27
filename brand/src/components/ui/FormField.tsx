@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import React from 'react';
 
 interface FormFieldProps {
@@ -36,7 +37,10 @@ export function FormField({
           required={required}
           value={value}
           onChange={onChange}
-          className={`appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm ${className || ''}`}
+          className={cn(
+            "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm",
+            className
+          )}
           placeholder={placeholder}
         />
       </div>

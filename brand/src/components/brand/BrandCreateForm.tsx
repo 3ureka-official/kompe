@@ -7,9 +7,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AuthContext } from '@/contexts/AuthContext';
 import { Logo } from '@/components/ui/Logo';
-import { FormField, Input, Textarea, FileUpload, SnsLinkField } from './ui';
+import { FormField, Input, Textarea, SnsLinkField } from './ui';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { Button } from '@/components/ui/button';
-import { ErrorMessage } from '../ui/ErrorMessage';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { brandCreateSchema } from '@/schema/brandCreateSchema';
 import { useCreateBrand } from '@/hooks/brand/useCreateBrand';
 

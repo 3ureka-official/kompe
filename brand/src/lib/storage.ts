@@ -1,6 +1,4 @@
-import { getSupabaseClient } from '@/lib/supabase';
-
-const supabase = getSupabaseClient();
+import supabase from '@/lib/supabase';
 
 /**
  * ファイルをアップロードして、パブリックURL を返す

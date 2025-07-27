@@ -21,7 +21,7 @@ type Props = {
 export function BasicInfo({ data, onUpdate, onNext }: Props) {
   const [coverImagePreview, setCoverImagePreview] = useState<string | null>(null);
 
-  const handleInputChange = (field: keyof CreateContestFormData, value: any) => {
+  const handleInputChange = (field: keyof CreateContestFormData, value: string | File | null) => {
     onUpdate({ [field]: value });
   };
 
@@ -84,7 +84,6 @@ export function BasicInfo({ data, onUpdate, onNext }: Props) {
             onPreviewChange={setCoverImagePreview}
             accept="image/*"
             maxSize={5 * 1024 * 1024}
-            placeholder="カバー画像をアップロード"
             className="w-full"
           />
         </div>

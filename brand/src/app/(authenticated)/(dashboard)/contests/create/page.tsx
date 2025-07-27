@@ -1,10 +1,10 @@
 'use client';
 
-import { Stepper } from '@/components/create-contest/Stepper';
-import { BasicInfo } from '@/components/create-contest/BasicInfo';
-import { Brief } from '@/components/create-contest/Brief';
-import { Resources } from '@/components/create-contest/Resources';
-import { Prize } from '@/components/create-contest/Prize';
+import { Stepper } from '@/components/contests/create/Stepper';
+import { BasicInfo } from '@/components/contests/create/BasicInfo';
+import { Brief } from '@/components/contests/create/Brief';
+import { Resources } from '@/components/contests/create/Resources';
+import { Prize } from '@/components/contests/create/Prize';
 import { useCreateContest } from '@/hooks/useCreateContest';
 
 const steps = [
@@ -18,7 +18,6 @@ export default function CreateContestPage() {
   const {
     formData,
     currentStep,
-    loading,
     error,
     updateFormData,
     handleNext,

@@ -1,4 +1,4 @@
-import { getSupabaseClient } from '@/lib/supabase';
+import supabase from '@/lib/supabase';
 import { Brand } from '@/types/Brand';
 import { updateUser } from './userService';
 import { uploadFile } from '@/lib/storage';
@@ -16,7 +16,6 @@ export async function createBrand(
   logoFile: File | null
   ): Promise<Brand> {
   try {
-    const supabase = getSupabaseClient();
     const brand_id = uuidv4();
 
     if (logoFile) {
@@ -55,8 +54,6 @@ export async function updateBrand(
   ): Promise<Brand> {
   try {
 
-    const supabase = getSupabaseClient();
-
     if (logoFile) {
       const logoUrl = await uploadFile('brands', `${brandId}/logo.png`, logoFile);
       brandData.logo_url = logoUrl;
@@ -83,7 +80,6 @@ export async function updateBrand(
  */
 export async function getUserBrand(brandId: string): Promise<Brand | null> {
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase.from('brands').select('*').eq('id', brandId).single();
 
     if (error) {

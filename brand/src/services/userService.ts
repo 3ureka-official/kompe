@@ -1,5 +1,5 @@
 import { User } from '@/types/User';
-import { getSupabaseClient } from '@/lib/supabase';
+import supabase from '@/lib/supabase';
 
 
 /**
@@ -9,7 +9,6 @@ import { getSupabaseClient } from '@/lib/supabase';
  */
 export async function getUser(userId: string): Promise<User | null> {
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase.from('users').select('*').eq('id', userId).single();
 
     if (error) {
@@ -30,7 +29,6 @@ export async function getUser(userId: string): Promise<User | null> {
  */
 export async function createUser(user_data: Partial<Omit<User, 'created_at' | 'brand_id' | 'profile_image'>>): Promise<User> {
   try {
-    const supabase = getSupabaseClient();
     
     const { data, error } = await supabase.from('users').insert(user_data).select('*').single();
     if (error) {
@@ -53,7 +51,6 @@ export async function createUser(user_data: Partial<Omit<User, 'created_at' | 'b
  */
 export async function updateUser(userId: string, userData: Partial<Omit<User, 'id' | 'created_at'>>): Promise<User> {
   try { 
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase.from('users').update(userData).eq('id', userId).select('*').single();
     if (error) {
       console.error('ユーザー編集エラー:', error);
@@ -73,7 +70,6 @@ export async function updateUser(userId: string, userData: Partial<Omit<User, 'i
  */
 export const signIn = async (email: string, password: string) => {
   try {
-    const supabase = getSupabaseClient();
     await supabase.auth.signInWithPassword({
       email: email,
       password: password
@@ -91,7 +87,6 @@ export const signIn = async (email: string, password: string) => {
  */
 export const signUp = async (email: string, password: string) => {
   try {
-    const supabase = getSupabaseClient();
     const { data } = await supabase.auth.signUp({
       email: email,
       password: password
@@ -119,7 +114,6 @@ export const signUp = async (email: string, password: string) => {
  */
 export const logout = async () => {
   try {
-    const supabase = getSupabaseClient();
     await supabase.auth.signOut();
   } catch (error) {
     console.error('ログアウトエラー:', error);

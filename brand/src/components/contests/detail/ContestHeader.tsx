@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { ContestDetail } from '@/types/contest';
+import { Contest } from '@/types/contest';
 
 type Props = {
-  contest: ContestDetail;
+  contest: Contest;
 };
 
 export function ContestHeader({ contest }: Props) {

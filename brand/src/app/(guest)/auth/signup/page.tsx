@@ -1,6 +1,5 @@
 'use client';
 
-import { AuthGate } from '@/components/auth/AuthGate';
 import { SignupForm } from '@/components/auth/SignupForm';
 
 export default function SignupPage() {

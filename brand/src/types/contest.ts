@@ -1,5 +1,3 @@
-import { FieldValue, serverTimestamp } from 'firebase/firestore';
-
 /**
  * コンテスト関連の型定義
  */
@@ -18,8 +16,13 @@ export type Contest = {
   thumbnail: string;
   assets: (AssetItem | string)[];
   inspiration?: AssetItem[];
-  createdAt: FieldValue;
-  updatedAt: FieldValue;
+  createdAt: string;
+  updatedAt: string;
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  videos: number;
 };
 
 export interface AssetItem {

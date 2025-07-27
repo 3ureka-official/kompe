@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Creator } from '@/types/creator';
-import { formatNumber } from '@/utils/format';
+import { formatNumber } from '@/utils/format';  
+import Image from 'next/image';
 
 type Props = {
   creator: Creator | null;
@@ -36,7 +35,7 @@ export function CreatorDetailModal({ creator, isOpen, onClose }: Props) {
           <div className="bg-white px-6 py-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <img
+                <Image
                   className="h-12 w-12 rounded-full"
                   src={creator.profileImage}
                   alt={creator.username}
