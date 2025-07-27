@@ -64,6 +64,11 @@ export function BrandUpdateForm() {
   };
 
   const onSubmit = async () => {
+    if (!brand) {
+      console.error('ブランドが見つかりません');
+      return;
+    }
+
     const data = getValues();
 
     try {
@@ -78,7 +83,8 @@ export function BrandUpdateForm() {
           website: data.website || null,
           tiktok_username: data.tiktok_username || null,
           instagram_url: data.instagram_url || null,
-        }
+        },
+        logoFile: logoFile
       }, {
         onSuccess: () => {
           setIsLogoChanged(false);

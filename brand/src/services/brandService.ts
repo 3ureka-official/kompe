@@ -1,6 +1,8 @@
 import { getSupabaseClient } from '@/lib/supabase';
 import { Brand } from '@/types/Brand';
 import { updateUser } from './userService';
+import { uploadFile } from '@/lib/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * ブランドを作成
@@ -10,11 +12,22 @@ import { updateUser } from './userService';
  */
 export async function createBrand(
   userId: string, 
-  brandData: Omit<Brand, 'id' | 'created_at'>
+  brandData: Omit<Brand, 'id' | 'created_at'>,
+  logoFile: File | null
   ): Promise<Brand> {
   try {
     const supabase = getSupabaseClient();
-    const { data: brand, error } = await supabase.from('brands').insert(brandData).select('*').single();
+    const brand_id = uuidv4();
+
+    if (logoFile) {
+      const logoUrl = await uploadFile('brands', `${brand_id}/logo.png`, logoFile);
+      brandData.logo_url = logoUrl;
+    }
+
+    const { data: brand, error } = await supabase.from('brands').insert({
+      id: brand_id,
+      ...brandData
+    }).select('*').single();
 
     if (error) {
       throw error;
@@ -37,13 +50,21 @@ export async function createBrand(
  */
 export async function updateBrand(
   brandId: string,
-  brandData: Omit<Brand, 'id' | 'created_at'>
+  brandData: Omit<Brand, 'id' | 'created_at'>,
+  logoFile: File | null
   ): Promise<Brand> {
   try {
 
     const supabase = getSupabaseClient();
-    const { data: brand, error } = await supabase.from('brands').update(brandData).eq('id', brandId).select('*').single();
 
+    if (logoFile) {
+      const logoUrl = await uploadFile('brands', `${brandId}/logo.png`, logoFile);
+      brandData.logo_url = logoUrl;
+    }
+
+    const { data: brand, error } = await supabase.from('brands').update({
+      ...brandData
+    }).eq('id', brandId).select('*').single();
     if (error) {
       throw error;
     }

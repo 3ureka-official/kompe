@@ -98,7 +98,6 @@ export function FileUpload({
             </div>
             {file && (
               <div className="text-sm text-gray-600">
-                <p>{file.name}</p>
                 <p>{formatFileSize(file.size)}</p>
               </div>
             )}

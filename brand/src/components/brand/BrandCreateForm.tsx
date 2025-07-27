@@ -55,7 +55,8 @@ export function BrandCreateForm() {
           website: data.website || null,
           tiktok_username: data.tiktok_username || null,
           instagram_url: data.instagram_url || null,
-        }
+        },
+        logoFile: logoFile
       }, {
         onSuccess: () => {
           router.push('/contests');
