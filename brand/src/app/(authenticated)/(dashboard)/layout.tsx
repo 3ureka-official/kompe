@@ -8,11 +8,8 @@ export default function DashboardLayout({
 }) {
   return (
     <BrandProvider>
-      <div className="flex bg-gray-50">
-        <Sidebar />
-          <div className="p-8 w-full">
-            {children}
-          </div>
+      <div className="w-full">
+        {children}
       </div>
     </BrandProvider>
   );

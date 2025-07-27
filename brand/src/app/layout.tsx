@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
-import  { AuthGate } from '@/components/auth/AuthGate';
 import QueryProvider from '@/components/app/QueryProvider';
-import { Header } from '@/components/dashboard/Header';
+import { Header } from '@/components/app/Header';
+import { AppGate } from '@/components/app/AppGate';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,12 +23,12 @@ export default function RootLayout({
       <body className={inter.className}>
         <QueryProvider>
           <AuthProvider>
-            <AuthGate>
-              <main className="">
+            <AppGate>
+              <main>
                 <Header />
                 {children}
               </main>
-            </AuthGate>  
+            </AppGate>  
           </AuthProvider>
         </QueryProvider>
       </body>
