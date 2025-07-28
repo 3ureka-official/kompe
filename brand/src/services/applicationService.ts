@@ -1,21 +1,24 @@
-import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import supabase from '@/lib/supabase';
 import { Application } from '@/types/application';
+
 
 /**
  * 指定されたコンテストIDのアプリケーションを取得
  */
 export async function getApplicationsByContestId(contestId: string): Promise<Application[]> {
   try {
-    const applicationsRef = collection(db, 'applications');
-    const q = query(applicationsRef, where('contestId', '==', contestId));
-    const querySnapshot = await getDocs(q);
+    const { data, error } = await supabase
+      .from('applications')
+      .select('*')
+      .eq('contest_id', contestId);
+
+    if (error) throw error;
     
     const applications: Application[] = [];
-    querySnapshot.forEach((doc) => {
+    data.forEach((application) => {
       applications.push({
-        id: doc.id,
-        ...doc.data()
+        id: application.id,
+        ...application
       } as Application);
     });
     
@@ -31,15 +34,18 @@ export async function getApplicationsByContestId(contestId: string): Promise<App
  */
 export async function getApplicationsByCreatorId(creatorId: string): Promise<Application[]> {
   try {
-    const applicationsRef = collection(db, 'applications');
-    const q = query(applicationsRef, where('creatorId', '==', creatorId));
-    const querySnapshot = await getDocs(q);
+    const { data, error } = await supabase
+      .from('applications')
+      .select('*')
+      .eq('creator_id', creatorId);
+
+    if (error) throw error;
     
     const applications: Application[] = [];
-    querySnapshot.forEach((doc) => {
+    data.forEach((application) => {
       applications.push({
-        id: doc.id,
-        ...doc.data()
+        id: application.id,
+        ...application
       } as Application);
     });
     

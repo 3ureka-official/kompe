@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Contest } from '@/types';
-import { useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
+import { Contest } from '@/types/contest';
 import { AuthContext } from '@/contexts/AuthContext';
 import { getContests } from '@/services/contentestService';
 
@@ -17,7 +16,7 @@ export function useContests(): UseContestsReturn {
   const [error, setError] = useState<string | null>(null);
   const { user, profile } = useContext(AuthContext);
 
-  const fetchContests = async () => {
+  const fetchContests = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -37,7 +36,7 @@ export function useContests(): UseContestsReturn {
     } finally {
       setLoading(false);
     }
-  };
+  }, [profile]);
 
   useEffect(() => {
     if (user && profile) {
@@ -46,7 +45,7 @@ export function useContests(): UseContestsReturn {
       // ユーザーはログインしているがブランドがない場合
       setLoading(false);
     }
-  }, [user, profile]);
+  }, [user, profile, fetchContests]);
 
   return {
     contests,

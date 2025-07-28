@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { FormField } from '../ui/FormField';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { useSignIn } from '@/hooks/auth/useSignIn';

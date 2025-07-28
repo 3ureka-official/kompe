@@ -1,4 +1,3 @@
-import { Sidebar } from '@/components/dashboard/Sidebar';
 import { BrandProvider } from '@/contexts/BrandContext';
 
 export default function DashboardLayout({

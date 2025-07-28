@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
+import { AuthContext } from '@/contexts/AuthContext';
+import { BrandContext } from '@/contexts/BrandContext';
 import { createContest } from '@/services/contentestService';
 import { Contest, CreateContestFormData } from '@/types/contest';
-import { serverTimestamp } from 'firebase/firestore';
 
 interface UseCreateContestReturn {
   formData: CreateContestFormData;
@@ -39,7 +39,8 @@ export function useCreateContest(): UseCreateContestReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { user, userBrand } = useAuth();
+  const { user } = useContext(AuthContext);
+  const { brand } = useContext(BrandContext);
   const router = useRouter();
 
   const updateFormData = (stepData: Partial<CreateContestFormData>) => {
@@ -58,7 +59,7 @@ export function useCreateContest(): UseCreateContestReturn {
   };
 
   const handleSubmit = async () => {
-    if (!user || !userBrand) {
+    if (!user || !brand) {
       setError('ユーザー情報またはブランド情報が見つかりません');
       return;
     }
@@ -82,7 +83,7 @@ export function useCreateContest(): UseCreateContestReturn {
       }));
 
       const contestData: Omit<Contest, 'id'> = {
-        brandId: userBrand.id,
+        brandId: brand.id,
         description: formData.description,
         requirements: formData.requirements,
         assets: assetItems,
@@ -95,8 +96,13 @@ export function useCreateContest(): UseCreateContestReturn {
         prizeDistribution: formData.prizeDistribution,
         status: 'active',
         thumbnail: thumbnailUrl,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        views: 0,
+        likes: 0,
+        comments: 0,
+        shares: 0,
+        videos: 0
       };
 
       const contestId = await createContest(contestData);

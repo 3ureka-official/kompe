@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ErrorMessageProps {
-  error?: string | null; // null も受け付ける
+  error?: string | null;
 }
 
 export function ErrorMessage({ error }: ErrorMessageProps) {

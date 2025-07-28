@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { User } from '@/types/User';
+import Image from 'next/image';
 
 type Props = {
   user: User;
@@ -10,14 +11,12 @@ type Props = {
 
 export function ProfileSettings({ user, onSave }: Props) {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(user);
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(user.profileImage || null);
+  const [formData, setFormData] = useState(user); 
+  const [previewUrl, setPreviewUrl] = useState<string | null>(user.profile_image || null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setProfileImage(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     }
@@ -27,15 +26,13 @@ export function ProfileSettings({ user, onSave }: Props) {
     e.preventDefault();
     onSave({
       ...formData,
-      updatedAt: new Date().toISOString()
     });
     setIsEditing(false);
   };
 
   const handleCancel = () => {
     setFormData(user);
-    setProfileImage(null);
-    setPreviewUrl(user.profileImage || null);
+    setPreviewUrl(user.profile_image || null);
     setIsEditing(false);
   };
 
@@ -65,7 +62,7 @@ export function ProfileSettings({ user, onSave }: Props) {
               <div className="flex items-center space-x-6">
                 <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
                   {previewUrl ? (
-                    <img src={previewUrl} alt="プロフィール" className="w-full h-full object-cover" />
+                    <Image src={previewUrl} alt="プロフィール" className="w-full h-full object-cover" />
                   ) : (
                     <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -96,14 +93,14 @@ export function ProfileSettings({ user, onSave }: Props) {
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                 名前 <span className="text-red-500">*</span>
               </label>
-              <input
+              {/* <input
                 type="text"
                 id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                value={formData.first_name}
+                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
                 required
-              />
+              /> */}
             </div>
 
             {/* メールアドレス */}
@@ -145,8 +142,8 @@ export function ProfileSettings({ user, onSave }: Props) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-4">プロフィール画像</label>
             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-              {user.profileImage ? (
-                <img src={user.profileImage} alt="プロフィール" className="w-full h-full object-cover" />
+              {user.profile_image ? (
+                <Image src={user.profile_image} alt="プロフィール" className="w-full h-full object-cover" />
               ) : (
                 <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -156,10 +153,10 @@ export function ProfileSettings({ user, onSave }: Props) {
           </div>
 
           {/* 名前 */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">名前</label>
-            <p className="text-gray-900">{user.name}</p>
-          </div>
+            <p className="text-gray-900">{user.first_name} {user.last_name}</p>
+          </div> */}
 
           {/* メールアドレス */}
           <div>

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { formatFileSize } from '@/utils/format';
 
@@ -89,11 +90,13 @@ export function FileUpload({
       >
         {preview ? (
           <div className="space-y-4">
-            <div className="w-32 h-32 mx-auto rounded-lg overflow-hidden">
-              <img 
+            <div className="w-32 h-32 mx-auto overflow-hidden">
+              <Image 
                 src={preview} 
                 alt="プレビュー" 
                 className="w-full h-full object-cover"
+                width={128}
+                height={128}
               />
             </div>
             {file && (

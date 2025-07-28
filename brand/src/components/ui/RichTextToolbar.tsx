@@ -3,7 +3,7 @@
 
 import { FC } from 'react'
 import { Editor } from '@tiptap/react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import {
   Bold as BoldIcon,
   Italic as ItalicIcon,
@@ -11,23 +11,19 @@ import {
   Strikethrough as StrikethroughIcon,
   List as BulletListIcon,
   ListOrdered as OrderedListIcon,
-  Paperclip as PaperclipIcon,
-  CornerDownLeft as LineBreakIcon,
   AlignLeft as AlignLeftIcon,
   AlignCenter as AlignCenterIcon,
   AlignRight as AlignRightIcon,
-  AlignJustify as AlignJustifyIcon,
   LinkIcon,
 } from 'lucide-react'
 
-import TextAlign from '@tiptap/extension-text-align'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/components/ui/Select'
 
 interface RichTextToolbarProps {
   editor: Editor | null

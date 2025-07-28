@@ -8,7 +8,6 @@ import { ListItem } from '@tiptap/extension-list-item'
 import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
 import Underline from '@tiptap/extension-underline'
-import HardBreak from '@tiptap/extension-hard-break'
 import TextAlign from '@tiptap/extension-text-align'
 import LinkExtension from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -31,7 +30,6 @@ export function RichTextEditor({
       BulletList,
       OrderedList,
       ListItem,
-      HardBreak,
       TextAlign.configure({
         types: ['heading', 'paragraph'],
         alignments: ['left', 'center', 'right', 'justify'],

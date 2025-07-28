@@ -1,6 +1,6 @@
 import { Creator } from '@/types/creator';
-import { Button } from '@/components/ui/button';
 import { formatNumber } from '@/utils/format';
+import Image from 'next/image';
 
 type Props = {
   creators: Creator[];
@@ -50,7 +50,7 @@ export const CreatorTable = ({ creators, onCreatorClick }: Props) => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
-                      <img
+                      <Image
                         className="h-10 w-10 rounded-full"
                         src={creator.profileImage}
                         alt={creator.username}

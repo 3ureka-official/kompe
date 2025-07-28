@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Contest, Application } from '@/types';
+import { useState, useEffect, useCallback } from 'react';
+import { Contest } from '@/types/contest';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import { getContests } from '@/services/contentestService';
@@ -15,14 +15,14 @@ export interface ContestWithStats extends Contest {
   };
 }
 
-interface UseContestsReturn {
+interface UseContestDetailReturn {
   contests: ContestWithStats[];
   loading: boolean;
   error: string | null;
   refetch: () => void;
 }
 
-export function useContests(): UseContestsReturn {
+export function useContestDetail(): UseContestDetailReturn {
   const [contests, setContests] = useState<ContestWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +60,7 @@ export function useContests(): UseContestsReturn {
     }
   };
 
-  const fetchContests = async () => {
+  const fetchContests = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -85,7 +85,7 @@ export function useContests(): UseContestsReturn {
     } finally {
       setLoading(false);
     }
-  };
+  }, [profile]);
 
   useEffect(() => {
     if (user && profile) {
@@ -94,7 +94,7 @@ export function useContests(): UseContestsReturn {
       // ユーザーはログインしているがブランドがない場合
       setLoading(false);
     }
-  }, [user, profile]);
+  }, [user, profile, fetchContests]);
 
   return {
     contests,

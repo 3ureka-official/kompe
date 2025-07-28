@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import { Creator, mockCreators } from '@/types/creator';
 import { ContestHeader } from '@/components/contests/detail/ContestHeader';
 import { ContestStats } from '@/components/contests/detail/ContestStats';
@@ -10,10 +11,12 @@ import { ContestRequirements } from '@/components/contests/detail/ContestRequire
 import { ContestBrandInfo } from '@/components/contests/detail/ContestBrandInfo';
 import { ContestCreatorSection } from '@/components/contests/detail/ContestCreatorSection';
 import { CreatorDetailModal } from '@/components/contests/detail/CreatorDetailModal';
-import { Contest } from '@/types/contest';
 import { useContests } from '@/hooks/useContests';
+import { Contest } from '@/types/contest';
 
-export default function ContestDetailPage({ params }: { params: { id: string } }) {
+export default function ContestDetailPage() {
+  const params = useParams();
+
   const [selectedCreator, setSelectedCreator] = useState<Creator | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -38,19 +41,19 @@ export default function ContestDetailPage({ params }: { params: { id: string } }
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* ヘッダー */}
-        <ContestHeader contest={contest} />
+        <ContestHeader contest={contest as Contest} />
 
         {/* 統計情報 */}
-        <ContestStats contest={contest} />
+        <ContestStats contest={contest as Contest} />
 
         {/* コンテスト概要 */}
-        <ContestOverview contest={contest} />
+        <ContestOverview contest={contest as Contest} />
 
         {/* イメージ動画 */}
-        <ContestImageVideos contest={contest} />
+        <ContestImageVideos contest={contest as Contest} />
 
         {/* 応募要件 */}
-        <ContestRequirements contest={contest} />
+        <ContestRequirements contest={contest as Contest} />
 
         {/* ブランド情報 */}
         <ContestBrandInfo />

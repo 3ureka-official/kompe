@@ -1,7 +1,7 @@
-import { ContestDetail } from '@/types/contest';
+import { Contest } from '@/types/contest';
 
 type Props = {
-  contest: ContestDetail;
+  contest: Contest;
 };
 
 export function ContestOverview({ contest }: Props) {

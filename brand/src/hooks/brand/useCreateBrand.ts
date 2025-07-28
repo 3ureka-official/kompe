@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { createBrand } from '@/services/brandService';
-import { Brand } from '@/types/brand';
+import { Brand } from '@/types/Brand';
 
 export function useCreateBrand() {
     return useMutation({

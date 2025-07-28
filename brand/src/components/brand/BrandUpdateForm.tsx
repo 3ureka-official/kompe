@@ -5,13 +5,14 @@ import { useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Logo } from '@/components/ui/Logo';
-import { FormField, Input, Textarea, FileUpload, SnsLinkField } from './ui';
-import { Button } from '@/components/ui/button';
-import { ErrorMessage } from '../ui/ErrorMessage';
+import { FormField, Input, Textarea, SnsLinkField } from './ui';
+import { Button } from '@/components/ui/Button';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { brandCreateSchema } from '@/schema/brandCreateSchema';
 import { useUpdateBrand } from '@/hooks/brand/useUpdateBrand';
 import { BrandContext } from '@/contexts/BrandContext';
-import { Brand } from '@/types/brand';
+import { Brand } from '@/types/Brand';
 
 export function BrandUpdateForm() {
   const { brand } = useContext(BrandContext);

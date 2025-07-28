@@ -1,6 +1,6 @@
 'use client';
 
-import { Contest } from '@/types';
+import { Contest } from '@/types/contest';
 import { ContestCard } from '@/components/contests/list/ContestCard';
 
 interface ContestListProps {
