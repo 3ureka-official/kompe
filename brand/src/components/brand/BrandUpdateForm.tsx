@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Logo } from '@/components/ui/Logo';
 import { FormField, Input, Textarea, SnsLinkField } from './ui';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { brandCreateSchema } from '@/schema/brandCreateSchema';

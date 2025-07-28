@@ -9,7 +9,7 @@ import { AuthContext } from '@/contexts/AuthContext';
 import { Logo } from '@/components/ui/Logo';
 import { FormField, Input, Textarea, SnsLinkField } from './ui';
 import { FileUpload } from '@/components/ui/FileUpload';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { brandCreateSchema } from '@/schema/brandCreateSchema';
 import { useCreateBrand } from '@/hooks/brand/useCreateBrand';

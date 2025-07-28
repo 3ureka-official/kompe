@@ -3,7 +3,7 @@
 
 import { FC } from 'react'
 import { Editor } from '@tiptap/react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import {
   Bold as BoldIcon,
   Italic as ItalicIcon,
@@ -23,7 +23,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/components/ui/Select'
 
 interface RichTextToolbarProps {
   editor: Editor | null

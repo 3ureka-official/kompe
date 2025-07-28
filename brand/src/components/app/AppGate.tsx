@@ -38,7 +38,7 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     else if (isLoggedIn && hasBrand && isOnboard) {
       router.replace('/contests');
     }
-  }, [user, profile, path, router]);
+  }, [user, profile, loading, path, router]);
 
   // リダイレクト中は何も出さない
   const isRedirecting =

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { RichTextEditor } from '@/components/ui/RichTextEditer';
 import { CreateContestFormData } from '@/types/contest';
 

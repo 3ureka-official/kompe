@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { useState } from 'react';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Input } from '@/components/ui/Input';
 import { CreateContestFormData } from '@/types/contest';
 
 type Props = {

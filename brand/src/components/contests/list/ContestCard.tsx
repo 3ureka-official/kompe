@@ -1,5 +1,5 @@
 import { Contest } from '@/types/contest';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import Image from 'next/image';
 
