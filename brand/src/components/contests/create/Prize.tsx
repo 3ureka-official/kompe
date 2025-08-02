@@ -1,241 +1,230 @@
 import { Button } from '@/components/ui/Button';
-import { useState } from 'react';
-import { CreateContestFormData } from '@/types/contest';
+import { useContext, useState } from 'react';
+import { CreateContestContext } from '@/contexts/CreateContestContext';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { ContestCreateFormData, prizeSchema } from '@/schema/contestCreateSchema';
+import { NumberInput } from '@/components/ui/NumberInput';
+import { FormField } from '@/components/ui/FormField';
+import { CONTEST_PLANS } from '@/constants/contestPlanConstant';
+import { useCreateContest } from '@/hooks/contest/useCreateContest';
+import { BrandContext } from '@/contexts/BrandContext';
+import { FormAssetItem, InspirationItem } from '@/types/Contest';
 
-const prizeOptions = [
-  { 
-    value: 200000, 
-    label: '20万円',
-    icon: (
-      <svg className="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" />
-      </svg>
-    ),
-    color: 'text-amber-600'
-  },
-  { 
-    value: 500000, 
-    label: '50万円',
-    icon: (
-      <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" />
-      </svg>
-    ),
-    color: 'text-gray-400'
-  },
-  { 
-    value: 1000000, 
-    label: '100万円',
-    icon: (
-      <svg className="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" />
-      </svg>
-    ),
-    color: 'text-yellow-500'
-  }
-  // { value: 'custom', label: 'カスタム設定' },
-];
+export function Prize() {
+  const { brand } = useContext(BrandContext);
+  const { mutate: createContest, isPending, error } = useCreateContest();
 
-type Props = {
-  data: CreateContestFormData;
-  onUpdate: (stepData: Partial<CreateContestFormData>) => void;
-  onPrev: () => void;
-  onSubmit: () => void;
-};
+  const { data, back, thumbnail } = useContext(CreateContestContext);
+  
+  const { control, handleSubmit, watch, setValue, getValues } = useForm({
+    resolver: yupResolver(prizeSchema),
+    mode: 'onSubmit',
+    defaultValues: {
+      prizePool: data.prizePool || 0,
+      prizeDistribution: data.prizeDistribution || [0, 0, 0],
+    },
+  });
 
-export function Prize({ data, onUpdate, onPrev, onSubmit }: Props) {
-  const [winners, setWinners] = useState([
-    { rank: '1位', amount: 100000 },
-    { rank: '2位', amount: 50000 },
-    { rank: '3位', amount: 30000 },
-  ]);
+  const watchedPrizePool = watch('prizePool');
+  const watchedDistribution = watch('prizeDistribution');
 
   const [totalPrize, setTotalPrize] = useState(0);
-  const [selectedPrizeOption, setSelectedPrizeOption] = useState<string | number>(data.prizePool || '');
-
-  const handlePrizePoolChange = (value: number) => {
-    setSelectedPrizeOption(value);
-    setTotalPrize(value);
-    onUpdate({ prizePool: value });
-  };
 
   const addWinner = () => {
-    if (winners.length < 10) {
-      setWinners([...winners, { rank: `${winners.length + 1}位`, amount: 0 }]);
+    if (watchedDistribution && watchedDistribution.length < 10) {
+      setValue('prizeDistribution', [...watchedDistribution, 0]);
+      setTotalPrize(watchedDistribution.reduce((sum, amount) => sum + amount, 0));
     }
   };
 
-  const removeWinner = (index: number) => {
-    if (winners.length > 1) {
-      setWinners(winners.filter((_, i) => i !== index));
+  const removeWinner = () => {
+    if (watchedDistribution && watchedDistribution.length > 1) {
+      setValue('prizeDistribution', watchedDistribution.slice(0, -1));
+      setTotalPrize(watchedDistribution.reduce((sum, amount) => sum + amount, 0));
     }
   };
 
   const updateAmount = (index: number, amount: number) => {
-    const newWinners = [...winners];
-    newWinners[index].amount = amount;
-    setWinners(newWinners);
+    const newDistribution = [...watchedDistribution || []];
+    newDistribution[index] = amount;
+    setValue('prizeDistribution', newDistribution);
+    setTotalPrize(newDistribution.reduce((sum, amount) => sum + amount, 0));
+  };
+  
+  const onSubmit = () => {
+    if (!brand) return;
+
+    const values = getValues();
+
+    let assetsData: FormAssetItem[] | null = data.assets
+      ?.filter(asset => asset.file != null || asset.url != null || asset.description != null)
+      .map(asset => ({
+        file: asset.file || null,
+        url: asset.url || null,
+        description: asset.description || null,
+      })) || null;
+
+    // inspirationの処理も追加
+    let inspirationData: Omit<InspirationItem, 'id' | 'created_at' | 'brand_id' | 'contest_id'>[] | null = 
+      data.inspirations
+      ?.filter(inspiration => inspiration.url != null || inspiration.description != null)
+      .map(inspiration => ({
+        url: inspiration.url || null,
+        description: inspiration.description || null,
+      })) || null;
+
+    const completeData = {
+      title: data.title || '',
+      category: data.category || '',
+      description: data.description || '',
+      requirements: data.requirements || '',
+      application_start_date: data.applicationStartDate || '',
+      application_end_date: data.applicationEndDate || '',
+      contest_start_date: data.contestStartDate || '',
+      contest_end_date: data.contestEndDate || '',
+      prize_pool: values.prizePool || 0,
+      prize_distribution: values.prizeDistribution || [],
+    };
     
-    // 合計金額を更新
-    const total = newWinners.reduce((sum, winner) => sum + winner.amount, 0);
-    setTotalPrize(total);
+    createContest({ brandId: brand.id, contestData: completeData, thumbnailFile: thumbnail, assetsData: assetsData, inspirationData: inspirationData });
   };
 
   return (
     <div>
-      <div className=" bg-white rounded-lg p-8 shadow-sm">
+      <div className="bg-white rounded-lg p-8 shadow-sm">
         <h3 className="text-base font-medium text-gray-700 mb-4">総賞金額</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {prizeOptions.map((option) => (
-            <label
-              key={option.value}
-              className={`relative flex cursor-pointer rounded-lg border p-4 transition-colors ${
-                selectedPrizeOption === option.value 
-                  ? 'border-gray-900 bg-gray-50' 
-                  : 'border-gray-300 hover:border-gray-400'
-              }`}
-            >
-              <input
-                type="radio"
-                name="prizePool"
-                value={option.value}
-                className="sr-only"
-                checked={selectedPrizeOption === option.value}
-                onChange={() => handlePrizePoolChange(option.value as number)}
-              />
-              <span className="flex flex-col items-center w-full justify-center">
-                <div className="mb-2">
-                  {option.icon}
-                </div>
-                <span className="block text-sm font-medium text-gray-900">
-                  {option.label}
-                </span>
-              </span>
-            </label>
-          ))}
-        </div>
+        
+        <Controller
+          control={control}
+          name="prizePool"
+          render={({ field, fieldState }) => (
+            <FormField label="" error={fieldState.error?.message}>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {CONTEST_PLANS.map((option) => (
+                  <label
+                    key={option.value}
+                    className={`relative flex cursor-pointer rounded-lg border p-4 transition-colors ${
+                      field.value === option.value 
+                        ? 'border-gray-900 bg-gray-50' 
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="prizePool"
+                      value={option.value}
+                      className="sr-only"
+                      checked={field.value === option.value}
+                      onChange={() => field.onChange(option.value)}
+                    />
+                    <span className="flex flex-col items-center w-full justify-center">
+                      <svg className={`w-6 h-6 ${option.textColor}`} fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" />
+                      </svg>
+                      <span className="block text-sm font-medium text-gray-900">
+                        {option.label}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </FormField>
+          )}
+        />
       </div>
 
-      <div className=" bg-white rounded-lg p-8 shadow-sm mt-8">
-      <div>
-        <h3 className="text-base font-medium text-gray-700 mb-4">配分金額</h3>
-        <div className='flex justify-between items-center mb-6'>
-          <h4 className="text-base font-medium text-gray-700">入賞者数</h4>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => removeWinner(winners.length - 1)}
-              disabled={winners.length <= 1}
-              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              style={{ 
-                backgroundColor: winners.length <= 1 ? '#9CA3AF' : '#25F4EE',
-                color: '#000000'
-              }}
-              onMouseEnter={(e) => {
-                if (winners.length > 1) {
-                  e.currentTarget.style.backgroundColor = '#00E6D9';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (winners.length > 1) {
-                  e.currentTarget.style.backgroundColor = '#25F4EE';
-                }
-              }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-              </svg>
-            </button>
-            <span className="text-base font-medium text-gray-700 min-w-[3rem] text-center">
-              {winners.length}人
-            </span>
-            <button
-              type="button"
-              onClick={addWinner}
-              disabled={winners.length >= 10}
-              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              style={{ 
-                backgroundColor: winners.length >= 10 ? '#9CA3AF' : '#25F4EE',
-                color: '#000000'
-              }}
-              onMouseEnter={(e) => {
-                if (winners.length < 10) {
-                  e.currentTarget.style.backgroundColor = '#00E6D9';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (winners.length < 10) {
-                  e.currentTarget.style.backgroundColor = '#25F4EE';
-                }
-              }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
-          </div>
-        </div>
-        
-        <div className="space-y-4">
-          {winners.map((winner, index) => (
-            <div key={index} className="w-full flex gap-6 items-center justify-between">
-              <label className="block text-base font-medium text-gray-700">{winner.rank}</label>
-              <input
-                type="number"
-                value={winner.amount}
-                onChange={(e) => updateAmount(index, Number(e.target.value))}
-                className="w-32 px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-opacity-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#25F4EE';
-                  e.target.style.boxShadow = '0 0 0 2px rgba(37, 244, 238, 0.2)';
+      <div className="bg-white rounded-lg p-8 shadow-sm mt-8">
+        <div>
+          <h3 className="text-base font-medium text-gray-700 mb-4">配分金額</h3>
+          <div className='flex justify-between items-center mb-6'>
+            <h4 className="text-base font-medium text-gray-700">入賞者数</h4>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={removeWinner}
+                disabled={watchedDistribution && watchedDistribution.length <= 1}
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                style={{ 
+                  backgroundColor: watchedDistribution && watchedDistribution.length <= 1 ? '#9CA3AF' : '#25F4EE',
+                  color: '#000000'
                 }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#D1D5DB';
-                  e.target.style.boxShadow = 'none';
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                </svg>
+              </button>
+              <span className="text-base font-medium text-gray-700 min-w-[3rem] text-center">
+                {watchedDistribution && watchedDistribution.length}人
+              </span>
+              <button
+                type="button"
+                onClick={addWinner}
+                disabled={watchedDistribution && watchedDistribution.length >= 10}
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                style={{ 
+                  backgroundColor: watchedDistribution && watchedDistribution.length >= 10 ? '#9CA3AF' : '#25F4EE',
+                  color: '#000000'
                 }}
-              />
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
             </div>
-          ))}
+          </div>
+          
+          <Controller
+            control={control}
+            name="prizeDistribution"
+            render={({ field }) => (
+              <div>
+                <div className="space-y-4">
+                  {field.value?.map((amount, index) => (
+                    <div key={index} className="w-full flex gap-6 items-center justify-between">
+                      <label className="block text-base font-medium text-gray-700">
+                        {index + 1}位
+                      </label>
+                      <div className="flex items-center gap-2 w-48">
+                        <NumberInput
+                          value={amount || 0}
+                          onChange={(e) => updateAmount(index, Number(e))}
+                          className="w-32 px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-opacity-50"
+                          step={1000}
+                        />
+                        <span className="text-sm">円</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          />
+
+          {(watchedPrizePool && totalPrize !== watchedPrizePool) && (
+            <p className="text-sm text-red-500 mt-6">
+              配分金額の合計（{totalPrize.toLocaleString()}円）が選択した総賞金額（{watchedPrizePool.toLocaleString()}円）と一致しません
+            </p>
+          )}
         </div>
-        {selectedPrizeOption && totalPrize !== (selectedPrizeOption as number) && (
-          <p className="text-sm text-red-700 mt-6">
-            配分金額の合計（{totalPrize.toLocaleString()}円）が選択した総賞金額（{(selectedPrizeOption as number).toLocaleString()}円）と一致しません
-          </p>
-        )}
-        {selectedPrizeOption && totalPrize === 0 && (
-          <p className="text-sm text-red-700 mt-6">
-            配分金額を設定してください（総賞金額: {(selectedPrizeOption as number).toLocaleString()}円）
-          </p>
-        )}
-      </div>
       </div>
 
       <div className="flex justify-end gap-4 pt-6">
-        <Button
-          type="button"
-          variant="secondary"
-        >
+        {/* <Button type="button" variant="secondary">
           下書き保存
-        </Button>
-        <Button
-          type="button"
-          onClick={onPrev}
-          variant="secondary"
-        >
+        </Button> */}
+        
+        <Button type="button" onClick={back} variant="secondary">
           前へ戻る
         </Button>
+
         <Button
-          type="button"
-          onClick={onSubmit}
+          type="submit"
           variant="primary"
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#00E6D9';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#25F4EE';
-          }}
+          disabled={isPending}
+          onClick={handleSubmit(onSubmit)}
         >
-          コンテストを作成
+          {isPending ? '作成中...' : 'コンテストを作成'}
         </Button>
       </div>
     </div>

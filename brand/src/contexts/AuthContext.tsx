@@ -32,6 +32,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }).finally(() => {
           setLoading(false);
         });
+      } else {
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
       }
     });
     return () => {

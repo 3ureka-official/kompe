@@ -1,11 +1,12 @@
 'use client';
 
+import { useContext } from 'react';
 import { Stepper } from '@/components/contests/create/Stepper';
 import { BasicInfo } from '@/components/contests/create/BasicInfo';
 import { Brief } from '@/components/contests/create/Brief';
 import { Resources } from '@/components/contests/create/Resources';
 import { Prize } from '@/components/contests/create/Prize';
-import { useCreateContest } from '@/hooks/useCreateContest';
+import { CreateContestContext, CreateContestProvider } from '@/contexts/CreateContestContext';
 
 const steps = [
   { id: 'basic', title: '基本情報' },
@@ -14,47 +15,41 @@ const steps = [
   { id: 'prize', title: '賞金設定' },
 ];
 
-export default function CreateContestPage() {
-  const {
-    formData,
-    currentStep,
-    error,
-    updateFormData,
-    handleNext,
-    handlePrev,
-    handleSubmit
-  } = useCreateContest();
+function CreateContestContent() {
+  const { step } = useContext(CreateContestContext);
 
-  const renderCurrentStep = () => {
-    switch (currentStep) {
+  const renderStep = () => {
+    switch (step) {
       case 0:
-        return <BasicInfo data={formData} onUpdate={updateFormData} onNext={handleNext} />;
+        return <BasicInfo />;
       case 1:
-        return <Brief data={formData} onUpdate={updateFormData} onNext={handleNext} onPrev={handlePrev} />;
+        return <Brief />;
       case 2:
-        return <Resources data={formData} onUpdate={updateFormData} onNext={handleNext} onPrev={handlePrev} />;
+        return <Resources />;
       case 3:
-        return <Prize data={formData} onUpdate={updateFormData} onPrev={handlePrev} onSubmit={handleSubmit} />;
+        return <Prize />;
       default:
-        return <BasicInfo data={formData} onUpdate={updateFormData} onNext={handleNext} />;
+        return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto py-8">
-        <Stepper steps={steps} currentStep={currentStep} />
+    <div className="max-w-4xl mx-auto py-8">
+      <Stepper steps={steps} currentStep={step} />
 
-        {error && (
-          <div className="mt-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
-            {error}
-          </div>
-        )}
-
-        <div className="mt-8">
-          {renderCurrentStep()}
-        </div>
+      <div className="mt-8">
+        {renderStep()}
       </div>
     </div>
   );
-} 
+}
+
+export default function CreateContestPage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <CreateContestProvider>
+        <CreateContestContent />
+      </CreateContestProvider>
+    </div>
+  );
+}

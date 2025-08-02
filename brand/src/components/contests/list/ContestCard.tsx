@@ -1,4 +1,4 @@
-import { Contest } from '@/types/contest';
+import { Contest } from '@/types/Contest';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import Image from 'next/image';

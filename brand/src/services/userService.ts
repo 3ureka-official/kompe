@@ -27,7 +27,7 @@ export async function getUser(userId: string): Promise<User | null> {
  * @param user_data ユーザーデータ
  * @returns 作成されたユーザープロフィール
  */
-export async function createUser(user_data: Partial<Omit<User, 'created_at' | 'brand_id' | 'profile_image'>>): Promise<User> {
+export async function createUser(user_data: Omit<User, 'created_at' | 'brand_id' | 'profile_image'>): Promise<User> {
   try {
     
     const { data, error } = await supabase.from('users').insert(user_data).select('*').single();
@@ -70,10 +70,17 @@ export async function updateUser(userId: string, userData: Partial<Omit<User, 'i
  */
 export const signIn = async (email: string, password: string) => {
   try {
-    await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password
     });
+    
+    if (error) {
+      console.error('ログインエラー:', error);
+      throw new Error(error.message);
+    }
+
+    return data.user;
   } catch (error) {
     console.error('ログインエラー:', error);
     throw error;

@@ -2,13 +2,14 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/Button';
-import { FormField } from '../ui/FormField';
-import { ErrorMessage } from '../ui/ErrorMessage';
+import { FormField } from '@/components/ui/FormField';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { useSignUp } from '@/hooks/auth/useSignUp';
 import { createUserSchema } from '@/schema/createUserSchema';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
+import { Input } from '@/components/ui/Input';
 
 export function SignupForm() {
   const { mutate: signUp, isPending, error } = useSignUp();
@@ -16,6 +17,13 @@ export function SignupForm() {
   const { control, handleSubmit, getValues } = useForm({
     resolver: yupResolver(createUserSchema),
     mode: 'onBlur',
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   const onSubmit = () => {
@@ -34,29 +42,35 @@ export function SignupForm() {
         <Controller
           control={control}
           name="first_name"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormField
               label="苗字"
-              type="text"
-              placeholder="苗字"
               required
-              autoComplete="off"
-              {...field}
-            />
+              error={fieldState.error?.message}
+            >
+              <Input
+                type="text"
+                value={field.value}
+                onChange={field.onChange}
+              />
+            </FormField>
           )}
         />
         <Controller
           control={control}
           name="last_name"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormField
               label="名前"
-              type="text"
-              placeholder="名前"
               required
-              autoComplete="off"
-              {...field}
-            />
+              error={fieldState.error?.message}
+            >
+              <Input
+                type="text"
+                value={field.value}
+                onChange={field.onChange}
+              />
+            </FormField>
           )}
         />
       </div>
@@ -64,46 +78,60 @@ export function SignupForm() {
       <Controller
         control={control}
         name="email"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <FormField
             label="メールアドレス"
-            type="email"
-            placeholder="your@example.com"
-            autoComplete="email"
-            {...field}
-          />
+            required
+            error={fieldState.error?.message}
+          >
+            <Input
+              type="email"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          </FormField>
         )}
       />
 
       <Controller
         control={control}
         name="password"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <FormField
             label="パスワード"
-            type="password"
-            placeholder="6文字以上"
-            autoComplete="new-password"
-            {...field}
-          />
+            required
+            error={fieldState.error?.message}
+          >
+            <Input
+              type="password"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          </FormField>
         )}
       />
 
       <Controller
         control={control}
         name="confirmPassword"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <FormField
             label="パスワード（確認）"
-            type="password"
-            placeholder="パスワードを再入力"
-            autoComplete="new-password"
-            {...field}
-          />
+            required
+            error={fieldState.error?.message}
+          >
+            <Input
+              type="password"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          </FormField>
         )}
       />
 
-      <div>
+      <div className="mt-6">
+        <p className="text-red-500">{error?.message}</p>
+
         <Button
           type="submit"
           disabled={isPending}
@@ -112,8 +140,6 @@ export function SignupForm() {
           {isPending ? 'アカウント作成中...' : 'アカウント作成'}
         </Button>
       </div>
-
-      <ErrorMessage error={error?.message} />
 
       <div className="text-sm">
         <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">

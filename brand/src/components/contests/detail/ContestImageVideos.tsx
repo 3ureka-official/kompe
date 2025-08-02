@@ -1,4 +1,4 @@
-import { Contest, AssetItem } from '@/types/contest';
+import { Contest, AssetItem } from '@/types/Contest';
 
 type Props = {
   contest: Contest;

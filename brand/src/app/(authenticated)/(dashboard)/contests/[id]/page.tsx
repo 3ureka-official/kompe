@@ -12,7 +12,7 @@ import { ContestBrandInfo } from '@/components/contests/detail/ContestBrandInfo'
 import { ContestCreatorSection } from '@/components/contests/detail/ContestCreatorSection';
 import { CreatorDetailModal } from '@/components/contests/detail/CreatorDetailModal';
 import { useContests } from '@/hooks/useContests';
-import { Contest } from '@/types/contest';
+import { Contest } from '@/types/Contest';
 
 export default function ContestDetailPage() {
   const params = useParams();
