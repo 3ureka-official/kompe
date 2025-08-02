@@ -1,49 +1,28 @@
-import { cn } from '@/lib/utils';
-import React from 'react';
+'use client';
 
-interface FormFieldProps {
-  name: string;
+import { ReactNode } from 'react';
+
+type Props = {
   label: string;
-  type: string;
-  value?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
   required?: boolean;
-  autoComplete?: string;
-  className?: string;
-}
+  children: ReactNode;
+  error?: string;
+  description?: string;
+};
 
-export function FormField({
-  name,
-  label,
-  type,
-  value = '',
-  onChange,
-  placeholder,
-  required = false,
-  autoComplete = 'off',
-  className
-}: FormFieldProps) {
+export function FormField({ label, required = false, children, error, description }: Props) {
   return (
-    <div>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}
+    <div className="mb-2">
+      <label className="block text-sm font-medium text-gray-700">
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
-      <div className="mt-1">
-        <input
-          name={name}
-          type={type}
-          autoComplete={autoComplete}
-          required={required}
-          value={value}
-          onChange={onChange}
-          className={cn(
-            "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm",
-            className
-          )}
-          placeholder={placeholder}
-        />
-      </div>
+      {children}
+      {error && (
+        <p className="text-sm text-red-600">{error}</p>
+      )}
+      {description && (
+        <p className="text-sm text-gray-500">{description}</p>
+      )}
     </div>
   );
 } 

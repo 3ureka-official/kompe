@@ -16,15 +16,15 @@ export async function createBrand(
   logoFile: File | null
   ): Promise<Brand> {
   try {
-    const brand_id = uuidv4();
+    const brandId = uuidv4();
 
     if (logoFile) {
-      const logoUrl = await uploadFile('brands', `${brand_id}/logo.png`, logoFile);
+      const logoUrl = await uploadFile('brands', `${brandId}/logo.png`, logoFile);
       brandData.logo_url = logoUrl;
     }
 
     const { data: brand, error } = await supabase.from('brands').insert({
-      id: brand_id,
+      id: brandId,
       ...brandData
     }).select('*').single();
 

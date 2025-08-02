@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from './Input';
+import { Input } from '@/components/ui/Input';
 
 type SnsType = 'instagram' | 'tiktok' | 'website';
 

@@ -3,12 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { FormField } from '../ui/FormField';
-import { ErrorMessage } from '../ui/ErrorMessage';
+import { FormField } from '@/components/ui/FormField';
 import { useSignIn } from '@/hooks/auth/useSignIn';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { loginUserSchema } from '@/schema/loginUserSchema';
+import { Input } from '@/components/ui/Input';
 
 export function LoginForm() {
   const { mutate: signIn, isPending, error } = useSignIn();
@@ -16,45 +16,60 @@ export function LoginForm() {
   const { control, handleSubmit, getValues } = useForm({
     resolver: yupResolver(loginUserSchema),
     mode: 'onBlur',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const onSubmit = () => {
     const data = getValues();
+    console.log(data);
     signIn({ email: data.email, password: data.password });
   };
 
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <ErrorMessage error={error?.message} />
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col gap-6">
+        <Controller
+          control={control}
+          name="email"
+          render={({ field, fieldState }) => (
+            <FormField  
+              label="メールアドレス"
+              required
+              error={fieldState.error?.message}
+            >
+              <Input
+                type="email"
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="メールアドレス"
+              />
+            </FormField>
+          )}
+        />
 
-      <Controller
-        control={control}
-        name="email"
-        render={({ field }) => (
-          <FormField  
-            label="メールアドレス"
-            type="email"
-            placeholder="your@example.com"
-            autoComplete="email"
-            {...field}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="password"
-        render={({ field }) => (
-          <FormField
-            label="パスワード"
-            type="password"
-            placeholder="パスワードを入力"
-            autoComplete="current-password"
-            {...field}
-          />
-        )}
-      />
+        <Controller
+          control={control}
+          name="password"
+          render={({ field, fieldState }) => (
+            <FormField
+              label="パスワード"
+              required
+              error={fieldState.error?.message}
+            >
+              <Input
+                type="password"
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="パスワード"
+              />
+            </FormField>
+            )}
+        />
+      </div>
 
       <div className="flex items-center justify-between">
         <div className="text-sm">
@@ -65,6 +80,8 @@ export function LoginForm() {
       </div>
 
       <div>
+        <p className="text-red-500">{error?.message}</p>
+
         <Button
           type="submit"
           disabled={isPending}

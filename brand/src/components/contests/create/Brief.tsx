@@ -1,22 +1,22 @@
 import { Button } from '@/components/ui/Button';
 import { RichTextEditor } from '@/components/ui/RichTextEditer';
-import { CreateContestFormData } from '@/types/contest';
+import { useContext } from 'react';
+import { CreateContestContext } from '@/contexts/CreateContestContext';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { briefSchema } from '@/schema/contestCreateSchema';
+import { FormField } from '@/components/ui/FormField';
 
-type Props = {
-  data: CreateContestFormData;
-  onUpdate: (stepData: Partial<CreateContestFormData>) => void;
-  onNext: () => void;
-  onPrev: () => void;
-};
-
-export function Brief({ data, onUpdate, onNext, onPrev }: Props) {
-  const handleDescriptionChange = (value: string) => {
-    onUpdate({ description: value });
-  };
-
-  const handleRequirementsChange = (value: string) => {
-    onUpdate({ requirements: value });
-  };
+export function Brief() {
+  const { data, next, back } = useContext(CreateContestContext);
+  const { control, handleSubmit } = useForm({
+    resolver: yupResolver(briefSchema),
+    mode: 'onSubmit',
+    defaultValues: {
+      description: data.description || '',
+      requirements: data.requirements || '',
+    },
+  });
 
   return (
     <div>
@@ -25,9 +25,17 @@ export function Brief({ data, onUpdate, onNext, onPrev }: Props) {
         <div className="mb-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">プロジェクト概要</h3>
           
-          <RichTextEditor 
-            value={data.description} 
-            onChange={handleDescriptionChange} 
+          <Controller
+            control={control}
+            name="description"
+            render={({ field, fieldState }) => (
+              <FormField label="プロジェクト概要" error={fieldState.error?.message}>
+                <RichTextEditor 
+                  value={field.value || ''} 
+                  onChange={(html) => field.onChange(html)}   
+                />
+              </FormField>
+            )}
           />
         </div>
 
@@ -35,37 +43,41 @@ export function Brief({ data, onUpdate, onNext, onPrev }: Props) {
         <div className="mb-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">ルール設定</h3>
           
-          <RichTextEditor 
-            value={data.requirements} 
-            onChange={handleRequirementsChange} 
+          <Controller
+            control={control}
+            name="requirements"
+            render={({ field, fieldState }) => (
+              <FormField label="ルール設定" error={fieldState.error?.message}>
+                <RichTextEditor 
+                  value={field.value || ''} 
+                  onChange={(html) => field.onChange(html)}   
+                />
+              </FormField>
+            )}
           />
         </div>
       </div>
 
       <div className="flex justify-end gap-4 pt-6">
-        <Button
+        {/* <Button
           type="button"
           variant="secondary"
         >
           下書き保存
-        </Button>
+        </Button> */}
+
         <Button
           type="button"
-          onClick={onPrev}
+          onClick={back}
           variant="secondary"
         >
           前へ戻る
         </Button>
+
         <Button
-          type="button"
-          onClick={onNext}
+          type="submit"
           variant="primary"
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#00E6D9';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#25F4EE';
-          }}
+          onClick={handleSubmit(next)}
         >
           次へ進む
         </Button>

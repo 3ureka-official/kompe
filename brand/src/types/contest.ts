@@ -4,45 +4,46 @@
 export type Contest = {
   id: string;
   brandId: string;
+  status: 'ready' | 'application' | 'contest' | 'ended';
+
   title: string;
+  category: string;
+  thumbnail_url: string;
+  application_start_date: string | Date;
+  application_end_date: string | Date;
+  contest_start_date: string | Date;
+  contest_end_date: string | Date;
+
   description: string;
   requirements: string;
-  prizePool: number;
-  prizeDistribution: number[];
-  startDate: string;
-  endDate: string;
-  category: string;
-  status: 'ready' | 'active' | 'ended';
-  thumbnail: string;
-  assets: (AssetItem | string)[];
-  inspiration?: AssetItem[];
-  createdAt: string;
-  updatedAt: string;
-  views: number;
-  likes: number;
-  comments: number;
-  shares: number;
-  videos: number;
+
+  prize_pool: number;
+  prize_distribution: number[];
+
+  created_at: string | Date;
 };
 
 export interface AssetItem {
-  content: string;      // テキスト or 埋め込みリンク
-  description: string;
+  id: string;
+  brand_id: string;
+  contest_id: string;
+  file_url: string | null;
+  url: string | null;
+  description: string | null;
+  created_at: string | Date;
 }
-// コンテスト作成フォームの型定義
-export interface CreateContestFormData {
-  title: string;
-  description: string;
-  requirements: string;
-  prizePool: number;
-  prizeDistribution: number[];
-  startDate: string;
-  endDate: string;
-  category: string;
-  thumbnail: File | null;
-  resources: {
-    images: File[];
-    videos: File[];
-    guidelines: string;
-  };
-} 
+
+export interface FormAssetItem {
+  file: File | null;
+  url: string | null;
+  description: string | null;
+}
+
+export interface InspirationItem {
+  id: string;
+  brand_id: string;
+  contest_id: string;
+  url: string | null;
+  description: string | null;
+  created_at: string | Date;
+}

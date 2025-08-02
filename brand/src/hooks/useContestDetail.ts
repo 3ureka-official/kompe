@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Contest } from '@/types/contest';
+import { Contest } from '@/types/Contest';
 import { useContext } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import { getContests } from '@/services/contentestService';

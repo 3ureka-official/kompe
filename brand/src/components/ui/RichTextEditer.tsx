@@ -24,6 +24,7 @@ export function RichTextEditor({
   placeholder = 'ここにテキストを入力',
 }: RichTextEditorProps) {
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Underline,

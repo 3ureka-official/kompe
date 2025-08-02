@@ -50,7 +50,7 @@ export const RichTextToolbar: FC<RichTextToolbarProps> = ({ editor }) => {
   }
 
   const applyAlign = (alignment: 'left'|'center'|'right') => {
-    editor.chain().focus().setTextAlign(alignment).run()
+    editor.chain().focus().setTextAlign(alignment as 'left' | 'center' | 'right').run()
   }
 
   return (

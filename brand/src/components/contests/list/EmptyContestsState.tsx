@@ -11,7 +11,7 @@ export function EmptyContestsState() {
       </div>
       <h3 className="text-lg font-medium text-gray-900 mb-2">まだコンテストがありません</h3>
       <p className="text-gray-500 mb-6">最初のコンテストを作成してクリエイターとつながりましょう</p>
-      <Link href="/dashboard/create">
+      <Link href="/contests/create">
         <Button className="bg-black text-white hover:bg-gray-800">
           コンテストを作成する
         </Button>

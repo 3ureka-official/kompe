@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/Button';
-import { Contest } from '@/types/contest';
+import { Contest } from '@/types/Contest';
 
 type Props = {
   contest: Contest;
