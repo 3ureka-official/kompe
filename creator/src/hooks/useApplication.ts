@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { ApplicationData, ApplicationFormData } from '@/types/application';
-import { ApplicationService } from '@/lib/api/application';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState, useEffect, useCallback } from "react";
+import { ApplicationData, ApplicationFormData } from "@/types/application";
+import { ApplicationService } from "@/lib/api/application";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface UseApplicationProps {
   contestId: string;
@@ -9,13 +9,18 @@ interface UseApplicationProps {
   autoSaveDraft?: boolean;
 }
 
-export function useApplication({ contestId, userId, autoSaveDraft = true }: UseApplicationProps) {
+export function useApplication({
+  contestId,
+  userId,
+  autoSaveDraft = true,
+}: UseApplicationProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [existingApplication, setExistingApplication] = useState<ApplicationData | null>(null);
+  const [existingApplication, setExistingApplication] =
+    useState<ApplicationData | null>(null);
   const [formData, setFormData] = useState<ApplicationFormData>({
-    tiktokUrl: '',
+    tiktokUrl: "",
     agreedToTerms: false,
     agreedToGuidelines: false,
   });
@@ -23,11 +28,14 @@ export function useApplication({ contestId, userId, autoSaveDraft = true }: UseA
   // 既存の応募をチェック
   const checkExistingApplication = useCallback(async () => {
     try {
-      const application = await ApplicationService.checkApplicationStatus(contestId, userId);
+      const application = await ApplicationService.checkApplicationStatus(
+        contestId,
+        userId,
+      );
       setExistingApplication(application);
       return application;
     } catch (err) {
-      console.error('Failed to check application status:', err);
+      console.error("Failed to check application status:", err);
       return null;
     }
   }, [contestId, userId]);
@@ -38,7 +46,7 @@ export function useApplication({ contestId, userId, autoSaveDraft = true }: UseA
 
     const draft = ApplicationService.getDraft(contestId, user.id);
     if (draft) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         ...draft,
         agreedToTerms: false,
@@ -48,23 +56,26 @@ export function useApplication({ contestId, userId, autoSaveDraft = true }: UseA
   }, [user, contestId]);
 
   // フォームデータを更新
-  const updateFormData = useCallback((updates: Partial<ApplicationFormData>) => {
-    setFormData(prev => {
-      const newData = { ...prev, ...updates };
-      
-      // 自動保存が有効で、ユーザーがログインしている場合は下書きを保存
-      if (user && contestId && autoSaveDraft) {
-        const draftData = {
-          tiktokUrl: newData.tiktokUrl,
-          agreedToTerms: newData.agreedToTerms,
-          agreedToGuidelines: newData.agreedToGuidelines,
-        };
-        ApplicationService.saveDraft(contestId, user.id, draftData);
-      }
-      
-      return newData;
-    });
-  }, [user, contestId, autoSaveDraft]);
+  const updateFormData = useCallback(
+    (updates: Partial<ApplicationFormData>) => {
+      setFormData((prev) => {
+        const newData = { ...prev, ...updates };
+
+        // 自動保存が有効で、ユーザーがログインしている場合は下書きを保存
+        if (user && contestId && autoSaveDraft) {
+          const draftData = {
+            tiktokUrl: newData.tiktokUrl,
+            agreedToTerms: newData.agreedToTerms,
+            agreedToGuidelines: newData.agreedToGuidelines,
+          };
+          ApplicationService.saveDraft(contestId, user.id, draftData);
+        }
+
+        return newData;
+      });
+    },
+    [user, contestId, autoSaveDraft],
+  );
 
   // TikTok URLを検証
   const validateTikTokUrl = useCallback((url: string) => {
@@ -77,57 +88,59 @@ export function useApplication({ contestId, userId, autoSaveDraft = true }: UseA
   }, []);
 
   // 応募を送信
-  const submitApplication = useCallback(async (): Promise<ApplicationData | null> => {
-    if (!user || !contestId) {
-      setError('ログインが必要です');
-      return null;
-    }
+  const submitApplication =
+    useCallback(async (): Promise<ApplicationData | null> => {
+      if (!user || !contestId) {
+        setError("ログインが必要です");
+        return null;
+      }
 
-    // バリデーション
-    const urlValidation = validateTikTokUrl(formData.tiktokUrl);
-    if (!urlValidation.isValid) {
-      setError(urlValidation.error || 'TikTok URLが無効です');
-      return null;
-    }
+      // バリデーション
+      const urlValidation = validateTikTokUrl(formData.tiktokUrl);
+      if (!urlValidation.isValid) {
+        setError(urlValidation.error || "TikTok URLが無効です");
+        return null;
+      }
 
-    if (!formData.agreedToTerms) {
-      setError('利用規約に同意してください');
-      return null;
-    }
+      if (!formData.agreedToTerms) {
+        setError("利用規約に同意してください");
+        return null;
+      }
 
-    if (!formData.agreedToGuidelines) {
-      setError('ガイドラインに同意してください');
-      return null;
-    }
+      if (!formData.agreedToGuidelines) {
+        setError("ガイドラインに同意してください");
+        return null;
+      }
 
-    try {
-      setLoading(true);
-      setError(null);
+      try {
+        setLoading(true);
+        setError(null);
 
-      const application = await ApplicationService.createApplication(
-        contestId,
-        user.id,
-        formData
-      );
+        const application = await ApplicationService.createApplication(
+          contestId,
+          user.id,
+          formData,
+        );
 
-      // 応募完了後、下書きを削除
-      ApplicationService.deleteDraft(contestId, user.id);
-      // setExistingApplication(application);
+        // 応募完了後、下書きを削除
+        ApplicationService.deleteDraft(contestId, user.id);
+        // setExistingApplication(application);
 
-      return application;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '応募に失敗しました';
-      setError(errorMessage);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, [user, contestId, formData, validateTikTokUrl]);
+        return application;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "応募に失敗しました";
+        setError(errorMessage);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    }, [user, contestId, formData, validateTikTokUrl]);
 
   // フォームをリセット
   const resetForm = useCallback(() => {
     setFormData({
-      tiktokUrl: '',
+      tiktokUrl: "",
       agreedToTerms: false,
       agreedToGuidelines: false,
     });
@@ -153,19 +166,22 @@ export function useApplication({ contestId, userId, autoSaveDraft = true }: UseA
     error,
     existingApplication,
     formData,
-    
+
     // アクション
     updateFormData,
     submitApplication,
     resetForm,
     clearError,
-    
+
     // ユーティリティ
     validateTikTokUrl,
     parseHashtags,
-    
+
     // 計算値
-    canSubmit: formData.tiktokUrl && formData.agreedToTerms && formData.agreedToGuidelines,
+    canSubmit:
+      formData.tiktokUrl &&
+      formData.agreedToTerms &&
+      formData.agreedToGuidelines,
     hasExistingApplication: !!existingApplication,
   };
-} 
+}

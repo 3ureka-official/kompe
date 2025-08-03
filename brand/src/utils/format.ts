@@ -4,13 +4,13 @@
  * @returns フォーマットされたファイルサイズ文字列
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
-  
+  if (bytes === 0) return "0 Bytes";
+
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 /**
@@ -21,18 +21,20 @@ export function formatFileSize(bytes: number): string {
 export function formatRelativeTime(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
-  const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-  
+  const diffInHours = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+  );
+
   if (diffInHours < 1) {
-    return 'たった今';
+    return "たった今";
   } else if (diffInHours < 24) {
     return `${diffInHours}時間前`;
   } else if (diffInHours < 48) {
-    return '昨日';
+    return "昨日";
   } else {
-    return date.toLocaleDateString('ja-JP', {
-      month: 'short',
-      day: 'numeric'
+    return date.toLocaleDateString("ja-JP", {
+      month: "short",
+      day: "numeric",
     });
   }
 }
@@ -43,20 +45,20 @@ export function formatRelativeTime(dateString: string): string {
  * @returns フォーマットされた日付文字列
  */
 export function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return new Date(dateString).toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
 export function formatNumber(num: number): string {
-  return new Intl.NumberFormat('ja-JP').format(num);
+  return new Intl.NumberFormat("ja-JP").format(num);
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('ja-JP', {
-    style: 'currency',
-    currency: 'JPY',
+  return new Intl.NumberFormat("ja-JP", {
+    style: "currency",
+    currency: "JPY",
   }).format(amount);
-} 
+}

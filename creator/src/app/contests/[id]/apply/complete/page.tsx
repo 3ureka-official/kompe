@@ -1,21 +1,27 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { useContest } from '@/hooks/useContest';
-import { APPLICATION_STEPS } from '@/types/application';
-import { ApplicationSteps } from '@/components/application/ApplicationSteps';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { 
-  CheckCircle, 
-  Calendar, 
-  Trophy, 
-  Users, 
-  ArrowRight, 
-  Home
-} from 'lucide-react';
+import { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { useContest } from "@/hooks/useContest";
+import { APPLICATION_STEPS } from "@/types/application";
+import { ApplicationSteps } from "@/components/application/ApplicationSteps";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import {
+  CheckCircle,
+  Calendar,
+  Trophy,
+  Users,
+  ArrowRight,
+  Home,
+} from "lucide-react";
 
 export default function CompletePage() {
   const router = useRouter();
@@ -48,8 +54,10 @@ export default function CompletePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">ページが見つかりません</h1>
-          <Button onClick={() => router.push('/contests')}>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            ページが見つかりません
+          </h1>
+          <Button onClick={() => router.push("/contests")}>
             コンテスト一覧に戻る
           </Button>
         </div>
@@ -77,9 +85,7 @@ export default function CompletePage() {
             <span>応募完了</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">応募完了</h1>
-          <p className="text-gray-600">
-            応募が正常に完了しました
-          </p>
+          <p className="text-gray-600">応募が正常に完了しました</p>
         </div>
 
         {/* ステップ表示 */}
@@ -98,7 +104,6 @@ export default function CompletePage() {
                   <h2 className="text-2xl font-bold text-green-900 mb-2">
                     応募を完了しました！
                   </h2>
-                  
                 </div>
               </CardContent>
             </Card>
@@ -110,9 +115,7 @@ export default function CompletePage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">{contest.title}</CardTitle>
-                <CardDescription>
-                  {contest.brandName}
-                </CardDescription>
+                <CardDescription>{contest.brandName}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* 賞金 */}
@@ -143,7 +146,7 @@ export default function CompletePage() {
                   <div>
                     <div className="text-sm text-gray-600">応募期限</div>
                     <div className="font-medium">
-                      {new Date(contest.endDate).toLocaleDateString('ja-JP')}
+                      {new Date(contest.endDate).toLocaleDateString("ja-JP")}
                     </div>
                   </div>
                 </div>
@@ -153,24 +156,24 @@ export default function CompletePage() {
             {/* アクション */}
             <div className="space-y-3">
               <Button
-                onClick={() => router.push('/applications')}
+                onClick={() => router.push("/applications")}
                 className="w-full"
               >
                 <ArrowRight className="w-4 h-4 mr-2" />
                 応募一覧を見る
               </Button>
-              
+
               <Button
                 variant="outline"
-                onClick={() => router.push('/contests')}
+                onClick={() => router.push("/contests")}
                 className="w-full"
               >
                 他のコンテストを見る
               </Button>
-              
+
               <Button
                 variant="outline"
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push("/dashboard")}
                 className="w-full"
               >
                 <Home className="w-4 h-4 mr-2" />
@@ -182,4 +185,4 @@ export default function CompletePage() {
       </div>
     </div>
   );
-} 
+}

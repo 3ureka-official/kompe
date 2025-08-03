@@ -4,12 +4,7 @@ import type { Components } from "react-markdown";
 
 export const MarkdownComponents: Components = {
   /* 見出し -------------------------------------------------- */
-  h1: ({ ...props }) => (
-    <h1
-      className="text-xl font-bold py-4"
-      {...props}
-    />
-  ),
+  h1: ({ ...props }) => <h1 className="text-xl font-bold py-4" {...props} />,
   h2: ({ ...props }) => (
     <h2
       className="text-lg font-semibold mt-12 mb-4 pt-8 border-t border-gray-100"
@@ -22,7 +17,10 @@ export const MarkdownComponents: Components = {
 
   /* 本文・強調 ------------------------------------------------ */
   p: ({ ...props }) => (
-    <p className="leading-7 text-sm tracking-wide mb-4 text-gray-800" {...props} />
+    <p
+      className="leading-7 text-sm tracking-wide mb-4 text-gray-800"
+      {...props}
+    />
   ),
   strong: ({ ...props }) => (
     <strong className="font-semibold text-gray-900" {...props} />
@@ -32,9 +30,7 @@ export const MarkdownComponents: Components = {
   ul: ({ ...props }) => (
     <ul className="list-disc ml-6 space-y-1 mb-4" {...props} />
   ),
-  li: ({ ...props }) => (
-    <li className="text-sm leading-6" {...props} />
-  ),
+  li: ({ ...props }) => <li className="text-sm leading-6" {...props} />,
 
   /* 引用・区切り線 ------------------------------------------ */
   blockquote: ({ ...props }) => (

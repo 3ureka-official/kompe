@@ -1,4 +1,4 @@
-import { Contest, AssetItem } from '@/types/Contest';
+import { Contest, AssetItem } from "@/types/Contest";
 
 type Props = {
   contest: Contest;
@@ -24,4 +24,4 @@ export function ContestImageVideos({ contest }: Props) {
       </div>
     </div>
   );
-} 
+}

@@ -1,33 +1,33 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import Image from 'next/image'
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
 export default function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const pathname = usePathname()
-  const { user } = useAuth()
-  
-  const isAuthenticated = !!user
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const { user } = useAuth();
+
+  const isAuthenticated = !!user;
 
   const navigation = [
-    { name: 'コンテスト一覧', href: '/contests' },
-    { name: '応募履歴', href: '/applications' },
-    { name: 'お気に入り', href: '/favorites' },
-  ]
+    { name: "コンテスト一覧", href: "/contests" },
+    { name: "応募履歴", href: "/applications" },
+    { name: "お気に入り", href: "/favorites" },
+  ];
 
-  const isActive = (href: string) => pathname === href
+  const isActive = (href: string) => pathname === href;
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   const getUserInitial = () => {
-    if (!user?.name) return 'U'
-    return user.name.charAt(0).toUpperCase()
-  }
+    if (!user?.name) return "U";
+    return user.name.charAt(0).toUpperCase();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,7 +36,12 @@ export default function Header() {
           {/* ロゴ */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/images/logo/logo-coloredhdpi.png" alt="Kompe" width={128} height={128} />
+              <Image
+                src="/images/logo/logo-coloredhdpi.png"
+                alt="Kompe"
+                width={128}
+                height={128}
+              />
             </Link>
           </div>
 
@@ -48,8 +53,8 @@ export default function Header() {
                 href={item.href}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
                   isActive(item.href)
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-muted-foreground'
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-muted-foreground"
                 }`}
               >
                 {item.name}
@@ -66,13 +71,13 @@ export default function Header() {
                     href="/profile"
                     className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                   >
-                  {user?.avatar ? (
-                    <Image
-                      src={user.avatar}
-                      alt={user.name || 'User avatar'}
-                      width={32}
-                      height={32}
-                      className="rounded-full object-cover"
+                    {user?.avatar ? (
+                      <Image
+                        src={user.avatar}
+                        alt={user.name || "User avatar"}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover"
                       />
                     ) : (
                       <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -136,15 +141,15 @@ export default function Header() {
                   href={item.href}
                   className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
                     isActive(item.href)
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-primary hover:bg-muted'
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-primary hover:bg-muted"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
-              
+
               {/* モバイル認証ボタン */}
               <div className="pt-4 border-t">
                 {isAuthenticated ? (
@@ -158,7 +163,7 @@ export default function Header() {
                         {user?.avatar ? (
                           <Image
                             src={user.avatar}
-                            alt={user?.name || 'User avatar'}
+                            alt={user?.name || "User avatar"}
                             width={32}
                             height={32}
                             className="rounded-full object-cover"
@@ -197,5 +202,5 @@ export default function Header() {
         )}
       </div>
     </header>
-  )
-} 
+  );
+}

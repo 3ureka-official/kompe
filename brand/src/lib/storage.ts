@@ -1,4 +1,4 @@
-import supabase from '@/lib/supabase';
+import supabase from "@/lib/supabase";
 
 /**
  * ファイルをアップロードして、パブリックURL を返す
@@ -6,17 +6,21 @@ import supabase from '@/lib/supabase';
 export async function uploadFile(
   bucket: string,
   path: string,
-  file: File | Blob
+  file: File | Blob,
 ): Promise<string> {
   const { data, error } = await supabase.storage
     .from(bucket)
-    .upload(path, file, { cacheControl: 'no-cache', upsert: true, contentType: file.type });
+    .upload(path, file, {
+      cacheControl: "no-cache",
+      upsert: true,
+      contentType: file.type,
+    });
 
   if (error) throw error;
 
-  const { data: { publicUrl } } = supabase.storage
-    .from(bucket)
-    .getPublicUrl(data.path);
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(bucket).getPublicUrl(data.path);
 
   return publicUrl;
 }
@@ -24,10 +28,7 @@ export async function uploadFile(
 /**
  * ファイルを削除する
  */
-export async function deleteFile(
-  bucket: string,
-  path: string
-): Promise<void> {
+export async function deleteFile(bucket: string, path: string): Promise<void> {
   const { error } = await supabase.storage.from(bucket).remove([path]);
   if (error) throw error;
 }

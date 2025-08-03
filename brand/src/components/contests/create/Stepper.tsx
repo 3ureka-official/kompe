@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 interface Step {
   id: string;
@@ -21,16 +21,18 @@ export function Stepper({ steps, currentStep }: StepperProps) {
                 <span
                   className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                     index <= currentStep
-                      ? 'text-black'
-                      : 'bg-gray-200 text-gray-500'
+                      ? "text-black"
+                      : "bg-gray-200 text-gray-500"
                   }`}
-                  style={index <= currentStep ? { backgroundColor: '#25F4EE' } : {}}
+                  style={
+                    index <= currentStep ? { backgroundColor: "#25F4EE" } : {}
+                  }
                 >
                   {index + 1}
                 </span>
                 <span
                   className={`mt-2 text-sm font-medium whitespace-nowrap ${
-                    index <= currentStep ? 'text-gray-900' : 'text-gray-500'
+                    index <= currentStep ? "text-gray-900" : "text-gray-500"
                   }`}
                 >
                   {step.title}
@@ -39,12 +41,13 @@ export function Stepper({ steps, currentStep }: StepperProps) {
               {index < steps.length - 1 && (
                 <div
                   className={`hidden sm:block absolute h-0.5 top-4 -translate-y-1/2 ${
-                    index < currentStep ? '' : 'bg-gray-200'
+                    index < currentStep ? "" : "bg-gray-200"
                   }`}
-                  style={{ 
-                    left: 'calc(50% + 1rem)', 
-                    right: 'calc(-50% + 1rem)',
-                    backgroundColor: index < currentStep ? '#25F4EE' : undefined
+                  style={{
+                    left: "calc(50% + 1rem)",
+                    right: "calc(-50% + 1rem)",
+                    backgroundColor:
+                      index < currentStep ? "#25F4EE" : undefined,
                   }}
                 />
               )}
@@ -54,4 +57,4 @@ export function Stepper({ steps, currentStep }: StepperProps) {
       </nav>
     </div>
   );
-} 
+}

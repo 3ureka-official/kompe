@@ -27,4 +27,4 @@ export interface RegisterCredentials extends LoginCredentials {
 export interface AuthError {
   message: string;
   code?: string;
-} 
+}

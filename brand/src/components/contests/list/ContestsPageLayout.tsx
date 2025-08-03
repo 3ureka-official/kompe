@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface ContestsPageLayoutProps {
   children: React.ReactNode;
@@ -12,4 +12,4 @@ export function ContestsPageLayout({ children }: ContestsPageLayoutProps) {
       </div>
     </div>
   );
-} 
+}

@@ -1,16 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { ProfileService } from '@/lib/api/profile';
-import { ProfileFormData } from '@/types/profile';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { AlertCircle, User, Save, ArrowLeft } from 'lucide-react';
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { ProfileService } from "@/lib/api/profile";
+import { ProfileFormData } from "@/types/profile";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { AlertCircle, User, Save, ArrowLeft } from "lucide-react";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import Link from "next/link";
 
 export default function ProfileEditPage() {
   const router = useRouter();
@@ -20,9 +26,9 @@ export default function ProfileEditPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProfileFormData>({
-    name: '',
-    email: '',
-    tiktokHandle: '',
+    name: "",
+    email: "",
+    tiktokHandle: "",
   });
 
   // プロフィール情報を取得
@@ -33,16 +39,16 @@ export default function ProfileEditPage() {
       try {
         setLoading(true);
         const profileData = await ProfileService.getUserProfile(user.id);
-        
+
         if (profileData) {
           setFormData({
             name: profileData.name,
             email: profileData.email,
-            tiktokHandle: profileData.tiktokHandle || '',
+            tiktokHandle: profileData.tiktokHandle || "",
           });
         }
       } catch {
-        setError('プロフィール情報の取得に失敗しました');
+        setError("プロフィール情報の取得に失敗しました");
       } finally {
         setLoading(false);
       }
@@ -54,7 +60,7 @@ export default function ProfileEditPage() {
   // フォームデータの変更
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -72,14 +78,16 @@ export default function ProfileEditPage() {
       setError(null);
 
       await ProfileService.updateProfile(user.id, formData);
-      setSuccess('プロフィールを更新しました');
-      
+      setSuccess("プロフィールを更新しました");
+
       // 成功時は2秒後にプロフィールページに戻る
       setTimeout(() => {
-        router.push('/profile');
+        router.push("/profile");
       }, 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'プロフィールの更新に失敗しました');
+      setError(
+        err instanceof Error ? err.message : "プロフィールの更新に失敗しました",
+      );
     } finally {
       setSaving(false);
     }
@@ -117,10 +125,10 @@ export default function ProfileEditPage() {
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">プロフィール編集</h1>
-                <p className="text-gray-600">
-                  アカウント情報を編集できます
-                </p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  プロフィール編集
+                </h1>
+                <p className="text-gray-600">アカウント情報を編集できます</p>
               </div>
             </div>
           </div>
@@ -136,7 +144,7 @@ export default function ProfileEditPage() {
                 アカウントの基本情報を編集できます
               </CardDescription>
             </CardHeader>
-            
+
             <CardContent>
               {/* エラー・成功メッセージ */}
               {error && (
@@ -149,7 +157,9 @@ export default function ProfileEditPage() {
               {success && (
                 <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-green-700">{success}</p>
-                  <p className="text-sm text-green-600 mt-1">自動的にプロフィールページに戻ります...</p>
+                  <p className="text-sm text-green-600 mt-1">
+                    自動的にプロフィールページに戻ります...
+                  </p>
                 </div>
               )}
 
@@ -187,21 +197,13 @@ export default function ProfileEditPage() {
 
                 {/* ボタン */}
                 <div className="pt-4 space-y-3">
-                  <Button
-                    type="submit"
-                    disabled={saving}
-                    className="w-full"
-                  >
+                  <Button type="submit" disabled={saving} className="w-full">
                     <Save className="w-4 h-4 mr-2" />
-                    {saving ? '保存中...' : '変更を保存'}
+                    {saving ? "保存中..." : "変更を保存"}
                   </Button>
-                  
+
                   <Link href="/profile" className="block">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                    >
+                    <Button type="button" variant="outline" className="w-full">
                       <ArrowLeft className="w-4 h-4 mr-2" />
                       プロフィールに戻る
                     </Button>
@@ -214,4 +216,4 @@ export default function ProfileEditPage() {
       </div>
     </ProtectedRoute>
   );
-} 
+}

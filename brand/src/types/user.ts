@@ -9,9 +9,9 @@ export interface User {
 
 // モックデータ
 export const mockUser: User = {
-  id: 'user-1',
-  email: 'tanaka@example.com',
+  id: "user-1",
+  email: "tanaka@example.com",
   brand_id: null,
-  profile_image: 'https://placehold.co/100x100',
+  profile_image: "https://placehold.co/100x100",
   created_at: new Date(),
 };

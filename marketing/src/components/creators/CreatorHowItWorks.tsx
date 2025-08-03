@@ -11,10 +11,10 @@ export function CreatorHowItWorks() {
               今すぐ始められる、シンプルな流れ
             </p>
           </div>
-          
+
           <div className="relative">
             <div className="absolute left-1/2 top-0 bottom-0 w-1 hidden md:block"></div>
-            
+
             <div className="space-y-8">
               <div className="flex flex-col items-center gap-8 ">
                 <div className="md:w-2/3 border-2 border-red-500 p-8 rounded-2xl">
@@ -43,7 +43,7 @@ export function CreatorHowItWorks() {
                   </ul>
                 </div>
               </div>
-              
+
               <div className="flex flex-col items-center gap-8">
                 <div className="md:w-2/3 border-2 border-sky-500 p-8 rounded-2xl">
                   <div className="bg-gradient-to-r from-[#25F4EE] to-[#00D4FF] text-white p-4 rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold mb-6 mx-auto md:mx-0">
@@ -71,7 +71,7 @@ export function CreatorHowItWorks() {
                   </ul>
                 </div>
               </div>
-              
+
               <div className="flex flex-col items-center gap-8">
                 <div className="md:w-2/3 border-2 border-yellow-500 p-8 rounded-2xl">
                   <div className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-white p-4 rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold mb-6 mx-auto md:mx-0">

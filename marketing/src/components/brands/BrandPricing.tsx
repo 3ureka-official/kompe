@@ -7,7 +7,7 @@ export function BrandPricing() {
       influencer: "1000人~1万人",
       suitable: "初回利用・小規模施策",
       color: "from-yellow-700 to-orange-700",
-      popular: false
+      popular: false,
     },
     {
       name: "シルバー",
@@ -16,7 +16,7 @@ export function BrandPricing() {
       influencer: "1万人~10万人",
       suitable: "本格的なマーケティング施策",
       color: "from-stone-500 to-slate-500",
-      popular: true
+      popular: true,
     },
     {
       name: "ゴールド",
@@ -25,8 +25,8 @@ export function BrandPricing() {
       influencer: "10万人~",
       suitable: "大規模キャンペーン・ブランディング",
       color: "from-yellow-500 to-orange-500",
-      popular: false
-    }
+      popular: false,
+    },
   ];
 
   return (
@@ -41,47 +41,58 @@ export function BrandPricing() {
               シンプルで透明性の高い料金体系
             </p>
           </div>
-          
+
           <div className="grid lg:grid-cols-3 gap-8 mb-12">
             {plans.map((plan, index) => (
-              <div key={index} className={`relative bg-white rounded-2xl shadow-xl border-2 ${plan.popular ? 'border-purple-500 scale-105' : 'border-gray-200'} overflow-hidden`}>
+              <div
+                key={index}
+                className={`relative bg-white rounded-2xl shadow-xl border-2 ${plan.popular ? "border-purple-500 scale-105" : "border-gray-200"} overflow-hidden`}
+              >
                 {plan.popular && (
                   <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-center py-2 text-sm font-bold">
                     ⭐ 最も人気
                   </div>
                 )}
-                
-                <div className={`bg-gradient-to-r ${plan.color} text-white p-6 ${plan.popular ? 'pt-12' : ''}`}>
+
+                <div
+                  className={`bg-gradient-to-r ${plan.color} text-white p-6 ${plan.popular ? "pt-12" : ""}`}
+                >
                   <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  <div className="text-3xl font-bold mb-1">{plan.prizeRange}</div>
+                  <div className="text-3xl font-bold mb-1">
+                    {plan.prizeRange}
+                  </div>
                   <div className="text-lg opacity-90 mb-4">賞金総額目安</div>
                   <div className="bg-white/20 backdrop-blur-sm p-3 rounded-lg">
                     <div className="text-sm opacity-80">手数料</div>
                     <div className="text-xl font-bold">{plan.fee}</div>
                   </div>
                 </div>
-                
+
                 <div className="p-6">
-                  
                   <div className="mb-6">
-                    <div className="text-sm text-gray-600 mb-2">インフルエンサー数</div>
-                    <div className="text-lg font-bold text-gray-900">{plan.influencer}</div>
+                    <div className="text-sm text-gray-600 mb-2">
+                      インフルエンサー数
+                    </div>
+                    <div className="text-lg font-bold text-gray-900">
+                      {plan.influencer}
+                    </div>
                   </div>
-                  
-                  
+
                   <div className="mb-6">
                     <div className="text-sm text-gray-600 mb-2">適用場面</div>
                     <div className="text-gray-700">{plan.suitable}</div>
                   </div>
-                  
-                  <button className={`w-full bg-gradient-to-r ${plan.color} text-white py-3 px-6 rounded-lg font-bold hover:shadow-lg transition-shadow`}>
+
+                  <button
+                    className={`w-full bg-gradient-to-r ${plan.color} text-white py-3 px-6 rounded-lg font-bold hover:shadow-lg transition-shadow`}
+                  >
                     このプランで相談
                   </button>
                 </div>
               </div>
             ))}
           </div>
-          
+
           {/* <div className="bg-gray-50 p-8 rounded-2xl mb-12">
             <h3 className="text-2xl font-bold text-center mb-8 text-gray-900">オプションサービス</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -114,7 +125,7 @@ export function BrandPricing() {
               </div>
             </div>
           </div> */}
-          
+
           {/* <div className="text-center">
             <div className="bg-gradient-to-r from-gray-900 to-blue-900 text-white p-8 rounded-2xl">
               <h3 className="text-2xl font-bold mb-4">

@@ -1,24 +1,30 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { useContest } from '@/hooks/useContest';
-import { useApplication } from '@/hooks/useApplication';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { AlertCircle, ExternalLink, Video } from 'lucide-react';
-import { APPLICATION_STEPS } from '@/types/application';
-import { ApplicationSteps } from '@/components/application/ApplicationSteps';
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { useContest } from "@/hooks/useContest";
+import { useApplication } from "@/hooks/useApplication";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { AlertCircle, ExternalLink, Video } from "lucide-react";
+import { APPLICATION_STEPS } from "@/types/application";
+import { ApplicationSteps } from "@/components/application/ApplicationSteps";
 
 export default function ApplyPage() {
   const router = useRouter();
   const params = useParams();
   const contestId = params.id as string;
   const { user } = useAuth();
-  const { contest, loading: contestLoading } = useContest({ id: contestId  });
+  const { contest, loading: contestLoading } = useContest({ id: contestId });
   const {
     formData,
     updateFormData,
@@ -27,14 +33,20 @@ export default function ApplyPage() {
     clearError,
     validateTikTokUrl,
     hasExistingApplication,
-  } = useApplication({ contestId, userId: user?.id || '', autoSaveDraft: true });
+  } = useApplication({
+    contestId,
+    userId: user?.id || "",
+    autoSaveDraft: true,
+  });
 
   const [urlError, setUrlError] = useState<string | null>(null);
 
   // 既に応募済みの場合はリダイレクト
   useEffect(() => {
     if (hasExistingApplication) {
-      router.push(`/contests/${params.id}/apply/complete?applicationId=${hasExistingApplication}`);
+      router.push(
+        `/contests/${params.id}/apply/complete?applicationId=${hasExistingApplication}`,
+      );
     }
   }, [hasExistingApplication, params.id, router]);
 
@@ -49,7 +61,7 @@ export default function ApplyPage() {
   const handleUrlChange = (url: string) => {
     updateFormData({ tiktokUrl: url });
     setUrlError(null);
-    
+
     if (url.trim()) {
       const validation = validateTikTokUrl(url);
       if (!validation.isValid) {
@@ -61,13 +73,13 @@ export default function ApplyPage() {
   // 次のステップへ進む
   const handleNext = () => {
     if (!formData.tiktokUrl.trim()) {
-      setUrlError('TikTok URLを入力してください');
+      setUrlError("TikTok URLを入力してください");
       return;
     }
 
     const validation = validateTikTokUrl(formData.tiktokUrl);
     if (!validation.isValid) {
-      setUrlError(validation.error || '');
+      setUrlError(validation.error || "");
       return;
     }
 
@@ -91,8 +103,10 @@ export default function ApplyPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">コンテストが見つかりません</h1>
-          <Button onClick={() => router.push('/contests')}>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            コンテストが見つかりません
+          </h1>
+          <Button onClick={() => router.push("/contests")}>
             コンテスト一覧に戻る
           </Button>
         </div>
@@ -119,7 +133,9 @@ export default function ApplyPage() {
             <span>/</span>
             <span>応募</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">コンテストに応募</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            コンテストに応募
+          </h1>
           <p className="text-gray-600">
             TikTok動画のURLを入力して、コンテストに応募してください
           </p>
@@ -195,7 +211,6 @@ export default function ApplyPage() {
                     確認画面へ進む
                   </Button>
                 </div>
-
               </CardContent>
             </Card>
           </div>
@@ -205,9 +220,7 @@ export default function ApplyPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">{contest.title}</CardTitle>
-                <CardDescription>
-                  {contest.brandName}
-                </CardDescription>
+                <CardDescription>{contest.brandName}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* 賞金 */}
@@ -222,12 +235,12 @@ export default function ApplyPage() {
                 <div>
                   <div className="text-sm text-gray-600 mb-1">応募締切</div>
                   <div className="font-medium">
-                    {new Date(contest.endDate).toLocaleDateString('ja-JP', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
+                    {new Date(contest.endDate).toLocaleDateString("ja-JP", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
                   </div>
                 </div>
@@ -244,4 +257,4 @@ export default function ApplyPage() {
       </div>
     </div>
   );
-} 
+}

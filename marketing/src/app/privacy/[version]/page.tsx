@@ -4,10 +4,9 @@ import { MarkdownBox } from "@/components/markdown/MarkdownBox";
 
 type Props = { params: Promise<{ version: string }> };
 
-
 export default async function PrivacyPage({ params }: Props) {
   const version = (await params).version;
-  
+
   let md: string;
   try {
     md = loadDoc("privacy", version);

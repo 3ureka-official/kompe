@@ -7,15 +7,11 @@
       "description": "新発売のスプリングコレクションを使って、あなたらしい春メイクを披露してください。ナチュラルからゴージャスまで、どんなスタイルでもOK！メイクのプロセスも一緒に撮影して、みんなにテクニックをシェアしましょう。",
       "category": "beauty",
       "requirements": "**春の新作コスメでメイクアップチャレンジ** \n 春の新作コスメでメイクアップチャレンジ",
-      "inspirations": "**春の新作コスメでメイクアップチャレンジ** \n 春の新作コスメでメイクアップチャレンジ",   
+      "inspirations": "**春の新作コスメでメイクアップチャレンジ** \n 春の新作コスメでメイクアップチャレンジ",
       "start_date": "2024-03-01T00:00:00Z",
       "end_date": "2024-06-30T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        300000,
-        150000,
-        50000
-      ],
+      "prize_structure": [300000, 150000, 50000],
       "total_prize": 500000,
       "platform_fee": 50000,
       "status": "active",
@@ -35,11 +31,7 @@
       "start_date": "2024-05-01T00:00:00Z",
       "end_date": "2024-08-31T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        500000,
-        200000,
-        100000
-      ],
+      "prize_structure": [500000, 200000, 100000],
       "total_prize": 1000000,
       "platform_fee": 100000,
       "status": "active",
@@ -59,11 +51,7 @@
       "start_date": "2024-04-01T00:00:00Z",
       "end_date": "2024-07-31T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        150000,
-        100000,
-        50000
-      ],
+      "prize_structure": [150000, 100000, 50000],
       "total_prize": 300000,
       "platform_fee": 30000,
       "status": "active",
@@ -83,11 +71,7 @@
       "start_date": "2024-06-01T00:00:00Z",
       "end_date": "2024-09-30T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        600000,
-        250000,
-        150000
-      ],
+      "prize_structure": [600000, 250000, 150000],
       "total_prize": 1000000,
       "platform_fee": 100000,
       "status": "active",
@@ -107,11 +91,7 @@
       "start_date": "2024-03-15T00:00:00Z",
       "end_date": "2024-06-15T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        200000,
-        120000,
-        80000
-      ],
+      "prize_structure": [200000, 120000, 80000],
       "total_prize": 500000,
       "platform_fee": 50000,
       "status": "active",
@@ -131,11 +111,7 @@
       "start_date": "2024-05-01T00:00:00Z",
       "end_date": "2024-08-31T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        350000,
-        150000,
-        100000
-      ],
+      "prize_structure": [350000, 150000, 100000],
       "total_prize": 600000,
       "platform_fee": 60000,
       "status": "active",
@@ -155,11 +131,7 @@
       "start_date": "2024-07-01T00:00:00Z",
       "end_date": "2024-10-31T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        400000,
-        200000,
-        100000
-      ],
+      "prize_structure": [400000, 200000, 100000],
       "total_prize": 1000000,
       "platform_fee": 100000,
       "status": "upcoming",
@@ -179,11 +151,7 @@
       "start_date": "2024-08-01T00:00:00Z",
       "end_date": "2024-11-30T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        100000,
-        60000,
-        40000
-      ],
+      "prize_structure": [100000, 60000, 40000],
       "total_prize": 200000,
       "platform_fee": 20000,
       "status": "upcoming",
@@ -203,11 +171,7 @@
       "start_date": "2024-09-01T00:00:00Z",
       "end_date": "2024-12-31T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        500000,
-        300000,
-        200000
-      ],
+      "prize_structure": [500000, 300000, 200000],
       "total_prize": 1000000,
       "platform_fee": 100000,
       "status": "upcoming",
@@ -227,11 +191,7 @@
       "start_date": "2024-10-01T00:00:00Z",
       "end_date": "2025-01-31T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        250000,
-        150000,
-        100000
-      ],
+      "prize_structure": [250000, 150000, 100000],
       "total_prize": 500000,
       "platform_fee": 50000,
       "status": "upcoming",
@@ -251,11 +211,7 @@
       "start_date": "2024-11-01T00:00:00Z",
       "end_date": "2025-02-28T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        100000,
-        60000,
-        40000
-      ],
+      "prize_structure": [100000, 60000, 40000],
       "total_prize": 200000,
       "platform_fee": 20000,
       "status": "upcoming",
@@ -275,11 +231,7 @@
       "start_date": "2024-12-01T00:00:00Z",
       "end_date": "2025-03-31T23:59:59Z",
       "evaluation_type": "views",
-      "prize_structure": [
-        100000,
-        60000,
-        40000
-      ],
+      "prize_structure": [100000, 60000, 40000],
       "total_prize": 200000,
       "platform_fee": 20000,
       "status": "upcoming",
@@ -289,4 +241,4 @@
       "updated_at": "2024-12-01T13:45:00Z"
     }
   ]
-} 
+}

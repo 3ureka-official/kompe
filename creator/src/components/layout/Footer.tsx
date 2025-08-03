@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 export function Footer() {
   return (
@@ -19,17 +19,26 @@ export function Footer() {
             <h4 className="font-semibold mb-4">サービス</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/contests" className="text-gray-300 hover:text-white transition-colors">
+                <Link
+                  href="/contests"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   コンテスト
                 </Link>
               </li>
               <li>
-                <Link href="/applications" className="text-gray-300 hover:text-white transition-colors">
+                <Link
+                  href="/applications"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   応募履歴
                 </Link>
               </li>
               <li>
-                <Link href="/favorites" className="text-gray-300 hover:text-white transition-colors">
+                <Link
+                  href="/favorites"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   お気に入り
                 </Link>
               </li>
@@ -51,12 +60,20 @@ export function Footer() {
                 </Link>
               </li> */}
               <li>
-                <Link href="https://kompedocs.vercel.app/terms" target="_blank" className="text-gray-300 hover:text-white transition-colors">
+                <Link
+                  href="https://kompedocs.vercel.app/terms"
+                  target="_blank"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   利用規約
                 </Link>
               </li>
               <li>
-                <Link href="https://kompedocs.vercel.app/privacy" target="_blank" className="text-gray-300 hover:text-white transition-colors">
+                <Link
+                  href="https://kompedocs.vercel.app/privacy"
+                  target="_blank"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   プライバシーポリシー
                 </Link>
               </li>
@@ -71,5 +88,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
-} 
+  );
+}

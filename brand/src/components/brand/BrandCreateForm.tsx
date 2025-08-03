@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useContext } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { AuthContext } from '@/contexts/AuthContext';
-import { Logo } from '@/components/ui/Logo';
-import { FormField, Textarea, SnsLinkField } from './ui';
-import { Input } from '@/components/ui/Input';
-import { FileUpload } from '@/components/ui/FileUpload';
-import { Button } from '@/components/ui/Button';
-import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import { brandCreateSchema } from '@/schema/brandCreateSchema';
-import { useCreateBrand } from '@/hooks/brand/useCreateBrand';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { AuthContext } from "@/contexts/AuthContext";
+import { Logo } from "@/components/ui/Logo";
+import { FormField, Textarea, SnsLinkField } from "./ui";
+import { Input } from "@/components/ui/Input";
+import { FileUpload } from "@/components/ui/FileUpload";
+import { Button } from "@/components/ui/Button";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { brandCreateSchema } from "@/schema/brandCreateSchema";
+import { useCreateBrand } from "@/hooks/brand/useCreateBrand";
 
 export function BrandCreateForm() {
   const { user, profile } = useContext(AuthContext);
@@ -23,22 +23,22 @@ export function BrandCreateForm() {
 
   const { control, handleSubmit, watch, getValues } = useForm({
     resolver: yupResolver(brandCreateSchema),
-    mode: 'onBlur',
+    mode: "onBlur",
     defaultValues: {
-      email: user?.email || '',
-      name: '',
-      phonenumber: '',
+      email: user?.email || "",
+      name: "",
+      phonenumber: "",
       website: null,
-      description: '',
+      description: "",
       tiktok_username: null,
       instagram_url: null,
-    }
-  })
+    },
+  });
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
-  const description = watch('description');
+  const description = watch("description");
 
   const onSubmit = async () => {
     if (!profile) return;
@@ -46,26 +46,29 @@ export function BrandCreateForm() {
     const data = getValues();
 
     try {
-      await createBrand({
-        userId: profile.id,
-        brandData: {
-          name: data.name,
-          logo_url: logoPreview || null,
-          email: data.email,
-          phonenumber: data.phonenumber,
-          description: data.description,
-          website: data.website || null,
-          tiktok_username: data.tiktok_username || null,
-          instagram_url: data.instagram_url || null,
+      await createBrand(
+        {
+          userId: profile.id,
+          brandData: {
+            name: data.name,
+            logo_url: logoPreview || null,
+            email: data.email,
+            phonenumber: data.phonenumber,
+            description: data.description,
+            website: data.website || null,
+            tiktok_username: data.tiktok_username || null,
+            instagram_url: data.instagram_url || null,
+          },
+          logoFile: logoFile,
         },
-        logoFile: logoFile
-      }, {
-        onSuccess: () => {
-          router.push('/contests');
-        }
-      });
+        {
+          onSuccess: () => {
+            router.push("/contests");
+          },
+        },
+      );
     } catch (error) {
-      console.error('ブランド作成エラー:', error);
+      console.error("ブランド作成エラー:", error);
     }
   };
 
@@ -80,12 +83,15 @@ export function BrandCreateForm() {
         {/* フォーム */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
             <Controller
               control={control}
               name="email"
               render={({ field, fieldState }) => (
-                <FormField label="ブランドメールアドレス" required error={fieldState.error?.message}>
+                <FormField
+                  label="ブランドメールアドレス"
+                  required
+                  error={fieldState.error?.message}
+                >
                   <Input
                     type="email"
                     value={field.value}
@@ -100,7 +106,11 @@ export function BrandCreateForm() {
               control={control}
               name="name"
               render={({ field, fieldState }) => (
-                <FormField label="ブランド名" required error={fieldState.error?.message}>
+                <FormField
+                  label="ブランド名"
+                  required
+                  error={fieldState.error?.message}
+                >
                   <Input
                     value={field.value}
                     onChange={field.onChange}
@@ -110,9 +120,7 @@ export function BrandCreateForm() {
               )}
             />
 
-            <FormField 
-              label="ブランドロゴ"
-            >
+            <FormField label="ブランドロゴ">
               <FileUpload
                 file={logoFile}
                 preview={logoPreview}
@@ -125,12 +133,16 @@ export function BrandCreateForm() {
               control={control}
               name="phonenumber"
               render={({ field, fieldState }) => (
-                <FormField label="電話番号" required error={fieldState.error?.message}>
+                <FormField
+                  label="電話番号"
+                  required
+                  error={fieldState.error?.message}
+                >
                   <Input
                     type="tel"
                     value={field.value}
                     onChange={field.onChange}
-                    placeholder='ハイフンなしで入力してください'
+                    placeholder="ハイフンなしで入力してください"
                     required
                   />
                 </FormField>
@@ -141,8 +153,8 @@ export function BrandCreateForm() {
               control={control}
               name="description"
               render={({ field, fieldState }) => (
-                <FormField 
-                  label="ブランド紹介" 
+                <FormField
+                  label="ブランド紹介"
                   required
                   description={`${description?.length || 0}/240文字`}
                   error={fieldState.error?.message}
@@ -163,12 +175,16 @@ export function BrandCreateForm() {
               control={control}
               name="website"
               render={({ field, fieldState }) => (
-                <FormField label="ブランドウェブサイト" required error={fieldState.error?.message}>
+                <FormField
+                  label="ブランドウェブサイト"
+                  required
+                  error={fieldState.error?.message}
+                >
                   <Input
                     type="url"
-                    value={field.value || ''}
+                    value={field.value || ""}
                     onChange={field.onChange}
-                    placeholder='https://'
+                    placeholder="https://"
                     required
                   />
                 </FormField>
@@ -181,7 +197,7 @@ export function BrandCreateForm() {
               render={({ field, fieldState }) => (
                 <SnsLinkField
                   type="tiktok"
-                  value={field.value || ''}
+                  value={field.value || ""}
                   onChange={field.onChange}
                   error={fieldState.error?.message}
                 />
@@ -194,7 +210,7 @@ export function BrandCreateForm() {
               render={({ field, fieldState }) => (
                 <SnsLinkField
                   type="instagram"
-                  value={field.value || ''}
+                  value={field.value || ""}
                   onChange={field.onChange}
                   error={fieldState.error?.message}
                 />
@@ -209,7 +225,7 @@ export function BrandCreateForm() {
                 className="px-6 py-2"
                 disabled={isPending}
               >
-                {isPending ? '作成中...' : '続ける'}
+                {isPending ? "作成中..." : "続ける"}
               </Button>
             </div>
 
@@ -219,4 +235,4 @@ export function BrandCreateForm() {
       </div>
     </div>
   );
-} 
+}

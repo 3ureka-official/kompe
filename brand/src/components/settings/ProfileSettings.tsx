@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { User } from '@/types/User';
-import Image from 'next/image';
+import { useState } from "react";
+import { User } from "@/types/User";
+import Image from "next/image";
 
 type Props = {
   user: User;
@@ -11,8 +11,10 @@ type Props = {
 
 export function ProfileSettings({ user, onSave }: Props) {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(user); 
-  const [previewUrl, setPreviewUrl] = useState<string | null>(user.profile_image || null);
+  const [formData, setFormData] = useState(user);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    user.profile_image || null,
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,27 +47,53 @@ export function ProfileSettings({ user, onSave }: Props) {
             onClick={() => setIsEditing(true)}
             className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
             </svg>
             編集
           </button>
         )}
       </div>
-      
+
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
             {/* プロフィール画像 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">プロフィール画像</label>
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                プロフィール画像
+              </label>
               <div className="flex items-center space-x-6">
                 <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
                   {previewUrl ? (
-                    <Image src={previewUrl} alt="プロフィール" className="w-full h-full object-cover" />
+                    <Image
+                      src={previewUrl}
+                      alt="プロフィール"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <svg
+                      className="w-10 h-10 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
                     </svg>
                   )}
                 </div>
@@ -83,14 +111,19 @@ export function ProfileSettings({ user, onSave }: Props) {
                   >
                     画像を選択
                   </label>
-                  <p className="text-sm text-gray-500 mt-1">JPG、PNG形式（最大5MB）</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    JPG、PNG形式（最大5MB）
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* 名前 */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 名前 <span className="text-red-500">*</span>
               </label>
               {/* <input
@@ -105,14 +138,19 @@ export function ProfileSettings({ user, onSave }: Props) {
 
             {/* メールアドレス */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 メールアドレス <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
                 id="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
                 required
               />
@@ -140,13 +178,29 @@ export function ProfileSettings({ user, onSave }: Props) {
         <div className="space-y-6">
           {/* プロフィール画像 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-4">プロフィール画像</label>
+            <label className="block text-sm font-medium text-gray-700 mb-4">
+              プロフィール画像
+            </label>
             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
               {user.profile_image ? (
-                <Image src={user.profile_image} alt="プロフィール" className="w-full h-full object-cover" />
+                <Image
+                  src={user.profile_image}
+                  alt="プロフィール"
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <svg
+                  className="w-10 h-10 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
                 </svg>
               )}
             </div>
@@ -160,11 +214,13 @@ export function ProfileSettings({ user, onSave }: Props) {
 
           {/* メールアドレス */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              メールアドレス
+            </label>
             <p className="text-gray-900">{user.email}</p>
           </div>
         </div>
       )}
     </div>
   );
-} 
+}

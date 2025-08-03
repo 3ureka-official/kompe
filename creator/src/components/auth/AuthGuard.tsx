@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
+import { useEffect, ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -11,11 +11,11 @@ interface AuthGuardProps {
   requireAuth?: boolean;
 }
 
-export function AuthGuard({ 
-  children, 
-  fallback, 
-  redirectTo = '/auth/login',
-  requireAuth = true 
+export function AuthGuard({
+  children,
+  fallback,
+  redirectTo = "/auth/login",
+  requireAuth = true,
 }: AuthGuardProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -27,7 +27,7 @@ export function AuthGuard({
         router.push(redirectTo);
       } else if (!requireAuth && user) {
         // 認証不要（ログインページなど）だがログイン済みの場合
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     }
   }, [user, loading, requireAuth, redirectTo, router]);
@@ -77,9 +77,5 @@ interface PublicRouteProps {
 
 // パブリックルート用のコンポーネント
 export function PublicRoute({ children }: PublicRouteProps) {
-  return (
-    <AuthGuard requireAuth={false}>
-      {children}
-    </AuthGuard>
-  );
-} 
+  return <AuthGuard requireAuth={false}>{children}</AuthGuard>;
+}

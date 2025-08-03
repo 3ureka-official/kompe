@@ -1,7 +1,7 @@
-import Link from 'next/link'
-import Image from 'next/image'
+import Link from "next/link";
+import Image from "next/image";
 export const Footer = () => {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   // const footerLinks = {
   //   service: {
@@ -79,17 +79,22 @@ export const Footer = () => {
         {/* メインフッターコンテンツ */}
         <div className="py-6">
           {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8"> */}
-            {/* ブランド情報 */}
-            <div className="lg:col-span-1">
-              <Link href="/" className="flex items-center space-x-2 mb-4">
-                <Image src="/images/logo/logo-coloredhdpi.png" alt="Kompe" width={100} height={100} />
-              </Link>
-              <p className="text-sm text-muted-foreground mb-4 max-w-xs">
-                TikTokコンテストプラットフォーム。クリエイターとブランドをつなぎ、素晴らしいコンテンツを生み出します。
-              </p>
-              
-              {/* ソーシャルリンク */}
-              {/* <div className="flex space-x-4">
+          {/* ブランド情報 */}
+          <div className="lg:col-span-1">
+            <Link href="/" className="flex items-center space-x-2 mb-4">
+              <Image
+                src="/images/logo/logo-coloredhdpi.png"
+                alt="Kompe"
+                width={100}
+                height={100}
+              />
+            </Link>
+            <p className="text-sm text-muted-foreground mb-4 max-w-xs">
+              TikTokコンテストプラットフォーム。クリエイターとブランドをつなぎ、素晴らしいコンテンツを生み出します。
+            </p>
+
+            {/* ソーシャルリンク */}
+            {/* <div className="flex space-x-4">
                 {socialLinks.map((social) => (
                   <Link
                     key={social.name}
@@ -103,7 +108,7 @@ export const Footer = () => {
                   </Link>
                 ))}
               </div> */}
-              {/* </div> */}
+            {/* </div> */}
 
             {/* リンクセクション */}
             {/* {Object.entries(footerLinks).map(([key, section]) => (
@@ -150,7 +155,7 @@ export const Footer = () => {
                 </Link>
               </div>
             </div>
-            
+
             {/* 言語・地域選択（将来の拡張用） */}
             {/* <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
@@ -163,5 +168,5 @@ export const Footer = () => {
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};

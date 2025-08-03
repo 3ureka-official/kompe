@@ -5,4 +5,4 @@ export function ContestsLoadingState() {
       <p className="text-gray-600">コンテストを読み込み中...</p>
     </div>
   );
-} 
+}

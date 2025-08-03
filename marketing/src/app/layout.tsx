@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kompe - TikTokで稼ぐ、新しいカタチ",
-  description: "フォロワー数に関係なく、TikTokの動画コンテストで賞金を獲得。企業コンテストに参加して今すぐ収益化を始めよう。",
+  description:
+    "フォロワー数に関係なく、TikTokの動画コンテストで賞金を獲得。企業コンテストに参加して今すぐ収益化を始めよう。",
 };
 
 export default function RootLayout({
@@ -30,9 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

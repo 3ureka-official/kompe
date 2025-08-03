@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
-import { Contest } from '@/types/Contest';
-import { AuthContext } from '@/contexts/AuthContext';
-import { getContests } from '@/services/contentestService';
+import { useState, useEffect, useContext, useCallback } from "react";
+import { Contest } from "@/types/Contest";
+import { AuthContext } from "@/contexts/AuthContext";
+import { getContests } from "@/services/contentestService";
 
 interface UseContestsReturn {
   contests: Contest[];
@@ -20,19 +20,18 @@ export function useContests(): UseContestsReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       // 一時的にモックデータを使う
       if (profile?.id) {
         const userContests = await getContests(profile.id);
-        console.log('userContests', userContests);
+        console.log("userContests", userContests);
         setContests(userContests);
       } else {
         setContests([]);
       }
-      
     } catch (err) {
-      console.error('コンテスト取得エラー:', err);
-      setError('コンテストの取得に失敗しました');
+      console.error("コンテスト取得エラー:", err);
+      setError("コンテストの取得に失敗しました");
     } finally {
       setLoading(false);
     }
@@ -51,6 +50,6 @@ export function useContests(): UseContestsReturn {
     contests,
     loading,
     error,
-    refetch: fetchContests
+    refetch: fetchContests,
   };
-} 
+}

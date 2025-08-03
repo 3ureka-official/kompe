@@ -1,70 +1,68 @@
-import { useState, useEffect, useCallback } from 'react'
-import { 
-  ContestSummary, 
-  FavoriteTab, 
-  FavoriteFilters 
-} from '@/types/contest'
-import { getUserFavorites, getFavoriteStats } from '@/lib/api/favorites'
+import { useState, useEffect, useCallback } from "react";
+import { ContestSummary, FavoriteTab, FavoriteFilters } from "@/types/contest";
+import { getUserFavorites, getFavoriteStats } from "@/lib/api/favorites";
 
 interface UseFavoritesOptions {
-  userId?: string
-  initialPage?: number
-  initialTab?: FavoriteTab
-  initialFilters?: FavoriteFilters
-  initialSearch?: string
-  autoFetch?: boolean
+  userId?: string;
+  initialPage?: number;
+  initialTab?: FavoriteTab;
+  initialFilters?: FavoriteFilters;
+  initialSearch?: string;
+  autoFetch?: boolean;
 }
 
 interface UseFavoritesReturn {
-  contests: ContestSummary[]
-  loading: boolean
-  error: string | null
-  total: number
-  limit: number
-  page: number
-  tab: FavoriteTab
-  search: string
+  contests: ContestSummary[];
+  loading: boolean;
+  error: string | null;
+  total: number;
+  limit: number;
+  page: number;
+  tab: FavoriteTab;
+  search: string;
   stats: {
-    total: number
-    upcoming: number
-    active: number
-    ended: number
-  } | null
-  
+    total: number;
+    upcoming: number;
+    active: number;
+    ended: number;
+  } | null;
+
   // Actions
-  refresh: () => Promise<void>
-  reset: () => void
-  setPage: (page: number) => void
-  setTab: (tab: FavoriteTab) => void
-  setSearch: (search: string) => void
+  refresh: () => Promise<void>;
+  reset: () => void;
+  setPage: (page: number) => void;
+  setTab: (tab: FavoriteTab) => void;
+  setSearch: (search: string) => void;
 }
 
-export function useFavorites(options: UseFavoritesOptions = {}): UseFavoritesReturn {
+export function useFavorites(
+  options: UseFavoritesOptions = {},
+): UseFavoritesReturn {
   const {
-    userId = 'user_001',
+    userId = "user_001",
     initialPage = 1,
-    initialTab = 'active',
+    initialTab = "active",
     initialFilters = {},
-    initialSearch = '',
-    autoFetch = true
-  } = options
+    initialSearch = "",
+    autoFetch = true,
+  } = options;
 
   // State
-  const [contests, setContests] = useState<ContestSummary[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [total, setTotal] = useState(0)
-  const [stats, setStats] = useState<UseFavoritesReturn['stats']>(null)
-  const [page, setPage] = useState(initialPage)
-  const [tab, setTab] = useState<FavoriteTab>(initialTab)
-  const [search, setSearch] = useState(initialSearch)
+  const [contests, setContests] = useState<ContestSummary[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
+  const [stats, setStats] = useState<UseFavoritesReturn["stats"]>(null);
+  const [page, setPage] = useState(initialPage);
+  const [tab, setTab] = useState<FavoriteTab>(initialTab);
+  const [search, setSearch] = useState(initialSearch);
 
-  const limit = 12
+  const limit = 12;
 
   // Fetch favorites
   const fetchFavorites = useCallback(async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
       const [favoritesResponse, statsResponse] = await Promise.all([
@@ -74,44 +72,48 @@ export function useFavorites(options: UseFavoritesOptions = {}): UseFavoritesRet
           limit,
           tab,
           filters: initialFilters,
-          search
+          search,
         }),
-        getFavoriteStats(userId)
-      ])
+        getFavoriteStats(userId),
+      ]);
 
-      setContests(favoritesResponse.contests)
-      setTotal(favoritesResponse.total)
-      setStats(statsResponse)
+      setContests(favoritesResponse.contests);
+      setTotal(favoritesResponse.total);
+      setStats(statsResponse);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'お気に入りコンテストの取得に失敗しました')
-      setContests([])
-      setTotal(0)
+      setError(
+        err instanceof Error
+          ? err.message
+          : "お気に入りコンテストの取得に失敗しました",
+      );
+      setContests([]);
+      setTotal(0);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [userId, page, tab, initialFilters, search, limit])
+  }, [userId, page, tab, initialFilters, search, limit]);
 
   // Refresh (reset page to 1 and fetch)
   const refresh = useCallback(async () => {
-    await fetchFavorites()
-  }, [fetchFavorites])
+    await fetchFavorites();
+  }, [fetchFavorites]);
 
   // Reset all filters and state
   const reset = useCallback(() => {
-    setError(null)
-    setContests([])
-    setTotal(0)
-    setPage(1)
-    setTab('active')
-    setSearch('')
-  }, [])
+    setError(null);
+    setContests([]);
+    setTotal(0);
+    setPage(1);
+    setTab("active");
+    setSearch("");
+  }, []);
 
   // Auto-fetch when dependencies change
   useEffect(() => {
     if (autoFetch) {
-      fetchFavorites()
+      fetchFavorites();
     }
-  }, [autoFetch])
+  }, [autoFetch]);
 
   return {
     contests,
@@ -127,6 +129,6 @@ export function useFavorites(options: UseFavoritesOptions = {}): UseFavoritesRet
     reset,
     setPage,
     setTab,
-    setSearch
-  }
-} 
+    setSearch,
+  };
+}
