@@ -1,23 +1,25 @@
-import React from 'react'
-import ContestCard from './ContestCard'
-import { Skeleton } from '@/components/ui/Skeleton'
-import { ContestSummary } from '@/types/contest'
+import React from "react";
+import ContestCard from "./ContestCard";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { ContestSummary } from "@/types/contest";
 
 interface ContestGridProps {
-  contests: ContestSummary[]
-  loading?: boolean
-  className?: string
+  contests: ContestSummary[];
+  loading?: boolean;
+  className?: string;
 }
 
-const ContestGrid: React.FC<ContestGridProps> = ({ 
-  contests, 
-  loading = false, 
-  className = '' 
+const ContestGrid: React.FC<ContestGridProps> = ({
+  contests,
+  loading = false,
+  className = "",
 }) => {
   // ローディング時のスケルトン表示
   if (loading) {
     return (
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${className}`}>
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${className}`}
+      >
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className="space-y-4">
             <Skeleton className="aspect-video w-full rounded-lg" />
@@ -39,7 +41,7 @@ const ContestGrid: React.FC<ContestGridProps> = ({
           </div>
         ))}
       </div>
-    )
+    );
   }
 
   // コンテストが空の場合
@@ -76,16 +78,14 @@ const ContestGrid: React.FC<ContestGridProps> = ({
   // }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${className}`}>
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${className}`}
+    >
       {contests.map((contest) => (
-        <ContestCard 
-          key={contest.id} 
-          contest={contest}
-          className="h-full"
-        />
+        <ContestCard key={contest.id} contest={contest} className="h-full" />
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default ContestGrid 
+export default ContestGrid;

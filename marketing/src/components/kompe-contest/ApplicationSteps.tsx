@@ -1,14 +1,16 @@
-import React from 'react';
+import React from "react";
 
 export function ApplicationSteps() {
   const steps = [
     {
-      title: 'Googleフォーム登録',
-      description: '下のリンクから応募フォームにアクセスし、必要事項を入力してください。'
+      title: "Googleフォーム登録",
+      description:
+        "下のリンクから応募フォームにアクセスし、必要事項を入力してください。",
     },
     {
-      title: '6月20日に詳細案内',
-      description: '登録いただいたメールに6月20日までに投稿の詳細をお送りします。'
+      title: "6月20日に詳細案内",
+      description:
+        "登録いただいたメールに6月20日までに投稿の詳細をお送りします。",
     },
     // {
     //   title: '動画投稿＆エントリー',
@@ -28,15 +30,19 @@ export function ApplicationSteps() {
         </h2>
         <div className="grid gap-8 md:grid-cols-2">
           {steps.map((step, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="bg-[#222222] p-4 pb-6 md:p-8 rounded-xl relative transform transition-transform duration-300 border border-white/30"
             >
               <div className="absolute -top-4 -left-4 w-10 h-10 bg-[#25F4EE] rounded-full flex items-center justify-center text-black font-bold text-lg">
                 {index + 1}
               </div>
-              <h3 className="text-lg md:text-xl font-bold mb-4 mt-2 text-white">{step.title}</h3>
-              <p className="text-gray-300 leading-relaxed text-sm md:text-base">{step.description}</p>
+              <h3 className="text-lg md:text-xl font-bold mb-4 mt-2 text-white">
+                {step.title}
+              </h3>
+              <p className="text-gray-300 leading-relaxed text-sm md:text-base">
+                {step.description}
+              </p>
             </div>
           ))}
         </div>

@@ -1,10 +1,10 @@
-import { CheckCircle } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Contest } from '@/types/contest'
-import { MarkdownBox } from '@/components/ui/markdown/MarkdownBox'
+import { CheckCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Contest } from "@/types/contest";
+import { MarkdownBox } from "@/components/ui/markdown/MarkdownBox";
 
 interface ContestGuidelinesProps {
-  contest: Contest
+  contest: Contest;
 }
 
 export function ContestGuidelines({ contest }: ContestGuidelinesProps) {
@@ -22,7 +22,7 @@ export function ContestGuidelines({ contest }: ContestGuidelinesProps) {
             <h4 className="font-semibold mb-3 text-green-700">応募条件</h4>
             <MarkdownBox content={contest.requirements} />
           </div>
-          
+
           <div>
             <h4 className="font-semibold mb-3 text-blue-700">イメージ動画</h4>
             <MarkdownBox content={contest.inspirations} />
@@ -30,5 +30,5 @@ export function ContestGuidelines({ contest }: ContestGuidelinesProps) {
         </div>
       </CardContent>
     </Card>
-  )
-} 
+  );
+}

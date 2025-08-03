@@ -1,19 +1,30 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { useContest } from '@/hooks/useContest';
-import { useApplication } from '@/hooks/useApplication';
-import { APPLICATION_STEPS } from '@/types/application';
-import { ApplicationSteps } from '@/components/application/ApplicationSteps';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { Checkbox } from '@/components/ui/Checkbox';
-import { AlertCircle, ExternalLink, Video, FileText, Shield, ArrowLeft } from 'lucide-react';
-
-
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { useContest } from "@/hooks/useContest";
+import { useApplication } from "@/hooks/useApplication";
+import { APPLICATION_STEPS } from "@/types/application";
+import { ApplicationSteps } from "@/components/application/ApplicationSteps";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Checkbox } from "@/components/ui/Checkbox";
+import {
+  AlertCircle,
+  ExternalLink,
+  Video,
+  FileText,
+  Shield,
+  ArrowLeft,
+} from "lucide-react";
 
 export default function ConfirmPage() {
   const router = useRouter();
@@ -30,15 +41,20 @@ export default function ConfirmPage() {
     clearError,
     canSubmit,
     hasExistingApplication,
-  } = useApplication({ contestId: contestId, userId: user?.id || '', autoSaveDraft: false });
+  } = useApplication({
+    contestId: contestId,
+    userId: user?.id || "",
+    autoSaveDraft: false,
+  });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 既に応募済みの場合はリダイレクト
   useEffect(() => {
-    
     if (hasExistingApplication) {
-      router.push(`/contests/${contestId}/apply/complete?applicationId=${hasExistingApplication}`);
+      router.push(
+        `/contests/${contestId}/apply/complete?applicationId=${hasExistingApplication}`,
+      );
     }
   }, [hasExistingApplication, contestId, router]);
 
@@ -56,12 +72,14 @@ export default function ConfirmPage() {
     try {
       setIsSubmitting(true);
       const application = await submitApplication();
-      
+
       if (application) {
-        router.push(`/contests/${contestId}/apply/complete?applicationId=${application.id}`);
+        router.push(
+          `/contests/${contestId}/apply/complete?applicationId=${application.id}`,
+        );
       }
     } catch (err) {
-      console.error('Failed to submit application:', err);
+      console.error("Failed to submit application:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -89,8 +107,10 @@ export default function ConfirmPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">コンテストが見つかりません</h1>
-          <Button onClick={() => router.push('/contests')}>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            コンテストが見つかりません
+          </h1>
+          <Button onClick={() => router.push("/contests")}>
             コンテスト一覧に戻る
           </Button>
         </div>
@@ -117,7 +137,9 @@ export default function ConfirmPage() {
             <span>/</span>
             <span>応募確認</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">応募内容の確認</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            応募内容の確認
+          </h1>
           <p className="text-gray-600">
             応募内容を確認し、利用規約に同意してください
           </p>
@@ -154,9 +176,7 @@ export default function ConfirmPage() {
                   <Video className="w-5 h-5" />
                   応募内容の確認
                 </CardTitle>
-                <CardDescription>
-                  以下の内容で応募を行います
-                </CardDescription>
+                <CardDescription>以下の内容で応募を行います</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* TikTok URL */}
@@ -191,9 +211,7 @@ export default function ConfirmPage() {
                   <Shield className="w-5 h-5" />
                   利用規約・ガイドライン
                 </CardTitle>
-                <CardDescription>
-                  応募前に必ずお読みください
-                </CardDescription>
+                <CardDescription>応募前に必ずお読みください</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* 利用規約 */}
@@ -202,17 +220,24 @@ export default function ConfirmPage() {
                     <Checkbox
                       id="terms"
                       checked={formData.agreedToTerms}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         updateFormData({ agreedToTerms: checked === true })
                       }
                     />
                     <div className="flex-1">
-                      <label htmlFor="terms" className="text-sm font-medium text-gray-700 cursor-pointer">
+                      <label
+                        htmlFor="terms"
+                        className="text-sm font-medium text-gray-700 cursor-pointer"
+                      >
                         利用規約に同意する *
                       </label>
                       <p className="text-xs text-gray-500 mt-1">
                         応募には利用規約への同意が必要です。
-                        <a href="/terms" target="_blank" className="text-primary-600 hover:underline ml-1">
+                        <a
+                          href="/terms"
+                          target="_blank"
+                          className="text-primary-600 hover:underline ml-1"
+                        >
                           利用規約を確認する
                         </a>
                       </p>
@@ -226,12 +251,15 @@ export default function ConfirmPage() {
                     <Checkbox
                       id="guidelines"
                       checked={formData.agreedToGuidelines}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         updateFormData({ agreedToGuidelines: checked === true })
                       }
                     />
                     <div className="flex-1">
-                      <label htmlFor="guidelines" className="text-sm font-medium text-gray-700 cursor-pointer">
+                      <label
+                        htmlFor="guidelines"
+                        className="text-sm font-medium text-gray-700 cursor-pointer"
+                      >
                         コンテストガイドラインに同意する *
                       </label>
                       <p className="text-xs text-gray-500 mt-1">
@@ -263,9 +291,7 @@ export default function ConfirmPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">{contest.title}</CardTitle>
-                <CardDescription>
-                  {contest.brandName}
-                </CardDescription>
+                <CardDescription>{contest.brandName}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* 賞金 */}
@@ -280,12 +306,12 @@ export default function ConfirmPage() {
                 <div>
                   <div className="text-sm text-gray-600 mb-1">応募締切</div>
                   <div className="font-medium">
-                    {new Date(contest.endDate).toLocaleDateString('ja-JP', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
+                    {new Date(contest.endDate).toLocaleDateString("ja-JP", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
                   </div>
                 </div>
@@ -304,9 +330,9 @@ export default function ConfirmPage() {
                     disabled={!canSubmit || isSubmitting}
                     loading={isSubmitting}
                   >
-                    {isSubmitting ? '応募中...' : '応募を確定する'}
+                    {isSubmitting ? "応募中..." : "応募を確定する"}
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     onClick={handleBack}
@@ -324,4 +350,4 @@ export default function ConfirmPage() {
       </div>
     </div>
   );
-} 
+}

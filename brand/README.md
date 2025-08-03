@@ -7,7 +7,8 @@ src/
 │   ├─ components/ # ページごとのコンポーネント
 │   ├─ hooks/      # ページごとのhooks
 │   ├─ service/    # ページごとのサービスファイル
-├─ components/     # 共通コンポーネント  
+├─ components/     # 共通コンポーネント
 ├─ lib/            # Firebaseなどのクライアント
 ├─ types/          # 型定義
 ├─ styles/
+```

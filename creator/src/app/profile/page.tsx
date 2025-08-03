@@ -1,15 +1,28 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { ProfileService } from '@/lib/api/profile';
-import { UserProfile } from '@/types/profile';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { AlertCircle, User, CreditCard, Edit, Settings, LogOut } from 'lucide-react';
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { ProfileService } from "@/lib/api/profile";
+import { UserProfile } from "@/types/profile";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import {
+  AlertCircle,
+  User,
+  CreditCard,
+  Edit,
+  Settings,
+  LogOut,
+} from "lucide-react";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -21,9 +34,9 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await logout();
-      router.push('/auth/login');
+      router.push("/auth/login");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -37,7 +50,7 @@ export default function ProfilePage() {
         const profileData = await ProfileService.getUserProfile(user.id);
         setProfile(profileData);
       } catch {
-        setError('プロフィール情報の取得に失敗しました');
+        setError("プロフィール情報の取得に失敗しました");
       } finally {
         setLoading(false);
       }
@@ -74,10 +87,10 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">プロフィール</h1>
-                <p className="text-gray-600">
-                  アカウント情報を確認できます
-                </p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  プロフィール
+                </h1>
+                <p className="text-gray-600">アカウント情報を確認できます</p>
               </div>
               <Link href="/profile/edit">
                 <Button>
@@ -104,32 +117,34 @@ export default function ProfilePage() {
                   <User className="w-5 h-5" />
                   基本情報
                 </CardTitle>
-                <CardDescription>
-                  アカウントの基本情報
-                </CardDescription>
+                <CardDescription>アカウントの基本情報</CardDescription>
               </CardHeader>
-              
+
               <CardContent>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       表示名
                     </label>
-                    <p className="text-gray-900">{profile?.name || '未設定'}</p>
+                    <p className="text-gray-900">{profile?.name || "未設定"}</p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       メールアドレス
                     </label>
-                    <p className="text-gray-900">{profile?.email || '未設定'}</p>
+                    <p className="text-gray-900">
+                      {profile?.email || "未設定"}
+                    </p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       TikTokハンドル
                     </label>
-                    <p className="text-gray-900">{profile?.tiktokHandle || '未設定'}</p>
+                    <p className="text-gray-900">
+                      {profile?.tiktokHandle || "未設定"}
+                    </p>
                   </div>
 
                   {profile?.tiktokUsername && (
@@ -146,7 +161,11 @@ export default function ProfilePage() {
                       アカウント作成日
                     </label>
                     <p className="text-gray-900">
-                      {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('ja-JP') : '未設定'}
+                      {profile?.createdAt
+                        ? new Date(profile.createdAt).toLocaleDateString(
+                            "ja-JP",
+                          )
+                        : "未設定"}
                     </p>
                   </div>
                 </div>
@@ -160,9 +179,7 @@ export default function ProfilePage() {
                   <CreditCard className="w-5 h-5" />
                   銀行口座設定
                 </CardTitle>
-                <CardDescription>
-                  賞金受け取り用の銀行口座情報
-                </CardDescription>
+                <CardDescription>賞金受け取り用の銀行口座情報</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -170,22 +187,29 @@ export default function ProfilePage() {
                     <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-green-900">銀行口座が設定済みです</p>
+                          <p className="font-medium text-green-900">
+                            銀行口座が設定済みです
+                          </p>
                           <div className="space-y-1 mt-2">
                             <p className="text-sm text-green-700">
-                              <span className="font-medium">銀行名:</span> {profile.bankInfo.bankName}
+                              <span className="font-medium">銀行名:</span>{" "}
+                              {profile.bankInfo.bankName}
                             </p>
                             <p className="text-sm text-green-700">
-                              <span className="font-medium">支店名:</span> {profile.bankInfo.branchName}
+                              <span className="font-medium">支店名:</span>{" "}
+                              {profile.bankInfo.branchName}
                             </p>
                             <p className="text-sm text-green-700">
-                              <span className="font-medium">口座種別:</span> {profile.bankInfo.accountType}
+                              <span className="font-medium">口座種別:</span>{" "}
+                              {profile.bankInfo.accountType}
                             </p>
                             <p className="text-sm text-green-700">
-                              <span className="font-medium">口座番号:</span> {profile.bankInfo.accountNumber}
+                              <span className="font-medium">口座番号:</span>{" "}
+                              {profile.bankInfo.accountNumber}
                             </p>
                             <p className="text-sm text-green-700">
-                              <span className="font-medium">口座名義:</span> {profile.bankInfo.accountHolder}
+                              <span className="font-medium">口座名義:</span>{" "}
+                              {profile.bankInfo.accountHolder}
                             </p>
                           </div>
                         </div>
@@ -193,7 +217,9 @@ export default function ProfilePage() {
                     </div>
                   ) : (
                     <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <p className="text-yellow-800 font-medium">銀行口座が未設定です</p>
+                      <p className="text-yellow-800 font-medium">
+                        銀行口座が未設定です
+                      </p>
                       <p className="text-sm text-yellow-700 mt-1">
                         賞金を受け取るには銀行口座の設定が必要です
                       </p>
@@ -203,7 +229,7 @@ export default function ProfilePage() {
                   <Link href="/settings/bank">
                     <Button variant="outline" className="w-full">
                       <Settings className="w-4 h-4 mr-2" />
-                      銀行口座を{profile?.bankInfo ? '編集' : '設定'}する
+                      銀行口座を{profile?.bankInfo ? "編集" : "設定"}する
                     </Button>
                   </Link>
                 </div>
@@ -217,22 +243,24 @@ export default function ProfilePage() {
                     <AlertCircle className="w-5 h-5" />
                     未成年者設定
                   </CardTitle>
-                  <CardDescription>
-                    未成年者の参加に必要な設定
-                  </CardDescription>
+                  <CardDescription>未成年者の参加に必要な設定</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {profile.parentConsentFileUrl ? (
                       <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <p className="font-medium text-green-900">保護者同意書が提出済みです</p>
+                        <p className="font-medium text-green-900">
+                          保護者同意書が提出済みです
+                        </p>
                         <p className="text-sm text-green-700 mt-1">
                           コンテストに参加できます
                         </p>
                       </div>
                     ) : (
                       <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-red-800 font-medium">保護者同意書が未提出です</p>
+                        <p className="text-red-800 font-medium">
+                          保護者同意書が未提出です
+                        </p>
                         <p className="text-sm text-red-700 mt-1">
                           コンテストに参加するには保護者同意書の提出が必要です
                         </p>
@@ -271,4 +299,3 @@ export default function ProfilePage() {
     </ProtectedRoute>
   );
 }
-

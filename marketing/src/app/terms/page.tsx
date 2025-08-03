@@ -6,7 +6,7 @@ type Props = { params: Promise<{ version: string }> };
 
 export default async function TermsPage({ params }: Props) {
   const version = (await params).version;
-  
+
   let md: string;
   try {
     md = loadDoc("terms", version);

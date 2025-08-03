@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import { useParams, useRouter } from 'next/navigation'
-import { AlertCircle, ArrowLeft } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { useContest } from '@/hooks/useContest'
-import { ContestHero } from '@/components/contest/ContestHero'
-import { ContestDescription } from '@/components/contest/ContestDescription'
-import { ContestGuidelines } from '@/components/contest/ContestGuidelines'
-import { ContestRanking } from '@/components/contest/ContestRanking'
-import { ContestSidebar } from '@/components/contest/ContestSidebar'
+import { useParams, useRouter } from "next/navigation";
+import { AlertCircle, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { useContest } from "@/hooks/useContest";
+import { ContestHero } from "@/components/contest/ContestHero";
+import { ContestDescription } from "@/components/contest/ContestDescription";
+import { ContestGuidelines } from "@/components/contest/ContestGuidelines";
+import { ContestRanking } from "@/components/contest/ContestRanking";
+import { ContestSidebar } from "@/components/contest/ContestSidebar";
 
 export default function ContestDetailPage() {
-  const params = useParams()
-  const router = useRouter()
-  const contestId = params.id as string
+  const params = useParams();
+  const router = useRouter();
+  const contestId = params.id as string;
 
   const { contest, loading, error } = useContest({
     id: contestId,
-    autoFetch: true
-  })
+    autoFetch: true,
+  });
 
   if (loading) {
     return (
@@ -41,7 +41,7 @@ export default function ContestDetailPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error || !contest) {
@@ -53,15 +53,16 @@ export default function ContestDetailPage() {
             コンテストが見つかりません
           </h1>
           <p className="text-gray-600 mb-6">
-            {error || 'お探しのコンテストは存在しないか、削除された可能性があります。'}
+            {error ||
+              "お探しのコンテストは存在しないか、削除された可能性があります。"}
           </p>
-          <Button onClick={() => router.push('/contests')}>
+          <Button onClick={() => router.push("/contests")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             コンテスト一覧に戻る
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -86,5 +87,5 @@ export default function ContestDetailPage() {
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

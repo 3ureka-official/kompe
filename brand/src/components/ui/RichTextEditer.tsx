@@ -1,27 +1,27 @@
 // components/RichTextEditor.tsx
-'use client'
+"use client";
 
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import { RichTextToolbar } from './RichTextToolbar'
-import { ListItem } from '@tiptap/extension-list-item'
-import BulletList from '@tiptap/extension-bullet-list'
-import OrderedList from '@tiptap/extension-ordered-list'
-import Underline from '@tiptap/extension-underline'
-import TextAlign from '@tiptap/extension-text-align'
-import LinkExtension from '@tiptap/extension-link'
-import Placeholder from '@tiptap/extension-placeholder'
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { RichTextToolbar } from "./RichTextToolbar";
+import { ListItem } from "@tiptap/extension-list-item";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import Underline from "@tiptap/extension-underline";
+import TextAlign from "@tiptap/extension-text-align";
+import LinkExtension from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
 
 interface RichTextEditorProps {
-  value: string
-  onChange: (html: string) => void
-  placeholder?: string
+  value: string;
+  onChange: (html: string) => void;
+  placeholder?: string;
 }
 
 export function RichTextEditor({
   value,
   onChange,
-  placeholder = 'ここにテキストを入力',
+  placeholder = "ここにテキストを入力",
 }: RichTextEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,
@@ -32,35 +32,35 @@ export function RichTextEditor({
       OrderedList,
       ListItem,
       TextAlign.configure({
-        types: ['heading', 'paragraph'],
-        alignments: ['left', 'center', 'right', 'justify'],
+        types: ["heading", "paragraph"],
+        alignments: ["left", "center", "right", "justify"],
       }),
       LinkExtension.configure({
         openOnClick: true,
         linkOnPaste: true,
         autolink: true,
         HTMLAttributes: {
-          class: 'text-blue-600 underline',
-          target: '_blank',
-          rel: 'noopener noreferrer',
+          class: "text-blue-600 underline",
+          target: "_blank",
+          rel: "noopener noreferrer",
         },
       }),
       Placeholder.configure({
         placeholder,
-        emptyEditorClass: 'is-editor-empty',
+        emptyEditorClass: "is-editor-empty",
       }),
     ],
     content: value,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
+      onChange(editor.getHTML());
     },
     editorProps: {
       attributes: {
-        class: 'outline-none focus:outline-none prose prose-sm prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5',
+        class:
+          "outline-none focus:outline-none prose prose-sm prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5",
       },
     },
-  })
-
+  });
 
   return (
     <div className="border rounded-lg">
@@ -82,8 +82,8 @@ export function RichTextEditor({
           [&_u]:underline [&_u]:decoration-black [&_u]:decoration-2
           [&_a]:underline [&_a]:decoration-blue-500 [&_a]:text-blue-600 [&_a:hover]:decoration-blue-700
         "
-        style={{ padding: '10px'}}
+        style={{ padding: "10px" }}
       />
     </div>
-  )
+  );
 }

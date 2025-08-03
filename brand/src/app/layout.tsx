@@ -1,16 +1,16 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { AuthProvider } from '@/contexts/AuthContext';
-import QueryProvider from '@/components/app/QueryProvider';
-import { Header } from '@/components/app/Header';
-import { AppGate } from '@/components/app/AppGate';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
+import QueryProvider from "@/components/app/QueryProvider";
+import { Header } from "@/components/app/Header";
+import { AppGate } from "@/components/app/AppGate";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'ブランドコンテスト',
-  description: 'TikTokクリエイターとブランドをつなぐプラットフォーム',
+  title: "ブランドコンテスト",
+  description: "TikTokクリエイターとブランドをつなぐプラットフォーム",
 };
 
 export default function RootLayout({
@@ -28,10 +28,10 @@ export default function RootLayout({
                 <Header />
                 {children}
               </main>
-            </AppGate>  
+            </AppGate>
           </AuthProvider>
         </QueryProvider>
       </body>
     </html>
   );
-} 
+}

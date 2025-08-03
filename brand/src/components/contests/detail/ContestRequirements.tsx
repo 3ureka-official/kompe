@@ -1,4 +1,4 @@
-import { Contest } from '@/types/Contest';
+import { Contest } from "@/types/Contest";
 
 type Props = {
   contest: Contest;
@@ -13,4 +13,4 @@ export function ContestRequirements({ contest }: Props) {
       </div>
     </div>
   );
-} 
+}

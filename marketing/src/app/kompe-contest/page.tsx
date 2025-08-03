@@ -1,9 +1,9 @@
-import { Header } from '@/components/Header';
-import { Hero } from '@/components/kompe-contest/Hero';
-import { ServiceOverview } from '@/components/kompe-contest/ServiceOverview';
-import { CampaignDetails } from '@/components/kompe-contest/CampaignDetails';
-import { ApplicationSteps } from '@/components/kompe-contest/ApplicationSteps';
-import { FloatingButton } from '@/components/kompe-contest/FloatingButton';
+import { Header } from "@/components/Header";
+import { Hero } from "@/components/kompe-contest/Hero";
+import { ServiceOverview } from "@/components/kompe-contest/ServiceOverview";
+import { CampaignDetails } from "@/components/kompe-contest/CampaignDetails";
+import { ApplicationSteps } from "@/components/kompe-contest/ApplicationSteps";
+import { FloatingButton } from "@/components/kompe-contest/FloatingButton";
 
 export default function CreatorLandingPage() {
   return (

@@ -1,25 +1,33 @@
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { SelectWithOptions } from '@/components/ui/Select';
-import { FormField } from '@/components/ui/FormField';
-import { FileUpload } from '@/components/ui/FileUpload';
-import { Controller, useForm } from 'react-hook-form';
-import { CONTEST_CATEGORIES } from '@/constants/contestCategory.constant';
-import { basicInfoSchema} from '@/schema/contestCreateSchema';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useContext, useEffect } from 'react';
-import { CreateContestContext } from '@/contexts/CreateContestContext';
-import { DateInput } from '@/components/ui/DateInput';
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { SelectWithOptions } from "@/components/ui/Select";
+import { FormField } from "@/components/ui/FormField";
+import { FileUpload } from "@/components/ui/FileUpload";
+import { Controller, useForm } from "react-hook-form";
+import { CONTEST_CATEGORIES } from "@/constants/contestCategory.constant";
+import { basicInfoSchema } from "@/schema/contestCreateSchema";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useContext, useEffect } from "react";
+import { CreateContestContext } from "@/contexts/CreateContestContext";
+import { DateInput } from "@/components/ui/DateInput";
 
 export function BasicInfo() {
-  const { data, next, step, thumbnail, thumbnailPreview, setThumbnail, setThumbnailPreview } = useContext(CreateContestContext);
+  const {
+    data,
+    next,
+    step,
+    thumbnail,
+    thumbnailPreview,
+    setThumbnail,
+    setThumbnailPreview,
+  } = useContext(CreateContestContext);
 
   const { control, handleSubmit, setValue } = useForm({
     resolver: yupResolver(basicInfoSchema),
-    mode: 'onSubmit',
+    mode: "onSubmit",
     defaultValues: {
-      title: data.title || '',
-      category: data.category || '',
+      title: data.title || "",
+      category: data.category || "",
       applicationStartDate: data.applicationStartDate || new Date(),
       applicationEndDate: data.applicationEndDate || new Date(),
       contestStartDate: data.contestStartDate || new Date(),
@@ -30,7 +38,7 @@ export function BasicInfo() {
   useEffect(() => {
     if (step === 0) {
       if (thumbnail) {
-        setValue('thumbnailFile', thumbnail);
+        setValue("thumbnailFile", thumbnail);
       }
     }
   }, [step, thumbnail, thumbnailPreview, setValue]);
@@ -44,15 +52,19 @@ export function BasicInfo() {
               control={control}
               name="title"
               render={({ field, fieldState }) => (
-                <FormField label="コンテストタイトル" required error={fieldState.error?.message}>
+                <FormField
+                  label="コンテストタイトル"
+                  required
+                  error={fieldState.error?.message}
+                >
                   <Input
-                    {...field}  
+                    {...field}
                     value={field.value}
                     placeholder="例：コーディネートコンテスト"
-                  />  
+                  />
                 </FormField>
               )}
-            />  
+            />
           </div>
 
           <div className="w-full">
@@ -60,7 +72,11 @@ export function BasicInfo() {
               control={control}
               name="category"
               render={({ field, fieldState }) => (
-                <FormField label="カテゴリー" required error={fieldState.error?.message}>
+                <FormField
+                  label="カテゴリー"
+                  required
+                  error={fieldState.error?.message}
+                >
                   <SelectWithOptions
                     value={field.value}
                     onValueChange={(value) => field.onChange(value)}
@@ -79,20 +95,24 @@ export function BasicInfo() {
             control={control}
             name="thumbnailFile"
             render={({ field, fieldState }) => (
-            <FormField label="サムネイル画像" required error={fieldState.error?.message}>
-              <FileUpload
-                file={field.value || null}
-                preview={thumbnailPreview}
-                onFileChange={(file) => {
-                  setThumbnail(file);
-                  field.onChange(file);
-                }}
-                onPreviewChange={setThumbnailPreview}
-                accept="image/*"
-                maxSize={5 * 1024 * 1024}
-                className="w-full"
-              />
-            </FormField>
+              <FormField
+                label="サムネイル画像"
+                required
+                error={fieldState.error?.message}
+              >
+                <FileUpload
+                  file={field.value || null}
+                  preview={thumbnailPreview}
+                  onFileChange={(file) => {
+                    setThumbnail(file);
+                    field.onChange(file);
+                  }}
+                  onPreviewChange={setThumbnailPreview}
+                  accept="image/*"
+                  maxSize={5 * 1024 * 1024}
+                  className="w-full"
+                />
+              </FormField>
             )}
           />
         </div>
@@ -101,7 +121,7 @@ export function BasicInfo() {
           <label className="block text-sm font-medium text-gray-700 mb-4">
             応募期間 <span className="text-red-500">*</span>
           </label>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-gray-600 mb-2">開始日</label>
@@ -115,7 +135,9 @@ export function BasicInfo() {
                       onChange={(e) => field.onChange(e)}
                     />
                     {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-1">{fieldState.error.message}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldState.error.message}
+                      </p>
                     )}
                   </div>
                 )}
@@ -134,7 +156,9 @@ export function BasicInfo() {
                       onChange={(e) => field.onChange(e)}
                     />
                     {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-1">{fieldState.error.message}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldState.error.message}
+                      </p>
                     )}
                   </div>
                 )}
@@ -147,7 +171,7 @@ export function BasicInfo() {
           <label className="block text-sm font-medium text-gray-700 mb-4">
             開催期間 <span className="text-red-500">*</span>
           </label>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-gray-600 mb-2">開始日</label>
@@ -161,7 +185,9 @@ export function BasicInfo() {
                       onChange={(e) => field.onChange(e)}
                     />
                     {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-1">{fieldState.error.message}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldState.error.message}
+                      </p>
                     )}
                   </div>
                 )}
@@ -180,7 +206,9 @@ export function BasicInfo() {
                       onChange={(e) => field.onChange(e)}
                     />
                     {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-1">{fieldState.error.message}</p>
+                      <p className="text-red-500 text-sm mt-1">
+                        {fieldState.error.message}
+                      </p>
                     )}
                   </div>
                 )}
@@ -189,24 +217,16 @@ export function BasicInfo() {
           </div>
         </div>
 
-
         <div className="flex justify-end gap-4 pt-6">
-          <Button
-            type="button"
-            variant="secondary"
-          >
+          <Button type="button" variant="secondary">
             下書き保存
           </Button>
 
-          <Button
-            type="submit"
-            variant="primary"
-            onClick={handleSubmit(next)}
-          >
+          <Button type="submit" variant="primary" onClick={handleSubmit(next)}>
             次へ進む
           </Button>
         </div>
       </div>
     </div>
   );
-} 
+}

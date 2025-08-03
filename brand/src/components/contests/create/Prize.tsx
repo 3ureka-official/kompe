@@ -1,100 +1,124 @@
-import { Button } from '@/components/ui/Button';
-import { useContext, useState } from 'react';
-import { CreateContestContext } from '@/contexts/CreateContestContext';
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ContestCreateFormData, prizeSchema } from '@/schema/contestCreateSchema';
-import { NumberInput } from '@/components/ui/NumberInput';
-import { FormField } from '@/components/ui/FormField';
-import { CONTEST_PLANS } from '@/constants/contestPlanConstant';
-import { useCreateContest } from '@/hooks/contest/useCreateContest';
-import { BrandContext } from '@/contexts/BrandContext';
-import { FormAssetItem, InspirationItem } from '@/types/Contest';
+import { Button } from "@/components/ui/Button";
+import { useContext, useState } from "react";
+import { CreateContestContext } from "@/contexts/CreateContestContext";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  ContestCreateFormData,
+  prizeSchema,
+} from "@/schema/contestCreateSchema";
+import { NumberInput } from "@/components/ui/NumberInput";
+import { FormField } from "@/components/ui/FormField";
+import { CONTEST_PLANS } from "@/constants/contestPlanConstant";
+import { useCreateContest } from "@/hooks/contest/useCreateContest";
+import { BrandContext } from "@/contexts/BrandContext";
+import { FormAssetItem, InspirationItem } from "@/types/Contest";
 
 export function Prize() {
   const { brand } = useContext(BrandContext);
   const { mutate: createContest, isPending, error } = useCreateContest();
 
   const { data, back, thumbnail } = useContext(CreateContestContext);
-  
+
   const { control, handleSubmit, watch, setValue, getValues } = useForm({
     resolver: yupResolver(prizeSchema),
-    mode: 'onSubmit',
+    mode: "onSubmit",
     defaultValues: {
       prizePool: data.prizePool || 0,
       prizeDistribution: data.prizeDistribution || [0, 0, 0],
     },
   });
 
-  const watchedPrizePool = watch('prizePool');
-  const watchedDistribution = watch('prizeDistribution');
+  const watchedPrizePool = watch("prizePool");
+  const watchedDistribution = watch("prizeDistribution");
 
   const [totalPrize, setTotalPrize] = useState(0);
 
   const addWinner = () => {
     if (watchedDistribution && watchedDistribution.length < 10) {
-      setValue('prizeDistribution', [...watchedDistribution, 0]);
-      setTotalPrize(watchedDistribution.reduce((sum, amount) => sum + amount, 0));
+      setValue("prizeDistribution", [...watchedDistribution, 0]);
+      setTotalPrize(
+        watchedDistribution.reduce((sum, amount) => sum + amount, 0),
+      );
     }
   };
 
   const removeWinner = () => {
     if (watchedDistribution && watchedDistribution.length > 1) {
-      setValue('prizeDistribution', watchedDistribution.slice(0, -1));
-      setTotalPrize(watchedDistribution.reduce((sum, amount) => sum + amount, 0));
+      setValue("prizeDistribution", watchedDistribution.slice(0, -1));
+      setTotalPrize(
+        watchedDistribution.reduce((sum, amount) => sum + amount, 0),
+      );
     }
   };
 
   const updateAmount = (index: number, amount: number) => {
-    const newDistribution = [...watchedDistribution || []];
+    const newDistribution = [...(watchedDistribution || [])];
     newDistribution[index] = amount;
-    setValue('prizeDistribution', newDistribution);
+    setValue("prizeDistribution", newDistribution);
     setTotalPrize(newDistribution.reduce((sum, amount) => sum + amount, 0));
   };
-  
+
   const onSubmit = () => {
     if (!brand) return;
 
     const values = getValues();
 
-    let assetsData: FormAssetItem[] | null = data.assets
-      ?.filter(asset => asset.file != null || asset.url != null || asset.description != null)
-      .map(asset => ({
-        file: asset.file || null,
-        url: asset.url || null,
-        description: asset.description || null,
-      })) || null;
+    let assetsData: FormAssetItem[] | null =
+      data.assets
+        ?.filter(
+          (asset) =>
+            asset.file != null ||
+            asset.url != null ||
+            asset.description != null,
+        )
+        .map((asset) => ({
+          file: asset.file || null,
+          url: asset.url || null,
+          description: asset.description || null,
+        })) || null;
 
     // inspirationの処理も追加
-    let inspirationData: Omit<InspirationItem, 'id' | 'created_at' | 'brand_id' | 'contest_id'>[] | null = 
+    let inspirationData:
+      | Omit<InspirationItem, "id" | "created_at" | "brand_id" | "contest_id">[]
+      | null =
       data.inspirations
-      ?.filter(inspiration => inspiration.url != null || inspiration.description != null)
-      .map(inspiration => ({
-        url: inspiration.url || null,
-        description: inspiration.description || null,
-      })) || null;
+        ?.filter(
+          (inspiration) =>
+            inspiration.url != null || inspiration.description != null,
+        )
+        .map((inspiration) => ({
+          url: inspiration.url || null,
+          description: inspiration.description || null,
+        })) || null;
 
     const completeData = {
-      title: data.title || '',
-      category: data.category || '',
-      description: data.description || '',
-      requirements: data.requirements || '',
-      application_start_date: data.applicationStartDate || '',
-      application_end_date: data.applicationEndDate || '',
-      contest_start_date: data.contestStartDate || '',
-      contest_end_date: data.contestEndDate || '',
+      title: data.title || "",
+      category: data.category || "",
+      description: data.description || "",
+      requirements: data.requirements || "",
+      application_start_date: data.applicationStartDate || "",
+      application_end_date: data.applicationEndDate || "",
+      contest_start_date: data.contestStartDate || "",
+      contest_end_date: data.contestEndDate || "",
       prize_pool: values.prizePool || 0,
       prize_distribution: values.prizeDistribution || [],
     };
-    
-    createContest({ brandId: brand.id, contestData: completeData, thumbnailFile: thumbnail, assetsData: assetsData, inspirationData: inspirationData });
+
+    createContest({
+      brandId: brand.id,
+      contestData: completeData,
+      thumbnailFile: thumbnail,
+      assetsData: assetsData,
+      inspirationData: inspirationData,
+    });
   };
 
   return (
     <div>
       <div className="bg-white rounded-lg p-8 shadow-sm">
         <h3 className="text-base font-medium text-gray-700 mb-4">総賞金額</h3>
-        
+
         <Controller
           control={control}
           name="prizePool"
@@ -105,9 +129,9 @@ export function Prize() {
                   <label
                     key={option.value}
                     className={`relative flex cursor-pointer rounded-lg border p-4 transition-colors ${
-                      field.value === option.value 
-                        ? 'border-gray-900 bg-gray-50' 
-                        : 'border-gray-300 hover:border-gray-400'
+                      field.value === option.value
+                        ? "border-gray-900 bg-gray-50"
+                        : "border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     <input
@@ -119,7 +143,11 @@ export function Prize() {
                       onChange={() => field.onChange(option.value)}
                     />
                     <span className="flex flex-col items-center w-full justify-center">
-                      <svg className={`w-6 h-6 ${option.textColor}`} fill="currentColor" viewBox="0 0 24 24">
+                      <svg
+                        className={`w-6 h-6 ${option.textColor}`}
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
                         <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" />
                       </svg>
                       <span className="block text-sm font-medium text-gray-900">
@@ -137,21 +165,36 @@ export function Prize() {
       <div className="bg-white rounded-lg p-8 shadow-sm mt-8">
         <div>
           <h3 className="text-base font-medium text-gray-700 mb-4">配分金額</h3>
-          <div className='flex justify-between items-center mb-6'>
+          <div className="flex justify-between items-center mb-6">
             <h4 className="text-base font-medium text-gray-700">入賞者数</h4>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={removeWinner}
-                disabled={watchedDistribution && watchedDistribution.length <= 1}
+                disabled={
+                  watchedDistribution && watchedDistribution.length <= 1
+                }
                 className="inline-flex items-center justify-center w-8 h-8 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                style={{ 
-                  backgroundColor: watchedDistribution && watchedDistribution.length <= 1 ? '#9CA3AF' : '#25F4EE',
-                  color: '#000000'
+                style={{
+                  backgroundColor:
+                    watchedDistribution && watchedDistribution.length <= 1
+                      ? "#9CA3AF"
+                      : "#25F4EE",
+                  color: "#000000",
                 }}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 12H4"
+                  />
                 </svg>
               </button>
               <span className="text-base font-medium text-gray-700 min-w-[3rem] text-center">
@@ -160,20 +203,35 @@ export function Prize() {
               <button
                 type="button"
                 onClick={addWinner}
-                disabled={watchedDistribution && watchedDistribution.length >= 10}
+                disabled={
+                  watchedDistribution && watchedDistribution.length >= 10
+                }
                 className="inline-flex items-center justify-center w-8 h-8 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                style={{ 
-                  backgroundColor: watchedDistribution && watchedDistribution.length >= 10 ? '#9CA3AF' : '#25F4EE',
-                  color: '#000000'
+                style={{
+                  backgroundColor:
+                    watchedDistribution && watchedDistribution.length >= 10
+                      ? "#9CA3AF"
+                      : "#25F4EE",
+                  color: "#000000",
                 }}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
               </button>
             </div>
           </div>
-          
+
           <Controller
             control={control}
             name="prizeDistribution"
@@ -181,7 +239,10 @@ export function Prize() {
               <div>
                 <div className="space-y-4">
                   {field.value?.map((amount, index) => (
-                    <div key={index} className="w-full flex gap-6 items-center justify-between">
+                    <div
+                      key={index}
+                      className="w-full flex gap-6 items-center justify-between"
+                    >
                       <label className="block text-base font-medium text-gray-700">
                         {index + 1}位
                       </label>
@@ -201,9 +262,11 @@ export function Prize() {
             )}
           />
 
-          {(watchedPrizePool && totalPrize !== watchedPrizePool) && (
+          {watchedPrizePool && totalPrize !== watchedPrizePool && (
             <p className="text-sm text-red-500 mt-6">
-              配分金額の合計（{totalPrize.toLocaleString()}円）が選択した総賞金額（{watchedPrizePool.toLocaleString()}円）と一致しません
+              配分金額の合計（{totalPrize.toLocaleString()}
+              円）が選択した総賞金額（{watchedPrizePool.toLocaleString()}
+              円）と一致しません
             </p>
           )}
         </div>
@@ -213,7 +276,7 @@ export function Prize() {
         {/* <Button type="button" variant="secondary">
           下書き保存
         </Button> */}
-        
+
         <Button type="button" onClick={back} variant="secondary">
           前へ戻る
         </Button>
@@ -224,9 +287,9 @@ export function Prize() {
           disabled={isPending}
           onClick={handleSubmit(onSubmit)}
         >
-          {isPending ? '作成中...' : 'コンテストを作成'}
+          {isPending ? "作成中..." : "コンテストを作成"}
         </Button>
       </div>
     </div>
   );
-} 
+}

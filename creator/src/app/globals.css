@@ -51,7 +51,7 @@ html {
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+  font-family: "Inter", "Noto Sans JP", system-ui, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -117,7 +117,12 @@ html {
 }
 
 .shimmer {
-  background: linear-gradient(90deg, transparent, rgba(37, 244, 238, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(37, 244, 238, 0.1),
+    transparent
+  );
   background-size: 200px 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -142,13 +147,18 @@ html {
 }
 
 .btn-primary-hover::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -163,7 +173,9 @@ html {
 
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* フェードインアニメーション用のユーティリティ */
@@ -185,7 +197,7 @@ html {
   body {
     font-size: 14px;
   }
-  
+
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;

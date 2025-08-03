@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { forwardRef } from 'react';
+import { forwardRef } from "react";
 
 type Props = {
   placeholder?: string;
@@ -12,7 +12,17 @@ type Props = {
 };
 
 export const NumberInput = forwardRef<HTMLInputElement, Props>(
-  ({ placeholder, value, onChange, required = false, className = '', step = 1 }, ref) => {
+  (
+    {
+      placeholder,
+      value,
+      onChange,
+      required = false,
+      className = "",
+      step = 1,
+    },
+    ref,
+  ) => {
     return (
       <input
         ref={ref}
@@ -26,7 +36,7 @@ export const NumberInput = forwardRef<HTMLInputElement, Props>(
         step={step}
       />
     );
-  }
+  },
 );
 
-NumberInput.displayName = 'NumberInput'; 
+NumberInput.displayName = "NumberInput";

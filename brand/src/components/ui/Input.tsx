@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { forwardRef } from 'react';
+import { forwardRef } from "react";
 
 type Props = {
-  type?: 'text' | 'email' | 'tel' | 'url' | 'password';
+  type?: "text" | "email" | "tel" | "url" | "password";
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
@@ -12,7 +12,17 @@ type Props = {
 };
 
 export const Input = forwardRef<HTMLInputElement, Props>(
-  ({ type = 'text', placeholder, value, onChange, required = false, className = '' }, ref) => {
+  (
+    {
+      type = "text",
+      placeholder,
+      value,
+      onChange,
+      required = false,
+      className = "",
+    },
+    ref,
+  ) => {
     return (
       <input
         ref={ref}
@@ -24,7 +34,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
         required={required}
       />
     );
-  }
+  },
 );
 
-Input.displayName = 'Input'; 
+Input.displayName = "Input";

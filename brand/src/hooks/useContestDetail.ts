@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Contest } from '@/types/Contest';
-import { useContext } from 'react';
-import { AuthContext } from '@/contexts/AuthContext';
-import { getContests } from '@/services/contentestService';
-import { getApplicationsByContestId } from '@/services/applicationService';
+import { useState, useEffect, useCallback } from "react";
+import { Contest } from "@/types/Contest";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+import { getContests } from "@/services/contentestService";
+import { getApplicationsByContestId } from "@/services/applicationService";
 
 // 統計情報付きのContest型
 export interface ContestWithStats extends Contest {
@@ -29,21 +29,29 @@ export function useContestDetail(): UseContestDetailReturn {
   const { user, profile } = useContext(AuthContext);
 
   // アプリケーションの統計情報を集計
-  const calculateContestStats = async (contest: Contest): Promise<ContestWithStats> => {
+  const calculateContestStats = async (
+    contest: Contest,
+  ): Promise<ContestWithStats> => {
     try {
       // ApplicationのserviceからcontestIdでアプリケーションを取得
       const applications = await getApplicationsByContestId(contest.id);
-      
+
       const stats = {
         submissions: applications.length,
-        totalViews: applications.reduce((sum, app) => sum + app.metrics.views, 0),
-        totalLikes: applications.reduce((sum, app) => sum + app.metrics.likes, 0),
+        totalViews: applications.reduce(
+          (sum, app) => sum + app.metrics.views,
+          0,
+        ),
+        totalLikes: applications.reduce(
+          (sum, app) => sum + app.metrics.likes,
+          0,
+        ),
         totalComments: 0, // Application型にcommentsがないので0
       };
-      
+
       return {
         ...contest,
-        stats
+        stats,
       };
     } catch (error) {
       console.error(`コンテスト ${contest.id} の統計計算エラー:`, error);
@@ -55,7 +63,7 @@ export function useContestDetail(): UseContestDetailReturn {
           totalViews: 0,
           totalLikes: 0,
           totalComments: 0,
-        }
+        },
       };
     }
   };
@@ -64,24 +72,23 @@ export function useContestDetail(): UseContestDetailReturn {
     try {
       setLoading(true);
       setError(null);
-      
+
       if (profile?.id) {
         const userContests = await getContests(profile.id);
-        console.log('userContests', userContests);
-        
+        console.log("userContests", userContests);
+
         // 各コンテストの統計情報を集計
         const contestsWithStats = await Promise.all(
-          userContests.map(contest => calculateContestStats(contest))
+          userContests.map((contest) => calculateContestStats(contest)),
         );
-        
+
         setContests(contestsWithStats);
       } else {
         setContests([]);
       }
-      
     } catch (err) {
-      console.error('コンテスト取得エラー:', err);
-      setError('コンテストの取得に失敗しました');
+      console.error("コンテスト取得エラー:", err);
+      setError("コンテストの取得に失敗しました");
     } finally {
       setLoading(false);
     }
@@ -100,6 +107,6 @@ export function useContestDetail(): UseContestDetailReturn {
     contests,
     loading,
     error,
-    refetch: fetchContests
+    refetch: fetchContests,
   };
-} 
+}

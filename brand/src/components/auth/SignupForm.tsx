@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Button } from '@/components/ui/Button';
-import { FormField } from '@/components/ui/FormField';
-import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import { useSignUp } from '@/hooks/auth/useSignUp';
-import { createUserSchema } from '@/schema/createUserSchema';
-import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import Link from 'next/link';
-import { Input } from '@/components/ui/Input';
+import React from "react";
+import { Button } from "@/components/ui/Button";
+import { FormField } from "@/components/ui/FormField";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { useSignUp } from "@/hooks/auth/useSignUp";
+import { createUserSchema } from "@/schema/createUserSchema";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Link from "next/link";
+import { Input } from "@/components/ui/Input";
 
 export function SignupForm() {
   const { mutate: signUp, isPending, error } = useSignUp();
 
   const { control, handleSubmit, getValues } = useForm({
     resolver: yupResolver(createUserSchema),
-    mode: 'onBlur',
+    mode: "onBlur",
     defaultValues: {
-      first_name: '',
-      last_name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -35,7 +35,6 @@ export function SignupForm() {
     });
   };
 
-
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="flex gap-4">
@@ -43,11 +42,7 @@ export function SignupForm() {
           control={control}
           name="first_name"
           render={({ field, fieldState }) => (
-            <FormField
-              label="苗字"
-              required
-              error={fieldState.error?.message}
-            >
+            <FormField label="苗字" required error={fieldState.error?.message}>
               <Input
                 type="text"
                 value={field.value}
@@ -60,11 +55,7 @@ export function SignupForm() {
           control={control}
           name="last_name"
           render={({ field, fieldState }) => (
-            <FormField
-              label="名前"
-              required
-              error={fieldState.error?.message}
-            >
+            <FormField label="名前" required error={fieldState.error?.message}>
               <Input
                 type="text"
                 value={field.value}
@@ -84,11 +75,7 @@ export function SignupForm() {
             required
             error={fieldState.error?.message}
           >
-            <Input
-              type="email"
-              value={field.value}
-              onChange={field.onChange}
-            />
+            <Input type="email" value={field.value} onChange={field.onChange} />
           </FormField>
         )}
       />
@@ -137,15 +124,18 @@ export function SignupForm() {
           disabled={isPending}
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50"
         >
-          {isPending ? 'アカウント作成中...' : 'アカウント作成'}
+          {isPending ? "アカウント作成中..." : "アカウント作成"}
         </Button>
       </div>
 
       <div className="text-sm">
-        <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
+        <Link
+          href="/auth/login"
+          className="font-medium text-blue-600 hover:text-blue-500"
+        >
           ログイン
         </Link>
       </div>
     </form>
   );
-} 
+}

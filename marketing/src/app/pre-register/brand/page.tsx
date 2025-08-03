@@ -1,7 +1,5 @@
-import { BrandPreRegisterForm } from '@/components/pre-register/BrandPreRegisterForm';
+import { BrandPreRegisterForm } from "@/components/pre-register/BrandPreRegisterForm";
 
 export default function BrandPreRegisterPage() {
-  return (
-    <BrandPreRegisterForm />
-  );
-} 
+  return <BrandPreRegisterForm />;
+}

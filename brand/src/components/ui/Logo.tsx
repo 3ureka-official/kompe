@@ -1,17 +1,22 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
-export function Logo({ size = 'md' }: LogoProps) {
+export function Logo({ size = "md" }: LogoProps) {
   const sizeClasses = {
     sm: 80,
     md: 120,
-    lg: 160
+    lg: 160,
   };
 
   return (
-    <Image src="/images/logo/logo-coloredhdpi.png" alt="Logo" width={sizeClasses[size]} height={sizeClasses[size]} />
+    <Image
+      src="/images/logo/logo-coloredhdpi.png"
+      alt="Logo"
+      width={sizeClasses[size]}
+      height={sizeClasses[size]}
+    />
   );
-} 
+}

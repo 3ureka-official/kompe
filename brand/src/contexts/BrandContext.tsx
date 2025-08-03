@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Brand } from '@/types/Brand';
-import { getUserBrand } from '@/services/brandService';
-import { AuthContext } from '@/contexts/AuthContext';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Brand } from "@/types/Brand";
+import { getUserBrand } from "@/services/brandService";
+import { AuthContext } from "@/contexts/AuthContext";
 
 type BrandContextValue = {
   brand: Brand | null;
@@ -36,4 +36,4 @@ export function BrandProvider({ children }: { children: React.ReactNode }) {
       {children}
     </BrandContext.Provider>
   );
-} 
+}

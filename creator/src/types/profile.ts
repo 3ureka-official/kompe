@@ -3,7 +3,7 @@
 export interface BankInfo {
   bankName: string;
   branchName: string;
-  accountType: '普通' | '当座';
+  accountType: "普通" | "当座";
   accountNumber: string;
   accountHolder: string;
 }
@@ -33,7 +33,7 @@ export interface ProfileFormData {
 export interface BankFormData {
   bankName: string;
   branchName: string;
-  accountType: '普通' | '当座';
+  accountType: "普通" | "当座";
   accountNumber: string;
   accountHolder: string;
 }
@@ -45,7 +45,7 @@ export interface MySubmission {
   contestThumbnailUrl: string;
   brandName: string;
   tiktokVideoUrl: string;
-  submissionStatus: 'pending' | 'approved' | 'rejected' | 'disqualified';
+  submissionStatus: "pending" | "approved" | "rejected" | "disqualified";
   finalRank?: number;
   finalScore?: number;
   prizeAmount?: number;
@@ -70,4 +70,4 @@ export interface SubmissionStats {
   rejected: number;
   winner: number;
   totalPrizeAmount: number;
-} 
+}

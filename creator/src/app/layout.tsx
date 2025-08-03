@@ -20,10 +20,19 @@ const notoSansJP = Noto_Sans_JP({
 export const metadata: Metadata = {
   title: {
     default: "Kompe - TikTokコンテストプラットフォーム",
-    template: "%s | Kompe"
+    template: "%s | Kompe",
   },
-  description: "ブランドが開催するTikTokコンテストに参加して賞金をゲット！Kompeはクリエイターとブランドをつなぐコンテストプラットフォームです。",
-  keywords: ["TikTok", "コンテスト", "賞金", "クリエイター", "動画", "投稿", "UGC"],
+  description:
+    "ブランドが開催するTikTokコンテストに参加して賞金をゲット！Kompeはクリエイターとブランドをつなぐコンテストプラットフォームです。",
+  keywords: [
+    "TikTok",
+    "コンテスト",
+    "賞金",
+    "クリエイター",
+    "動画",
+    "投稿",
+    "UGC",
+  ],
   authors: [{ name: "Kompe" }],
   creator: "Kompe",
   publisher: "Kompe",
@@ -75,9 +84,16 @@ export default function RootLayout({
     <html lang="ja" className="scroll-smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <meta name="theme-color" content="#25f4ee" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=5"
+        />
       </head>
       <body
         className={`${inter.variable} ${notoSansJP.variable} font-sans min-h-screen bg-background text-foreground antialiased`}
@@ -85,9 +101,7 @@ export default function RootLayout({
         <AuthProvider>
           <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1">
-              {children}
-            </main>
+            <main className="flex-1">{children}</main>
             <Footer />
           </div>
         </AuthProvider>

@@ -1,4 +1,4 @@
-import { BrandProvider } from '@/contexts/BrandContext';
+import { BrandProvider } from "@/contexts/BrandContext";
 
 export default function DashboardLayout({
   children,
@@ -7,9 +7,7 @@ export default function DashboardLayout({
 }) {
   return (
     <BrandProvider>
-      <div className="w-full">
-        {children}
-      </div>
+      <div className="w-full">{children}</div>
     </BrandProvider>
   );
-} 
+}

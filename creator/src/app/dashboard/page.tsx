@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
-import { ProtectedRoute } from '@/components/auth/AuthGuard';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import Image from 'next/image';
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/auth/AuthGuard";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import Image from "next/image";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -28,16 +34,14 @@ export default function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>プロフィール情報</CardTitle>
-              <CardDescription>
-                現在ログイン中のアカウント情報
-              </CardDescription>
+              <CardDescription>現在ログイン中のアカウント情報</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center space-x-4">
                 {user?.avatar ? (
                   <Image
                     src={user.avatar}
-                    alt={user.name || 'User avatar'}
+                    alt={user.name || "User avatar"}
                     width={64}
                     height={64}
                     className="rounded-full object-cover"
@@ -53,7 +57,9 @@ export default function DashboardPage() {
                   <h3 className="text-lg font-semibold">{user?.name}</h3>
                   <p className="text-muted-foreground">{user?.email}</p>
                   {user?.tiktokHandle && (
-                    <p className="text-primary font-medium">{user.tiktokHandle}</p>
+                    <p className="text-primary font-medium">
+                      {user.tiktokHandle}
+                    </p>
                   )}
                 </div>
               </div>
@@ -65,7 +71,9 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">参加中のコンテスト</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                参加中のコンテスト
+              </CardTitle>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -105,9 +113,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">¥50,000</div>
-              <p className="text-xs text-muted-foreground">
-                累計獲得額
-              </p>
+              <p className="text-xs text-muted-foreground">累計獲得額</p>
             </CardContent>
           </Card>
 
@@ -130,9 +136,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground">
-                今月の投稿数
-              </p>
+              <p className="text-xs text-muted-foreground">今月の投稿数</p>
             </CardContent>
           </Card>
 
@@ -172,9 +176,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <Link href="/contests">
-                <Button className="w-full">
-                  コンテスト一覧を見る
-                </Button>
+                <Button className="w-full">コンテスト一覧を見る</Button>
               </Link>
             </CardContent>
           </Card>
@@ -198,9 +200,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>プロフィール設定</CardTitle>
-              <CardDescription>
-                アカウント情報を更新しましょう
-              </CardDescription>
+              <CardDescription>アカウント情報を更新しましょう</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/profile">
@@ -214,4 +214,4 @@ export default function DashboardPage() {
       </div>
     </ProtectedRoute>
   );
-} 
+}

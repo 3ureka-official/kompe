@@ -1,6 +1,6 @@
-'use client';
-import React, { createContext, useState, ReactNode } from 'react';
-import { ContestCreateFormData } from '@/schema/contestCreateSchema';
+"use client";
+import React, { createContext, useState, ReactNode } from "react";
+import { ContestCreateFormData } from "@/schema/contestCreateSchema";
 
 type CreateContestContextType = {
   step: number;
@@ -13,18 +13,16 @@ type CreateContestContextType = {
   setThumbnailPreview: (preview: string | null) => void;
 };
 
-export const CreateContestContext = createContext<CreateContestContextType>(
-  {
-    step: 0,
-    data: {},
-    next: () => {},
-    back: () => {},
-    thumbnail: null,
-    thumbnailPreview: null,
-    setThumbnail: () => {},
-    setThumbnailPreview: () => {},
-  }
-);
+export const CreateContestContext = createContext<CreateContestContextType>({
+  step: 0,
+  data: {},
+  next: () => {},
+  back: () => {},
+  thumbnail: null,
+  thumbnailPreview: null,
+  setThumbnail: () => {},
+  setThumbnailPreview: () => {},
+});
 
 /** Provider */
 export function CreateContestProvider({ children }: { children: ReactNode }) {
@@ -42,7 +40,18 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
   return (
-    <CreateContestContext.Provider value={{ step, data, next, back, thumbnail, thumbnailPreview, setThumbnail, setThumbnailPreview }}>
+    <CreateContestContext.Provider
+      value={{
+        step,
+        data,
+        next,
+        back,
+        thumbnail,
+        thumbnailPreview,
+        setThumbnail,
+        setThumbnailPreview,
+      }}
+    >
       {children}
     </CreateContestContext.Provider>
   );

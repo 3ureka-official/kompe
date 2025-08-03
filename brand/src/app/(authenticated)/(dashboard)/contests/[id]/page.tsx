@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Creator, mockCreators } from '@/types/creator';
-import { ContestHeader } from '@/components/contests/detail/ContestHeader';
-import { ContestStats } from '@/components/contests/detail/ContestStats';
-import { ContestOverview } from '@/components/contests/detail/ContestOverview';
-import { ContestImageVideos } from '@/components/contests/detail/ContestImageVideos';
-import { ContestRequirements } from '@/components/contests/detail/ContestRequirements';
-import { ContestBrandInfo } from '@/components/contests/detail/ContestBrandInfo';
-import { ContestCreatorSection } from '@/components/contests/detail/ContestCreatorSection';
-import { CreatorDetailModal } from '@/components/contests/detail/CreatorDetailModal';
-import { useContests } from '@/hooks/useContests';
-import { Contest } from '@/types/Contest';
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import { Creator, mockCreators } from "@/types/creator";
+import { ContestHeader } from "@/components/contests/detail/ContestHeader";
+import { ContestStats } from "@/components/contests/detail/ContestStats";
+import { ContestOverview } from "@/components/contests/detail/ContestOverview";
+import { ContestImageVideos } from "@/components/contests/detail/ContestImageVideos";
+import { ContestRequirements } from "@/components/contests/detail/ContestRequirements";
+import { ContestBrandInfo } from "@/components/contests/detail/ContestBrandInfo";
+import { ContestCreatorSection } from "@/components/contests/detail/ContestCreatorSection";
+import { CreatorDetailModal } from "@/components/contests/detail/CreatorDetailModal";
+import { useContests } from "@/hooks/useContests";
+import { Contest } from "@/types/Contest";
 
 export default function ContestDetailPage() {
   const params = useParams();
@@ -21,21 +21,21 @@ export default function ContestDetailPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCreatorClick = (creator: Creator) => {
-    console.log('Creator clicked:', creator);
+    console.log("Creator clicked:", creator);
     setSelectedCreator(creator);
     setIsModalOpen(true);
-    console.log('Modal should be open now');
+    console.log("Modal should be open now");
   };
 
   const handleCloseModal = () => {
-    console.log('Closing modal');
+    console.log("Closing modal");
     setIsModalOpen(false);
     setSelectedCreator(null);
   };
 
-  console.log('Current modal state:', { isModalOpen, selectedCreator });
+  console.log("Current modal state:", { isModalOpen, selectedCreator });
 
-  const contest = useContests().contests.find(c => c.id === params.id);
+  const contest = useContests().contests.find((c) => c.id === params.id);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,9 +59,9 @@ export default function ContestDetailPage() {
         <ContestBrandInfo />
 
         {/* 参加クリエイター */}
-        <ContestCreatorSection 
-          creators={mockCreators} 
-          onCreatorClick={handleCreatorClick} 
+        <ContestCreatorSection
+          creators={mockCreators}
+          onCreatorClick={handleCreatorClick}
         />
       </div>
 
@@ -73,4 +73,4 @@ export default function ContestDetailPage() {
       />
     </div>
   );
-} 
+}

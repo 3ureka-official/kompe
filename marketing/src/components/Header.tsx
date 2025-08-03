@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import Image from 'next/image'
+import Link from "next/link";
+import Image from "next/image";
 
 export const Header = () => {
   return (
@@ -11,11 +11,16 @@ export const Header = () => {
           {/* ロゴ */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/images/logo/logo-coloredhdpi.png" alt="Kompe" width={128} height={128} />
+              <Image
+                src="/images/logo/logo-coloredhdpi.png"
+                alt="Kompe"
+                width={128}
+                height={128}
+              />
             </Link>
           </div>
         </div>
       </div>
     </header>
-  )
-} 
+  );
+};

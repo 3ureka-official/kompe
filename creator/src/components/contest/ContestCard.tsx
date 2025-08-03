@@ -1,41 +1,45 @@
-import React from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Calendar, Users, Trophy, Clock } from 'lucide-react'
-import { Card, CardContent, CardFooter } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { ContestSummary, CONTEST_CATEGORIES, CONTEST_STATUS } from '@/types/contest'
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Calendar, Users, Trophy, Clock } from "lucide-react";
+import { Card, CardContent, CardFooter } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import {
+  ContestSummary,
+  CONTEST_CATEGORIES,
+  CONTEST_STATUS,
+} from "@/types/contest";
 
 interface ContestCardProps {
-  contest: ContestSummary
-  className?: string
+  contest: ContestSummary;
+  className?: string;
 }
 
 const ContestCard: React.FC<ContestCardProps> = ({ contest, className }) => {
   // 締切までの日数を計算
   const getDaysUntilDeadline = (endDate: string) => {
-    const now = new Date()
-    const deadline = new Date(endDate)
-    const diffTime = deadline.getTime() - now.getTime()
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays
-  }
+    const now = new Date();
+    const deadline = new Date(endDate);
+    const diffTime = deadline.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
 
   // 金額をフォーマット
   const formatPrize = (amount: number) => {
     if (amount >= 1000000) {
-      return `${(amount / 1000000).toFixed(0)}万円`
+      return `${(amount / 1000000).toFixed(0)}万円`;
     } else if (amount >= 10000) {
-      return `${(amount / 10000).toFixed(0)}万円`
+      return `${(amount / 10000).toFixed(0)}万円`;
     } else {
-      return `${amount.toLocaleString()}円`
+      return `${amount.toLocaleString()}円`;
     }
-  }
+  };
 
-  const daysLeft = getDaysUntilDeadline(contest.endDate)
-  const categoryInfo = CONTEST_CATEGORIES[contest.category]
-  const statusInfo = CONTEST_STATUS[contest.status]
+  const daysLeft = getDaysUntilDeadline(contest.endDate);
+  const categoryInfo = CONTEST_CATEGORIES[contest.category];
+  const statusInfo = CONTEST_STATUS[contest.status];
 
   return (
     <Card hover className={className}>
@@ -48,19 +52,19 @@ const ContestCard: React.FC<ContestCardProps> = ({ contest, className }) => {
             fill
             className="object-cover transition-transform hover:scale-105"
           />
-          
+
           {/* ステータスバッジ */}
           <div className="absolute top-3 left-3">
-            <Badge 
-              variant={contest.status === 'active' ? 'success' : 'secondary'}
+            <Badge
+              variant={contest.status === "active" ? "success" : "secondary"}
               className={statusInfo.color}
             >
               {statusInfo.label}
             </Badge>
           </div>
-          
+
           {/* 締切カウントダウン */}
-          {contest.status === 'active' && daysLeft > 0 && (
+          {contest.status === "active" && daysLeft > 0 && (
             <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1">
               <Clock className="h-3 w-3" />
               あと{daysLeft}日
@@ -133,11 +137,12 @@ const ContestCard: React.FC<ContestCardProps> = ({ contest, className }) => {
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
             <span>
-              締切: {new Date(contest.endDate).toLocaleDateString('ja-JP', {
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+              締切:{" "}
+              {new Date(contest.endDate).toLocaleDateString("ja-JP", {
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </span>
           </div>
@@ -145,18 +150,18 @@ const ContestCard: React.FC<ContestCardProps> = ({ contest, className }) => {
 
         <CardFooter className="p-4 pt-0">
           <Link href={`/contests/${contest.id}`} className="w-full">
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               className="w-full"
-              disabled={contest.status !== 'active'}
+              disabled={contest.status !== "active"}
             >
-              {contest.status === 'active' ? '詳細を見る' : '応募終了'}
+              {contest.status === "active" ? "詳細を見る" : "応募終了"}
             </Button>
           </Link>
         </CardFooter>
       </div>
     </Card>
-  )
-}
+  );
+};
 
-export default ContestCard 
+export default ContestCard;

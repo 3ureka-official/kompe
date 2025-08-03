@@ -1,9 +1,9 @@
-import { Trophy } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Contest } from '@/types/contest'
+import { Trophy } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Contest } from "@/types/contest";
 
 interface ContestDescriptionProps {
-  contest: Contest
+  contest: Contest;
 }
 
 export function ContestDescription({ contest }: ContestDescriptionProps) {
@@ -17,7 +17,7 @@ export function ContestDescription({ contest }: ContestDescriptionProps) {
           <p className="text-gray-700 leading-relaxed whitespace-pre-line">
             {contest.description}
           </p>
-          
+
           {/* 賞金情報 */}
           <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border border-yellow-200">
             <div className="flex items-center gap-2 mb-3">
@@ -29,11 +29,12 @@ export function ContestDescription({ contest }: ContestDescriptionProps) {
             </div>
             <div className="space-y-2">
               {contest.prizeStructure.map((prize, index) => (
-                <div key={index} className="flex items-center justify-between p-2 bg-white/50 rounded">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-2 bg-white/50 rounded"
+                >
                   <div className="text-sm text-yellow-600">{index + 1}位</div>
-                  <div className="font-bold text-yellow-700">
-                    ¥{prize}
-                  </div>
+                  <div className="font-bold text-yellow-700">¥{prize}</div>
                 </div>
               ))}
             </div>
@@ -41,5 +42,5 @@ export function ContestDescription({ contest }: ContestDescriptionProps) {
         </div>
       </CardContent>
     </Card>
-  )
-} 
+  );
+}

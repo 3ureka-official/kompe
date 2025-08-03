@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { forwardRef } from 'react';
+import { forwardRef } from "react";
 
 type Props = {
   placeholder?: string;
@@ -14,16 +14,19 @@ type Props = {
 };
 
 export const Textarea = forwardRef<HTMLTextAreaElement, Props>(
-  ({ 
-    placeholder, 
-    value, 
-    onChange, 
-    required = false, 
-    rows = 4, 
-    maxLength,
-    showCharCount = false,
-    className = '' 
-  }, ref) => {
+  (
+    {
+      placeholder,
+      value,
+      onChange,
+      required = false,
+      rows = 4,
+      maxLength,
+      showCharCount = false,
+      className = "",
+    },
+    ref,
+  ) => {
     return (
       <div>
         <textarea
@@ -45,7 +48,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, Props>(
         )}
       </div>
     );
-  }
+  },
 );
 
-Textarea.displayName = 'Textarea'; 
+Textarea.displayName = "Textarea";

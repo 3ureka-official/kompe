@@ -4,7 +4,7 @@
 export type Contest = {
   id: string;
   brandId: string;
-  status: 'ready' | 'application' | 'contest' | 'ended';
+  status: "ready" | "application" | "contest" | "ended";
 
   title: string;
   category: string;
