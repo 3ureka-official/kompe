@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { FileUpload } from "@/components/ui/FileUpload";
-import { brandCreateSchema } from "@/schema/brandCreateSchema";
+import { brandCreateSchema } from "@/schema/createBrandSchema";
 import { useUpdateBrand } from "@/hooks/brand/useUpdateBrand";
 import { BrandContext } from "@/contexts/BrandContext";
 import { Brand } from "@/types/Brand";

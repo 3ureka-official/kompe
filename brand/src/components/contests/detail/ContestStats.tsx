@@ -1,13 +1,13 @@
-import { Contest } from "@/types/Contest";
+// import { Contest } from "@/types/Contest";
 
-type Props = {
-  contest: Contest;
-};
+// type Props = {
+//   contest: Contest;
+// };
 
-export function ContestStats({ contest }: Props) {
-  const formatNumber = (num: number) => {
-    return num.toLocaleString("ja-JP");
-  };
+export function ContestStats() {
+  // const formatNumber = (num: number) => {
+  //   return num.toLocaleString("ja-JP");
+  // };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
@@ -32,7 +32,8 @@ export function ContestStats({ contest }: Props) {
             </svg>
           </div>
           <div className="text-2xl font-bold text-gray-900">
-            {formatNumber(contest.videos)}
+            {/* {formatNumber(contest.videos)} */}
+            20
           </div>
           <div className="text-sm text-gray-500">動画数</div>
         </div>
@@ -59,7 +60,8 @@ export function ContestStats({ contest }: Props) {
             </svg>
           </div>
           <div className="text-2xl font-bold text-gray-900">
-            {formatNumber(contest.views)}
+            {/* {formatNumber(contest.views)} */}
+            20
           </div>
           <div className="text-sm text-gray-500">再生数</div>
         </div>
@@ -80,7 +82,8 @@ export function ContestStats({ contest }: Props) {
             </svg>
           </div>
           <div className="text-2xl font-bold text-gray-900">
-            {formatNumber(contest.likes)}
+            {/* {formatNumber(contest.likes)} */}
+            20
           </div>
           <div className="text-sm text-gray-500">いいね数</div>
         </div>
@@ -101,7 +104,8 @@ export function ContestStats({ contest }: Props) {
             </svg>
           </div>
           <div className="text-2xl font-bold text-gray-900">
-            {formatNumber(contest.comments)}
+            {/* {formatNumber(contest.comments)} */}
+            20
           </div>
           <div className="text-sm text-gray-500">コメント数</div>
         </div>
@@ -122,7 +126,8 @@ export function ContestStats({ contest }: Props) {
             </svg>
           </div>
           <div className="text-2xl font-bold text-gray-900">
-            {formatNumber(contest.shares)}
+            {/* {formatNumber(contest.shares)} */}
+            20
           </div>
           <div className="text-sm text-gray-500">シェア数</div>
         </div>

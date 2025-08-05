@@ -5,29 +5,23 @@ import { FormField } from "@/components/ui/FormField";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { Controller, useForm } from "react-hook-form";
 import { CONTEST_CATEGORIES } from "@/constants/contestCategory.constant";
-import { basicInfoSchema } from "@/schema/contestCreateSchema";
+import { basicInfoSchema } from "@/schema/createContestSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { DateInput } from "@/components/ui/DateInput";
 
 export function BasicInfo() {
-  const {
-    data,
-    next,
-    step,
-    thumbnail,
-    thumbnailPreview,
-    setThumbnail,
-    setThumbnailPreview,
-  } = useContext(CreateContestContext);
+  const { data, next } = useContext(CreateContestContext);
 
-  const { control, handleSubmit, setValue } = useForm({
+  const { control, handleSubmit, setValue, watch } = useForm({
     resolver: yupResolver(basicInfoSchema),
     mode: "onSubmit",
     defaultValues: {
       title: data.title || "",
       category: data.category || "",
+      thumbnailFile: data.thumbnailFile || undefined,
+      thumbnailPreview: data.thumbnailPreview || null,
       applicationStartDate: data.applicationStartDate || new Date(),
       applicationEndDate: data.applicationEndDate || new Date(),
       contestStartDate: data.contestStartDate || new Date(),
@@ -35,13 +29,7 @@ export function BasicInfo() {
     },
   });
 
-  useEffect(() => {
-    if (step === 0) {
-      if (thumbnail) {
-        setValue("thumbnailFile", thumbnail);
-      }
-    }
-  }, [step, thumbnail, thumbnailPreview, setValue]);
+  const thumbnailPreview = watch("thumbnailPreview");
 
   return (
     <div>
@@ -91,7 +79,7 @@ export function BasicInfo() {
         </div>
 
         <div>
-          <Controller
+          {/* <Controller
             control={control}
             name="thumbnailFile"
             render={({ field, fieldState }) => (
@@ -108,6 +96,32 @@ export function BasicInfo() {
                     field.onChange(file);
                   }}
                   onPreviewChange={setThumbnailPreview}
+                  accept="image/*"
+                  maxSize={5 * 1024 * 1024}
+                  className="w-full"
+                />
+              </FormField>
+            )}
+          /> */}
+          <Controller
+            control={control}
+            name="thumbnailFile"
+            render={({ field, fieldState }) => (
+              <FormField
+                label="サムネイル画像"
+                required
+                error={fieldState.error?.message}
+              >
+                <FileUpload
+                  file={field.value || null}
+                  preview={thumbnailPreview || null}
+                  onFileChange={(file) => {
+                    field.onChange(file);
+                  }}
+                  onPreviewChange={(filePreview) => {
+                    console.log("filePreview", filePreview);
+                    setValue("thumbnailPreview", filePreview || null);
+                  }}
                   accept="image/*"
                   maxSize={5 * 1024 * 1024}
                   className="w-full"

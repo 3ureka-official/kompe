@@ -6,17 +6,17 @@ type Props = {
 };
 
 export function ContestHeader({ contest }: Props) {
-  const formatNumber = (num: number) => {
-    return num.toLocaleString("ja-JP");
-  };
+  // const formatNumber = (num: number) => {
+  //   return num.toLocaleString("ja-JP");
+  // };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString("ja-JP", {
+  //     year: "numeric",
+  //     month: "long",
+  //     day: "numeric",
+  //   });
+  // };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
@@ -36,14 +36,16 @@ export function ContestHeader({ contest }: Props) {
               <div className="flex flex-col items-start">
                 <p className="text-gray-500">応募期間</p>
                 <p className="text-black font-bold text-base">
-                  {formatDate(contest.startDate)} -{" "}
-                  {formatDate(contest.endDate)}
+                  {/* {formatDate(contest.startDate)} -{" "}
+                  {formatDate(contest.endDate)} */}
+                  2025/08/01 - 2025/08/31
                 </p>
               </div>
               <div className="flex flex-col items-start">
                 <p className="text-gray-500">総賞金</p>
                 <p className="text-black font-bold text-base">
-                  ¥{formatNumber(contest.prizePool)}
+                  {/* ¥{formatNumber(contest.prizePool)} */}
+                  ¥200,000
                 </p>
               </div>
               <div className="flex flex-col items-start">
