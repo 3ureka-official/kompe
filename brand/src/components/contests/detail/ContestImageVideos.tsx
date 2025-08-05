@@ -1,10 +1,10 @@
-import { Contest, AssetItem } from "@/types/Contest";
+// import { Contest } from "@/types/Contest";
 
-type Props = {
-  contest: Contest;
-};
+// type Props = {
+//   contest: Contest;
+// };
 
-export function ContestImageVideos({ contest }: Props) {
+export function ContestImageVideos() {
   // if (!contest.assets || contest.assets.length === 0) {
   //   return null;
   // }

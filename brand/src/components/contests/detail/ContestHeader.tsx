@@ -6,17 +6,17 @@ type Props = {
 };
 
 export function ContestHeader({ contest }: Props) {
-  const formatNumber = (num: number) => {
-    return num.toLocaleString("ja-JP");
-  };
+  // const formatNumber = (num: number) => {
+  //   return num.toLocaleString("ja-JP");
+  // };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString("ja-JP", {
+  //     year: "numeric",
+  //     month: "long",
+  //     day: "numeric",
+  //   });
+  // };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">

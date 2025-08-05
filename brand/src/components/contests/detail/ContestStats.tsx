@@ -1,13 +1,13 @@
-import { Contest } from "@/types/Contest";
+// import { Contest } from "@/types/Contest";
 
-type Props = {
-  contest: Contest;
-};
+// type Props = {
+//   contest: Contest;
+// };
 
-export function ContestStats({ contest }: Props) {
-  const formatNumber = (num: number) => {
-    return num.toLocaleString("ja-JP");
-  };
+export function ContestStats() {
+  // const formatNumber = (num: number) => {
+  //   return num.toLocaleString("ja-JP");
+  // };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">

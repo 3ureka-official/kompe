@@ -1,9 +1,9 @@
 import supabase from "@/lib/supabase";
 import {
   AssetItem,
-  Contest,
+  //   Contest,
   FormAssetItem,
-  InspirationItem,
+  //   InspirationItem,
 } from "@/types/Contest";
 import { v4 as uuidv4 } from "uuid";
 import { uploadFile } from "@/lib/storage";

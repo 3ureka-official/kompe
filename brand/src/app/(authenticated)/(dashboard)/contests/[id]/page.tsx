@@ -1,10 +1,10 @@
 "use client";
 
 // import { useState } from "react";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 
 export default function ContestDetailPage() {
-  const params = useParams();
+  // const params = useParams();
 
   return (
     <div className="min-h-screen bg-gray-50">

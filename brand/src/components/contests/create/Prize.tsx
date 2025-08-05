@@ -63,7 +63,7 @@ export function Prize() {
 
     const values = getValues();
 
-    let assetsData: FormAssetItem[] | null =
+    const assetsData: FormAssetItem[] | null =
       data.assets
         ?.filter(
           (asset) =>
@@ -77,7 +77,7 @@ export function Prize() {
           description: asset.description || null,
         })) || null;
 
-    let inspirationData:
+    const inspirationData:
       | Omit<InspirationItem, "id" | "created_at" | "brand_id" | "contest_id">[]
       | null =
       data.inspirations
