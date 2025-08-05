@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { briefSchema } from "@/schema/contestCreateSchema";
+import { briefSchema } from "@/schema/createContestSchema";
 import { FormField } from "@/components/ui/FormField";
 
 export function Brief() {

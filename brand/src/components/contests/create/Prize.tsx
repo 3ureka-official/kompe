@@ -3,22 +3,21 @@ import { useContext, useState } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  ContestCreateFormData,
-  prizeSchema,
-} from "@/schema/contestCreateSchema";
+import { prizeSchema } from "@/schema/createContestSchema";
 import { NumberInput } from "@/components/ui/NumberInput";
 import { FormField } from "@/components/ui/FormField";
 import { CONTEST_PLANS } from "@/constants/contestPlanConstant";
 import { useCreateContest } from "@/hooks/contest/useCreateContest";
 import { BrandContext } from "@/contexts/BrandContext";
 import { FormAssetItem, InspirationItem } from "@/types/Contest";
+import { useRouter } from "next/navigation";
 
 export function Prize() {
+  const router = useRouter();
   const { brand } = useContext(BrandContext);
-  const { mutate: createContest, isPending, error } = useCreateContest();
+  const { mutate: createContest, isPending } = useCreateContest();
 
-  const { data, back, thumbnail } = useContext(CreateContestContext);
+  const { data, back } = useContext(CreateContestContext);
 
   const { control, handleSubmit, watch, setValue, getValues } = useForm({
     resolver: yupResolver(prizeSchema),
@@ -78,7 +77,6 @@ export function Prize() {
           description: asset.description || null,
         })) || null;
 
-    // inspirationの処理も追加
     let inspirationData:
       | Omit<InspirationItem, "id" | "created_at" | "brand_id" | "contest_id">[]
       | null =
@@ -105,13 +103,22 @@ export function Prize() {
       prize_distribution: values.prizeDistribution || [],
     };
 
-    createContest({
-      brandId: brand.id,
-      contestData: completeData,
-      thumbnailFile: thumbnail,
-      assetsData: assetsData,
-      inspirationData: inspirationData,
-    });
+    if (!data.thumbnailFile) return;
+
+    createContest(
+      {
+        brandId: brand.id,
+        contestData: completeData,
+        thumbnailFile: data.thumbnailFile,
+        assetsData: assetsData,
+        inspirationData: inspirationData,
+      },
+      {
+        onSuccess: () => {
+          router.push("/contests");
+        },
+      },
+    );
   };
 
   return (
@@ -136,11 +143,12 @@ export function Prize() {
                   >
                     <input
                       type="radio"
-                      name="prizePool"
                       value={option.value}
                       className="sr-only"
                       checked={field.value === option.value}
-                      onChange={() => field.onChange(option.value)}
+                      onChange={() => {
+                        field.onChange(option.value);
+                      }}
                     />
                     <span className="flex flex-col items-center w-full justify-center">
                       <svg
@@ -249,7 +257,14 @@ export function Prize() {
                       <div className="flex items-center gap-2 w-48">
                         <NumberInput
                           value={amount || 0}
-                          onChange={(e) => updateAmount(index, Number(e))}
+                          onChange={(e) => {
+                            updateAmount(index, Number(e));
+                            const newDistribution = [
+                              ...(watchedDistribution || []),
+                            ];
+                            newDistribution[index] = Number(e);
+                            setValue("prizeDistribution", newDistribution);
+                          }}
                           className="w-32 px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-opacity-50"
                           step={1000}
                         />

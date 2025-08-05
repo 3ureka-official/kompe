@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/Input";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { Button } from "@/components/ui/Button";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { brandCreateSchema } from "@/schema/brandCreateSchema";
+import { brandCreateSchema } from "@/schema/createBrandSchema";
 import { useCreateBrand } from "@/hooks/brand/useCreateBrand";
 
 export function BrandCreateForm() {

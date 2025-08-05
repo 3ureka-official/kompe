@@ -14,6 +14,7 @@ export const basicInfoSchema = yup.object().shape({
     .test("fileType", "画像ファイルを選択してください", (file) =>
       file ? file.type.startsWith("image/") : false,
     ),
+  thumbnailPreview: yup.string().nullable(),
 
   applicationStartDate: yup.date().required("応募開始日を選択してください"),
   applicationEndDate: yup

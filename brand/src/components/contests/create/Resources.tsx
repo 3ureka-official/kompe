@@ -1,22 +1,30 @@
 "use client";
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import { Input } from "@/components/ui/Input";
-import { FileUpload } from "@/components/ui/FileUpload";
+import { CustomFileUpload } from "@/components/contests/create/ui/CustomFileUpload";
 import { FormField } from "@/components/ui/FormField";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
-import { resourcesSchema } from "@/schema/contestCreateSchema";
+import { resourcesSchema } from "@/schema/createContestSchema";
 
 export function Resources() {
   const { next, back, data } = useContext(CreateContestContext);
 
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [currentFilePreview, setCurrentFilePreview] = useState<string | null>(
+    null,
+  );
+  const [selectIdx, setSelectIdx] = useState<number | null>(null);
+
   const {
     control,
     handleSubmit,
+    getValues,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(resourcesSchema),
@@ -39,21 +47,33 @@ export function Resources() {
     },
   });
 
+  useEffect(() => {
+    if (selectIdx !== null) {
+      const value = getValues("assets");
+      const newAssets = (value || []).map((a, i) =>
+        i === selectIdx
+          ? { ...a, file: currentFile, filePreview: currentFilePreview }
+          : a,
+      );
+      setValue("assets", newAssets);
+    }
+  }, [selectIdx]);
+
   return (
     <div className="bg-white rounded-lg p-8 shadow-sm">
       {/* Assets セクション */}
       <div className="mb-8">
         <h3 className="text-lg font-medium text-gray-900 mb-6">アセット</h3>
-
         <Controller
           control={control}
           name="assets"
           render={({ field }) => {
-            const assets = field.value || [];
+            // assetsをfield.valueから直接取得
+            // const assets = field.value || [];
 
             return (
               <>
-                {assets.map((asset, idx) => (
+                {(field.value || []).map((asset, idx) => (
                   <div
                     key={idx}
                     className="flex flex-col gap-2 mb-6 border p-4 rounded"
@@ -62,24 +82,33 @@ export function Resources() {
                       label={`アセット ${idx + 1}`}
                       error={errors.assets?.[idx]?.message}
                     >
-                      <FileUpload
+                      <CustomFileUpload
                         file={field.value?.[idx]?.file || null}
                         preview={field.value?.[idx]?.filePreview || null}
                         onFileChange={(file) => {
                           field.onChange(
-                            assets.map((a, i) =>
-                              i === idx ? { ...a, file: file || null } : a,
-                            ),
-                          );
-                        }}
-                        onPreviewChange={(filePreview) => {
-                          field.onChange(
-                            assets.map((a, i) =>
+                            (field.value || []).map((a, i) =>
                               i === idx
-                                ? { ...a, filePreview: filePreview || null }
+                                ? {
+                                    ...a,
+                                    file: file,
+                                    filePreview: file ? a.filePreview : null,
+                                  }
                                 : a,
                             ),
                           );
+                          setCurrentFile(file);
+                        }}
+                        onPreviewChange={(filePreview) => {
+                          field.onChange(
+                            (field.value || []).map((a, i) =>
+                              i === idx
+                                ? { ...a, filePreview: filePreview }
+                                : a,
+                            ),
+                          );
+                          setCurrentFilePreview(filePreview);
+                          setSelectIdx(idx);
                         }}
                         accept="image/*"
                         maxSize={5 * 1024 * 1024}
@@ -100,7 +129,7 @@ export function Resources() {
                         placeholder="外部リンク URL"
                         onChange={(e) =>
                           field.onChange(
-                            assets.map((a, i) =>
+                            (field.value || []).map((a, i) =>
                               i === idx ? { ...a, url: e, file: null } : a,
                             ),
                           )
@@ -117,7 +146,7 @@ export function Resources() {
                         value={asset.description || ""}
                         onChange={(e) =>
                           field.onChange(
-                            assets.map((a, i) =>
+                            (field.value || []).map((a, i) =>
                               i === idx
                                 ? { ...a, description: e.target.value }
                                 : a,
@@ -139,7 +168,7 @@ export function Resources() {
                     variant="secondary"
                     onClick={() =>
                       field.onChange([
-                        ...assets,
+                        ...(field.value || []),
                         { file: null, url: "", description: "" },
                       ])
                     }

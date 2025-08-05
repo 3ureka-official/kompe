@@ -1,6 +1,6 @@
 "use client";
 
-import { Creator } from "@/types/creator";
+import { Creator } from "@/types/Creator";
 import { formatNumber } from "@/utils/format";
 import Image from "next/image";
 

@@ -1,4 +1,4 @@
-import { Creator } from "@/types/creator";
+import { Creator } from "@/types/Creator";
 import { CreatorTable } from "./CreatorTable";
 
 type Props = {

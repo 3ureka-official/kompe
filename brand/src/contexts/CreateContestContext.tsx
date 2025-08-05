@@ -1,16 +1,12 @@
 "use client";
 import React, { createContext, useState, ReactNode } from "react";
-import { ContestCreateFormData } from "@/schema/contestCreateSchema";
+import { ContestCreateFormData } from "@/schema/createContestSchema";
 
 type CreateContestContextType = {
   step: number;
   data: Partial<ContestCreateFormData>;
   next: <T extends object>(partial: T) => void;
   back: () => void;
-  thumbnail: File | null;
-  thumbnailPreview: string | null;
-  setThumbnail: (file: File | null) => void;
-  setThumbnailPreview: (preview: string | null) => void;
 };
 
 export const CreateContestContext = createContext<CreateContestContextType>({
@@ -18,19 +14,12 @@ export const CreateContestContext = createContext<CreateContestContextType>({
   data: {},
   next: () => {},
   back: () => {},
-  thumbnail: null,
-  thumbnailPreview: null,
-  setThumbnail: () => {},
-  setThumbnailPreview: () => {},
 });
 
 /** Provider */
 export function CreateContestProvider({ children }: { children: ReactNode }) {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<Partial<ContestCreateFormData>>({});
-
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
   const next = <T extends object>(partial: T) => {
     setData((prev) => ({ ...prev, ...partial }));
@@ -46,10 +35,6 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
         data,
         next,
         back,
-        thumbnail,
-        thumbnailPreview,
-        setThumbnail,
-        setThumbnailPreview,
       }}
     >
       {children}

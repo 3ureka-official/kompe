@@ -16,7 +16,7 @@ export function useCreateContest() {
         Contest,
         "id" | "created_at" | "status" | "brandId" | "thumbnail_url"
       >;
-      thumbnailFile: File | null;
+      thumbnailFile: File;
       assetsData: FormAssetItem[] | null;
       inspirationData:
         | Omit<

@@ -35,11 +35,6 @@ export function AppGate({ children }: { children: React.ReactNode }) {
       router.replace("/contests");
     } else if (isLoggedIn && profile && !hasBrand && !isOnboard) {
       router.replace("/brand/create");
-    } else if (isLoggedIn) {
-      console.log("isLoggedIn", isLoggedIn);
-      console.log("profile", profile);
-      console.log("hasBrand", hasBrand);
-      console.log("isOnboard", isOnboard);
     } else if (isLoggedIn && hasBrand && isOnboard) {
       router.replace("/contests");
     }
