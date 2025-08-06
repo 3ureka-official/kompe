@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import Header from "@/components/app/Header";
+import { Footer } from "@/components/app/Footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({
