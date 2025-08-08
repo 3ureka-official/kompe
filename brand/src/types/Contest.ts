@@ -4,8 +4,7 @@
 export type Contest = {
   id: string;
   brandId: string;
-  status: "ready" | "application" | "contest" | "ended";
-
+  status: 0 | 1 | 2 | 3 | 4; // 0: 下書き, 1: 予定, 2: 応募, 3: 開催, 4: 終了
   title: string;
   category: string;
   thumbnail_url: string;
@@ -13,6 +12,12 @@ export type Contest = {
   application_end_date: string | Date;
   contest_start_date: string | Date;
   contest_end_date: string | Date;
+
+  videos: number;
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
 
   description: string;
   requirements: string;

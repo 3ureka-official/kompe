@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { createContest } from "@/services/contentestService";
+import { createContest } from "@/services/contestService";
 import { Contest, FormAssetItem, InspirationItem } from "@/types/Contest";
 
 export function useCreateContest() {

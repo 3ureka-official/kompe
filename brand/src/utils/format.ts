@@ -1,3 +1,6 @@
+import { format } from "date-fns";
+import { ja } from "date-fns/locale";
+
 /**
  * ファイルサイズを人間が読みやすい形式にフォーマットします
  * @param bytes バイト数
@@ -39,16 +42,23 @@ export function formatRelativeTime(dateString: string): string {
   }
 }
 
+const locales = { ja };
 /**
- * 日付を日本語形式でフォーマットします
- * @param dateString 日付文字列
+ * 日付を`date-fns`を使用して**日本語で**フォーマットします。
+ * デフォルトは "PP" フォーマットです。
+ *
+ * https://date-fns.org/v4.1.0/docs/format
+ *
+ * @param date - フォーマットする日付
+ * @param formatStr - 使用するフォーマット文字列 (デフォルトは "PP")
  * @returns フォーマットされた日付文字列
  */
-export function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+export function formatDate(
+  date: Parameters<typeof format>[0],
+  formatStr = "PP",
+) {
+  return format(date, formatStr, {
+    locale: ja,
   });
 }
 
