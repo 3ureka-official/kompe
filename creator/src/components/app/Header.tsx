@@ -3,12 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 import Image from "next/image";
+
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, profile } = useContext(AuthContext);
 
   const isAuthenticated = !!user;
 
@@ -25,8 +27,8 @@ export default function Header() {
   };
 
   const getUserInitial = () => {
-    if (!user?.name) return "U";
-    return user.name.charAt(0).toUpperCase();
+    if (!profile?.name) return "U";
+    return profile.name.charAt(0).toUpperCase();
   };
 
   return (
@@ -71,10 +73,10 @@ export default function Header() {
                     href="/profile"
                     className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                   >
-                    {user?.avatar ? (
+                    {profile?.profile_image ? (
                       <Image
-                        src={user.avatar}
-                        alt={user.name || "User avatar"}
+                        src={profile.profile_image}
+                        alt={profile.name || "User avatar"}
                         width={32}
                         height={32}
                         className="rounded-full object-cover"
@@ -160,10 +162,10 @@ export default function Header() {
                         className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        {user?.avatar ? (
+                        {profile?.profile_image ? (
                           <Image
-                            src={user.avatar}
-                            alt={user?.name || "User avatar"}
+                            src={profile.profile_image}
+                            alt={profile?.name || "User avatar"}
                             width={32}
                             height={32}
                             className="rounded-full object-cover"

@@ -1,81 +1,48 @@
 "use client";
 
-import { useEffect, ReactNode } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 
-interface AuthGuardProps {
-  children: ReactNode;
-  fallback?: ReactNode;
-  redirectTo?: string;
-  requireAuth?: boolean;
-}
+const ROOT_PATHS = ["/"];
 
-export function AuthGuard({
-  children,
-  fallback,
-  redirectTo = "/auth/login",
-  requireAuth = true,
-}: AuthGuardProps) {
-  const { user, loading } = useAuth();
+const PUBLIC_PATHS = ["/auth/login", "/auth/signup"];
+
+export function AppGate({ children }: { children: React.ReactNode }) {
+  const { user, profile, loading } = useContext(AuthContext);
   const router = useRouter();
+  const path = usePathname();
 
   useEffect(() => {
-    if (!loading) {
-      if (requireAuth && !user) {
-        // 認証が必要だがログインしていない場合
-        router.push(redirectTo);
-      } else if (!requireAuth && user) {
-        // 認証不要（ログインページなど）だがログイン済みの場合
-        router.push("/dashboard");
-      }
+    if (loading) return;
+
+    const isRoot = ROOT_PATHS.includes(path);
+    const isPublic = PUBLIC_PATHS.includes(path);
+    const isLoggedIn = !!user;
+
+    if (isRoot) {
+      router.replace("/contests");
     }
-  }, [user, loading, requireAuth, redirectTo, router]);
 
-  // ローディング中
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-          <p className="text-gray-600">読み込み中...</p>
-        </div>
-      </div>
-    );
-  }
+    if (!isLoggedIn && !isPublic) {
+      router.replace("/auth/login");
+    } else if (isLoggedIn && isPublic) {
+      router.replace("/contests");
+    }
+  }, [user, profile, loading, path, router]);
 
-  // 認証が必要だがログインしていない場合
-  if (requireAuth && !user) {
-    return fallback || null;
-  }
+  // リダイレクト中は何も出さない
+  const isRedirecting =
+    (!user && !PUBLIC_PATHS.includes(path)) ||
+    (user && PUBLIC_PATHS.includes(path)) ||
+    (user && profile && !profile.tiktok_id);
 
-  // 認証不要だがログイン済みの場合（ログインページなど）
-  if (!requireAuth && user) {
+  if (isRedirecting) {
     return null;
   }
 
+  if (loading) return <div>Loading...</div>;
+
   return <>{children}</>;
-}
-
-interface ProtectedRouteProps {
-  children: ReactNode;
-  fallback?: ReactNode;
-}
-
-// ショートカット用のProtectedRouteコンポーネント
-export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
-  return (
-    <AuthGuard requireAuth={true} fallback={fallback}>
-      {children}
-    </AuthGuard>
-  );
-}
-
-interface PublicRouteProps {
-  children: ReactNode;
-}
-
-// パブリックルート用のコンポーネント
-export function PublicRoute({ children }: PublicRouteProps) {
-  return <AuthGuard requireAuth={false}>{children}</AuthGuard>;
 }
