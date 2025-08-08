@@ -65,3 +65,18 @@ export const createContest = async (
     throw error;
   }
 };
+
+export const getAllContests = async (): Promise<Contest[]> => {
+  try {
+    const { data, error } = await supabase.from("contests").select("*");
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data as Contest[];
+  } catch (error) {
+    console.error("コンテスト取得エラー:", error);
+    throw error;
+  }
+};

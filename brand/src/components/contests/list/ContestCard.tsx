@@ -2,42 +2,30 @@ import { Contest } from "@/types/Contest";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import Image from "next/image";
+import { formatCurrency, formatDate, formatNumber } from "@/utils/format";
 
 type Props = {
   contest: Contest;
 };
 
-// const statusLabels = {
-//   draft: { text: "下書き", color: "bg-gray-100 text-gray-800" },
-//   ready: { text: "予定", color: "bg-yellow-100 text-yellow-800" },
-//   active: { text: "公開中", color: "bg-green-100 text-green-800" },
-//   ended: { text: "終了", color: "bg-red-100 text-red-800" },
-// };
+const statusLabels = {
+  0: { text: "申請", color: "bg-gray-100 text-gray-800" },
+  1: { text: "予定", color: "bg-yellow-100 text-yellow-800" },
+  2: { text: "公開中", color: "bg-green-100 text-green-800" },
+  3: { text: "開催", color: "bg-blue-100 text-blue-800" },
+  4: { text: "終了", color: "bg-red-100 text-red-800" },
+};
 
 export const ContestCard = ({ contest }: Props) => {
-  // const formatDate = (dateString: string) => {
-  //   const date = new Date(dateString);
-  //   const year = date.getFullYear();
-  //   const month = date.getMonth() + 1;
-  //   const day = date.getDate();
-  //   return `${year}年${month}月${day}日`;
-  // };
-
-  // const formatNumber = (num: number) => {
-  //   return String(num).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-  // };
-
-  // const formatCurrency = (amount: number) => {
-  //   return `¥${formatNumber(amount)}`;
-  // };
-
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200 px-5 py-6">
       <div className="flex justify-center">
         {/* サムネイル */}
         <Image
-          src="/images/contest-thumbnail.png"
+          src={contest.thumbnail_url || "/images/placeholder.png"}
           alt={contest.title}
+          width={224}
+          height={168}
           className="w-56 h-42 rounded-lg object-cover border"
         />
 
@@ -51,12 +39,10 @@ export const ContestCard = ({ contest }: Props) => {
             </div>
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${
-                // statusLabels[contest.status].color
-                "bg-gray-100 text-gray-800"
+                statusLabels[contest.status].color
               }`}
             >
-              {/* {statusLabels[contest.status].text} */}
-              draft
+              {statusLabels[contest.status].text}
             </span>
           </div>
 
@@ -65,16 +51,13 @@ export const ContestCard = ({ contest }: Props) => {
               <div className="flex flex-col gap-2">
                 <span className="text-gray-500">応募期間</span>
                 <p className="text-base text-gray-900">
-                  {/* {formatDate(contest.startDate)} -{" "}
-                  {formatDate(contest.endDate)} */}
-                  2025/08/01 - 2025/08/31
+                  {`${formatDate(contest.application_start_date, "PPP")} 〜 ${formatDate(contest.application_end_date, "PPP")}`}
                 </p>
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-gray-500">賞金総額</span>
                 <p className="text-base text-gray-900">
-                  {/* {formatCurrency(contest.prizePool)} */}
-                  ¥200,000
+                  {formatCurrency(contest.prize_pool)}
                 </p>
               </div>
             </div>
@@ -97,8 +80,7 @@ export const ContestCard = ({ contest }: Props) => {
                   />
                 </svg>
                 <span className="text-sm text-gray-600">
-                  {/* {formatNumber(contest.videos)} */}
-                  20
+                  {formatNumber(contest.videos)}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -122,8 +104,7 @@ export const ContestCard = ({ contest }: Props) => {
                   />
                 </svg>
                 <span className="text-sm text-gray-600">
-                  {/* {formatNumber(contest.views)} */}
-                  20
+                  {formatNumber(contest.views)}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -141,8 +122,7 @@ export const ContestCard = ({ contest }: Props) => {
                   />
                 </svg>
                 <span className="text-sm text-gray-600">
-                  {/* {formatNumber(contest.likes)} */}
-                  20
+                  {formatNumber(contest.likes)}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -160,8 +140,7 @@ export const ContestCard = ({ contest }: Props) => {
                   />
                 </svg>
                 <span className="text-sm text-gray-600">
-                  {/* {formatNumber(contest.comments)} */}
-                  20
+                  {formatNumber(contest.comments)}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -179,8 +158,7 @@ export const ContestCard = ({ contest }: Props) => {
                   />
                 </svg>
                 <span className="text-sm text-gray-600">
-                  {/* {formatNumber(contest.shares)} */}
-                  20
+                  {formatNumber(contest.shares)}
                 </span>
               </div>
             </div>
