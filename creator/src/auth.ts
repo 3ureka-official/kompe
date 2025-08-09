@@ -21,10 +21,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       profile(profile) {
         console.log("TikTok profile", profile);
         return {
-          id: profile.data.user.open_id || profile.data.user.union_id,
           name: profile.data.user.display_name,
           image: profile.data.user.avatar_url,
-          email: profile.data.user.email || profile.data.user.username || null,
+          username: profile.data.user.username || null,
+          open_id: profile.data.user.open_id || null,
+          union_id: profile.data.user.union_id || null,
         };
       },
     }),
