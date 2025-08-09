@@ -6,6 +6,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     TikTok({
       clientId: process.env.AUTH_TIKTOK_ID,
       clientSecret: process.env.AUTH_TIKTOK_SECRET,
+
+      authorization: {
+        url: "https://www.tiktok.com/v2/auth/authorize",
+        params: {
+          client_key: process.env.AUTH_TIKTOK_ID,
+          scope: "user.info.profile", //Add scopes you need eg(user.info.profile,user.info.stats,video.list)
+        },
+      },
+
+      token: "https://open.tiktokapis.com/v2/oauth/token/",
       userinfo:
         "https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name,username",
       profile(profile) {
