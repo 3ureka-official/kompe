@@ -2,27 +2,19 @@ import NextAuth from "next-auth";
 import TikTok from "next-auth/providers/tiktok";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  //  By default, the `id` property does not exist on `token` or `session`. See the [TypeScript](https://authjs.dev/getting-started/typescript) on how to add it.
   callbacks: {
-    signIn({ user, account, profile }) {
-      console.log("signIn callback", user, account, profile);
-      return true;
-    },
-    redirect({ url, baseUrl }) {
-      console.log("redirect callback", url, baseUrl);
-      return baseUrl;
-    },
     jwt({ token, user }) {
-      console.log("jwt callback", token, user);
+      console.log("JWT Callback", { token, user });
       if (user) {
+        // User is available during sign-in
         token.id = user.id;
       }
       return token;
     },
-    session({ session, user }) {
-      console.log("session callback", session, user);
-      if (session.user) {
-        session.user.id = user.id;
-      }
+    session({ session, token }) {
+      console.log("Session Callback", { session, token });
+      session.user.id = token.id as string;
       return session;
     },
   },
