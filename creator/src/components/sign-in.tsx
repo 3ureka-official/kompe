@@ -24,12 +24,15 @@ export default async function SignIn() {
       </form>
     );
   return (
-    <ul>
-      <li>email {session.user?.email}</li>
-      <li>name {session.user?.name}</li>
-      <li>image {session.user?.image}</li>
-      <li>id {session.user?.id}</li>
-      <li>expires {session.expires}</li>
-    </ul>
+    <div>
+      <ul>
+        <li>email {session.user?.email}</li>
+        <li>name {session.user?.name}</li>
+        <li>image {session.user?.image}</li>
+        <li>id {session.user?.id}</li>
+        <li>expires {session.expires}</li>
+      </ul>
+      <pre>{JSON.stringify(session, null, 2)}</pre>
+    </div>
   );
 }
