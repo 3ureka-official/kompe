@@ -20,13 +20,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         "https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name,username",
       profile(profile) {
         console.log("TikTok profile", profile);
-        return {
+        console.log("previously returned", {
+          id: profile.data.user.open_id || profile.data.user.union_id,
           name: profile.data.user.display_name,
           image: profile.data.user.avatar_url,
-          username: profile.data.user.username || null,
-          open_id: profile.data.user.open_id || null,
-          union_id: profile.data.user.union_id || null,
+          email: profile.data.user.email || profile.data.user.username || null,
+        });
+        const returnValue = {
+          id: profile.data.user.union_id,
+          name: profile.data.user.display_name,
+          image: profile.data.user.avatar_url,
+          email: profile.data.user.username,
         };
+        console.log("returning:", returnValue);
+        return returnValue;
       },
     }),
   ],
