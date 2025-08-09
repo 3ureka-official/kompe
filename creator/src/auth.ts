@@ -2,15 +2,6 @@ import NextAuth from "next-auth";
 import TikTok from "next-auth/providers/tiktok";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  callbacks: {
-    session({ session, user }) {
-      console.log("session callback", session, user);
-      if (session.user) {
-        session.user.id = user.id;
-      }
-      return session;
-    },
-  },
   providers: [
     TikTok({
       clientId: process.env.AUTH_TIKTOK_ID,
@@ -36,10 +27,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: profile.data.user.email || profile.data.user.username || null,
         });
         const returnValue = {
-          id: profile.data.user.union_id,
+          id: "hogehoge",
           name: profile.data.user.display_name,
           image: profile.data.user.avatar_url,
-          email: profile.data.user.username,
+          email: profile.data.user.union_id,
         };
         console.log("returning:", returnValue);
         return returnValue;
