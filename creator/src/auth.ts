@@ -1,17 +1,25 @@
 import NextAuth, { customFetch } from "next-auth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  // コールバックでセッション情報にユーザーIDを追加
+  pages: {
+    signIn: "/login",
+  },
   callbacks: {
     jwt({ token, user }) {
+      // セッション情報にユーザーIDを追加
       if (user) {
         token.id = user.id;
       }
       return token;
     },
     session({ session, token }) {
+      // セッション情報にユーザーIDを追加
       session.user.id = token.id as string;
       return session;
+    },
+    authorized: async ({ auth }) => {
+      // Logged in users are authenticated, otherwise redirect to login page
+      return !!auth;
     },
   },
   providers: [
