@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { RichTextEditor } from "@/components/ui/RichTextEditer";
+import { RichTextEditor } from "@/components/contests/create/ui/RichTextEditer/RichTextEditer";
 import { useContext } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { Controller, useForm } from "react-hook-form";
@@ -8,8 +8,9 @@ import { briefSchema } from "@/schema/createContestSchema";
 import { FormField } from "@/components/ui/FormField";
 
 export function Brief() {
-  const { data, next, back } = useContext(CreateContestContext);
-  const { control, handleSubmit } = useForm({
+  const { data, next, back, submit, isUpdating, updateData } =
+    useContext(CreateContestContext);
+  const { control, handleSubmit, getValues, watch } = useForm({
     resolver: yupResolver(briefSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -17,6 +18,12 @@ export function Brief() {
       requirements: data.requirements || "",
     },
   });
+
+  const draft = () => {
+    const values = getValues();
+    updateData(values);
+    submit(true, values);
+  };
 
   return (
     <div>
@@ -37,7 +44,7 @@ export function Brief() {
               >
                 <RichTextEditor
                   value={field.value || ""}
-                  onChange={(html) => field.onChange(html)}
+                  onChange={(md) => field.onChange(md)}
                 />
               </FormField>
             )}
@@ -55,7 +62,7 @@ export function Brief() {
               <FormField label="ルール設定" error={fieldState.error?.message}>
                 <RichTextEditor
                   value={field.value || ""}
-                  onChange={(html) => field.onChange(html)}
+                  onChange={(md) => field.onChange(md)}
                 />
               </FormField>
             )}
@@ -64,19 +71,31 @@ export function Brief() {
       </div>
 
       <div className="flex justify-end gap-4 pt-6">
-        {/* <Button
+        <Button
           type="button"
           variant="secondary"
+          onClick={draft}
+          disabled={isUpdating}
         >
-          下書き保存
-        </Button> */}
-
-        <Button type="button" onClick={back} variant="secondary">
-          前へ戻る
+          {isUpdating ? "保存中..." : "下書き保存"}
         </Button>
 
-        <Button type="submit" variant="primary" onClick={handleSubmit(next)}>
-          次へ進む
+        <Button
+          type="button"
+          onClick={() => back(getValues())}
+          variant="secondary"
+          disabled={isUpdating}
+        >
+          {isUpdating ? "保存中..." : "前へ戻る"}
+        </Button>
+
+        <Button
+          type="submit"
+          variant="primary"
+          onClick={handleSubmit(next)}
+          disabled={isUpdating}
+        >
+          {isUpdating ? "保存中..." : "次へ進む"}
         </Button>
       </div>
     </div>

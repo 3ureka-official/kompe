@@ -1,13 +1,13 @@
 import supabase from "@/lib/supabase";
-import { Contest, FormAssetItem, InspirationItem } from "@/types/Contest";
+import { Contest, InspirationItem, AssetItem } from "@/types/Contest";
 import { v4 as uuidv4 } from "uuid";
-import { uploadFile } from "@/lib/storage";
-import { createAsset } from "./assetService";
-import { createInspiration } from "./inspirationService";
+import { updateAssets } from "./assetService";
+import { updateInspiration } from "./inspirationService";
 
 /**
  * コンテストを作成
  * @param brandId ブランドID
+ * @param contestId コンテストID
  * @param contestData コンテストデータ
  * @param thumbnailFile サムネイルファイル
  * @param assetsData アセット
@@ -17,46 +17,34 @@ import { createInspiration } from "./inspirationService";
 
 export const createContest = async (
   brandId: string,
+  contestId: string,
   contestData: Omit<
     Contest,
-    "id" | "created_at" | "status" | "brandId" | "thumbnail_url"
+    | "id"
+    | "brand_id"
+    | "created_at"
+    | "thumbnail_url"
+    | "is_draft"
+    | "videos"
+    | "views"
+    | "likes"
+    | "comments"
+    | "shares"
   >,
-  thumbnailFile: File,
-  assetFormData: FormAssetItem[] | null,
-  inspirationData:
-    | Omit<InspirationItem, "id" | "created_at" | "brand_id" | "contest_id">[]
-    | null,
 ): Promise<string> => {
   try {
-    const contestId = uuidv4();
-
-    const thumbnailUrl = await uploadFile(
-      "contests",
-      `${contestId}/thumbnail.png`,
-      thumbnailFile,
-    );
-
     const { data: contest, error } = await supabase
       .from("contests")
       .insert({
         ...contestData,
         id: contestId,
         brand_id: brandId,
-        thumbnail_url: thumbnailUrl,
       })
       .select("*")
       .single();
 
     if (error) {
       throw new Error(error.message);
-    }
-
-    if (assetFormData) {
-      await createAsset(brandId, contestId, assetFormData);
-    }
-
-    if (inspirationData) {
-      await createInspiration(brandId, contestId, inspirationData);
     }
 
     return contest.id;
@@ -77,6 +65,52 @@ export const getAllContests = async (): Promise<Contest[]> => {
     return data as Contest[];
   } catch (error) {
     console.error("コンテスト取得エラー:", error);
+    throw error;
+  }
+};
+
+export const updateContest = async (
+  brandId: string,
+  contestId: string,
+  contestData: Omit<
+    Contest,
+    | "id"
+    | "created_at"
+    | "thumbnail_url"
+    | "is_draft"
+    | "brand_id"
+    | "videos"
+    | "views"
+    | "likes"
+    | "comments"
+    | "shares"
+  >,
+  assetsData: Omit<
+    AssetItem,
+    "id" | "created_at" | "brand_id" | "contest_id"
+  >[],
+  inspirationData: Omit<
+    InspirationItem,
+    "id" | "created_at" | "brand_id" | "contest_id"
+  >[],
+): Promise<void> => {
+  try {
+    console.log(contestData);
+    console.log(contestId);
+    const { error } = await supabase
+      .from("contests")
+      .update(contestData)
+      .eq("id", contestId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    updateAssets(assetsData, contestId, brandId);
+
+    updateInspiration(inspirationData, contestId, brandId);
+  } catch (error) {
+    console.error("コンテスト更新エラー:", error);
     throw error;
   }
 };

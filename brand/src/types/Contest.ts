@@ -3,8 +3,8 @@
  */
 export type Contest = {
   id: string;
-  brandId: string;
-  status: 0 | 1 | 2 | 3 | 4; // 0: 下書き, 1: 予定, 2: 応募, 3: 開催, 4: 終了
+  brand_id: string;
+  is_draft: boolean;
   title: string;
   category: string;
   thumbnail_url: string;
@@ -36,12 +36,6 @@ export interface AssetItem {
   url: string | null;
   description: string | null;
   created_at: string | Date;
-}
-
-export interface FormAssetItem {
-  file: File | null;
-  url: string | null;
-  description: string | null;
 }
 
 export interface InspirationItem {

@@ -1,50 +1,39 @@
 import { Button } from "@/components/ui/Button";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { prizeSchema } from "@/schema/createContestSchema";
 import { NumberInput } from "@/components/ui/NumberInput";
 import { FormField } from "@/components/ui/FormField";
-import { CONTEST_PLANS } from "@/constants/contestPlanConstant";
-import { useCreateContest } from "@/hooks/contest/useCreateContest";
-import { BrandContext } from "@/contexts/BrandContext";
-import { FormAssetItem, InspirationItem } from "@/types/Contest";
-import { useRouter } from "next/navigation";
+import { CONTEST_PLANS } from "@/constants/contest.constant";
 
 export function Prize() {
-  const router = useRouter();
-  const { brand } = useContext(BrandContext);
-  const { mutate: createContest, isPending } = useCreateContest();
-
-  const { data, back } = useContext(CreateContestContext);
+  const { data, back, submit, isUpdating, updateData } =
+    useContext(CreateContestContext);
 
   const { control, handleSubmit, watch, setValue, getValues } = useForm({
     resolver: yupResolver(prizeSchema),
     mode: "onSubmit",
     defaultValues: {
-      prizePool: data.prizePool || 0,
-      prizeDistribution: data.prizeDistribution || [0, 0, 0],
+      prize_pool: data.prize_pool || 0,
+      prize_distribution: data.prize_distribution || [0, 0, 0],
     },
   });
 
-  const watchedPrizePool = watch("prizePool");
-  const watchedDistribution = watch("prizeDistribution");
+  const watchedprize_pool = watch("prize_pool");
+  const watchedDistribution = watch("prize_distribution");
 
   const [totalPrize, setTotalPrize] = useState(0);
 
   const addWinner = () => {
-    if (watchedDistribution && watchedDistribution.length < 10) {
-      setValue("prizeDistribution", [...watchedDistribution, 0]);
-      setTotalPrize(
-        watchedDistribution.reduce((sum, amount) => sum + amount, 0),
-      );
-    }
+    setValue("prize_distribution", [...watchedDistribution, 0]);
+    setTotalPrize(watchedDistribution.reduce((sum, amount) => sum + amount, 0));
   };
 
   const removeWinner = () => {
     if (watchedDistribution && watchedDistribution.length > 1) {
-      setValue("prizeDistribution", watchedDistribution.slice(0, -1));
+      setValue("prize_distribution", watchedDistribution.slice(0, -1));
       setTotalPrize(
         watchedDistribution.reduce((sum, amount) => sum + amount, 0),
       );
@@ -54,71 +43,18 @@ export function Prize() {
   const updateAmount = (index: number, amount: number) => {
     const newDistribution = [...(watchedDistribution || [])];
     newDistribution[index] = amount;
-    setValue("prizeDistribution", newDistribution);
+    setValue("prize_distribution", newDistribution);
     setTotalPrize(newDistribution.reduce((sum, amount) => sum + amount, 0));
   };
 
-  const onSubmit = () => {
-    if (!brand) return;
-
+  const draft = () => {
     const values = getValues();
+    submit(true, values);
+  };
 
-    const assetsData: FormAssetItem[] | null =
-      data.assets
-        ?.filter(
-          (asset) =>
-            asset.file != null ||
-            asset.url != null ||
-            asset.description != null,
-        )
-        .map((asset) => ({
-          file: asset.file || null,
-          url: asset.url || null,
-          description: asset.description || null,
-        })) || null;
-
-    const inspirationData:
-      | Omit<InspirationItem, "id" | "created_at" | "brand_id" | "contest_id">[]
-      | null =
-      data.inspirations
-        ?.filter(
-          (inspiration) =>
-            inspiration.url != null || inspiration.description != null,
-        )
-        .map((inspiration) => ({
-          url: inspiration.url || null,
-          description: inspiration.description || null,
-        })) || null;
-
-    const completeData = {
-      title: data.title || "",
-      category: data.category || "",
-      description: data.description || "",
-      requirements: data.requirements || "",
-      application_start_date: data.applicationStartDate || "",
-      application_end_date: data.applicationEndDate || "",
-      contest_start_date: data.contestStartDate || "",
-      contest_end_date: data.contestEndDate || "",
-      prize_pool: values.prizePool || 0,
-      prize_distribution: values.prizeDistribution || [],
-    };
-
-    if (!data.thumbnailFile) return;
-
-    createContest(
-      {
-        brandId: brand.id,
-        contestData: completeData,
-        thumbnailFile: data.thumbnailFile,
-        assetsData: assetsData,
-        inspirationData: inspirationData,
-      },
-      {
-        onSuccess: () => {
-          router.push("/contests");
-        },
-      },
-    );
+  const publish = () => {
+    const values = getValues();
+    submit(false, values);
   };
 
   return (
@@ -128,7 +64,7 @@ export function Prize() {
 
         <Controller
           control={control}
-          name="prizePool"
+          name="prize_pool"
           render={({ field, fieldState }) => (
             <FormField label="" error={fieldState.error?.message}>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -147,7 +83,7 @@ export function Prize() {
                       className="sr-only"
                       checked={field.value === option.value}
                       onChange={() => {
-                        field.onChange(option.value);
+                        field.onChange(Number(option.value));
                       }}
                     />
                     <span className="flex flex-col items-center w-full justify-center">
@@ -211,15 +147,9 @@ export function Prize() {
               <button
                 type="button"
                 onClick={addWinner}
-                disabled={
-                  watchedDistribution && watchedDistribution.length >= 10
-                }
                 className="inline-flex items-center justify-center w-8 h-8 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 style={{
-                  backgroundColor:
-                    watchedDistribution && watchedDistribution.length >= 10
-                      ? "#9CA3AF"
-                      : "#25F4EE",
+                  backgroundColor: "#25F4EE",
                   color: "#000000",
                 }}
               >
@@ -242,7 +172,7 @@ export function Prize() {
 
           <Controller
             control={control}
-            name="prizeDistribution"
+            name="prize_distribution"
             render={({ field }) => (
               <div>
                 <div className="space-y-4">
@@ -259,11 +189,6 @@ export function Prize() {
                           value={amount || 0}
                           onChange={(e) => {
                             updateAmount(index, Number(e));
-                            const newDistribution = [
-                              ...(watchedDistribution || []),
-                            ];
-                            newDistribution[index] = Number(e);
-                            setValue("prizeDistribution", newDistribution);
                           }}
                           className="w-32 px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-opacity-50"
                           step={1000}
@@ -277,10 +202,10 @@ export function Prize() {
             )}
           />
 
-          {watchedPrizePool && totalPrize !== watchedPrizePool && (
+          {watchedprize_pool > 0 && totalPrize !== watchedprize_pool && (
             <p className="text-sm text-red-500 mt-6">
               配分金額の合計（{totalPrize.toLocaleString()}
-              円）が選択した総賞金額（{watchedPrizePool.toLocaleString()}
+              円）が選択した総賞金額（{watchedprize_pool.toLocaleString()}
               円）と一致しません
             </p>
           )}
@@ -288,21 +213,31 @@ export function Prize() {
       </div>
 
       <div className="flex justify-end gap-4 pt-6">
-        {/* <Button type="button" variant="secondary">
-          下書き保存
-        </Button> */}
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={draft}
+          disabled={isUpdating}
+        >
+          {isUpdating ? "保存中..." : "下書き保存"}
+        </Button>
 
-        <Button type="button" onClick={back} variant="secondary">
-          前へ戻る
+        <Button
+          type="button"
+          onClick={() => back(getValues())}
+          variant="secondary"
+          disabled={isUpdating}
+        >
+          {isUpdating ? "保存中..." : "前へ戻る"}
         </Button>
 
         <Button
           type="submit"
           variant="primary"
-          disabled={isPending}
-          onClick={handleSubmit(onSubmit)}
+          disabled={isUpdating}
+          onClick={handleSubmit(publish)}
         >
-          {isPending ? "作成中..." : "コンテストを作成"}
+          {isUpdating ? "保存中..." : "コンテストを作成"}
         </Button>
       </div>
     </div>
