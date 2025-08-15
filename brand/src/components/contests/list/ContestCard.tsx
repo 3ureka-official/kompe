@@ -3,17 +3,12 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import Image from "next/image";
 import { formatCurrency, formatDate, formatNumber } from "@/utils/format";
+import { CONTEST_STATUS_LABELS } from "@/constants/contest.constant";
+import { getContestStatus } from "@/utils/getContestStatus";
+import { TrashIcon } from "lucide-react";
 
 type Props = {
   contest: Contest;
-};
-
-const statusLabels = {
-  0: { text: "申請", color: "bg-gray-100 text-gray-800" },
-  1: { text: "予定", color: "bg-yellow-100 text-yellow-800" },
-  2: { text: "公開中", color: "bg-green-100 text-green-800" },
-  3: { text: "開催", color: "bg-blue-100 text-blue-800" },
-  4: { text: "終了", color: "bg-red-100 text-red-800" },
 };
 
 export const ContestCard = ({ contest }: Props) => {
@@ -21,13 +16,17 @@ export const ContestCard = ({ contest }: Props) => {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200 px-5 py-6">
       <div className="flex justify-center">
         {/* サムネイル */}
-        <Image
-          src={contest.thumbnail_url || "/images/placeholder.png"}
-          alt={contest.title}
-          width={224}
-          height={168}
-          className="w-56 h-42 rounded-lg object-cover border"
-        />
+        {contest.thumbnail_url ? (
+          <Image
+            src={contest.thumbnail_url || ""}
+            alt={contest.title}
+            width={224}
+            height={168}
+            className="w-56 h-42 rounded-lg object-cover border"
+          />
+        ) : (
+          <div className="w-56 h-42 rounded-lg object-cover border bg-gray-400" />
+        )}
 
         {/* コンテンツ */}
         <div className="flex-1 px-6 flex flex-col">
@@ -39,10 +38,10 @@ export const ContestCard = ({ contest }: Props) => {
             </div>
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${
-                statusLabels[contest.status].color
+                CONTEST_STATUS_LABELS[getContestStatus(contest)].color
               }`}
             >
-              {statusLabels[contest.status].text}
+              {CONTEST_STATUS_LABELS[getContestStatus(contest)].text}
             </span>
           </div>
 
@@ -162,15 +161,32 @@ export const ContestCard = ({ contest }: Props) => {
                 </span>
               </div>
             </div>
-            <Link href={`/dashboard/contests/${contest.id}`}>
-              <Button
-                variant="outline"
-                size="sm"
-                className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
-              >
-                詳細を見る
-              </Button>
-            </Link>
+            {contest.is_draft ? (
+              <div className="flex items-center gap-2">
+                <Button variant="danger" size="sm" className="cursor-pointer">
+                  <TrashIcon className="w-4 h-4" />
+                </Button>
+                <Link href={`/contests/${contest.id}/edit`}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
+                  >
+                    編集する
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <Link href={`/contests/${contest.id}`}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
+                >
+                  詳細を見る
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

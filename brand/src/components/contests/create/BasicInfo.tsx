@@ -2,38 +2,91 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { SelectWithOptions } from "@/components/ui/Select";
 import { FormField } from "@/components/ui/FormField";
-import { FileUpload } from "@/components/ui/FileUpload";
+import { FileUpload } from "@/components/contests/create/ui/FileUpload";
 import { Controller, useForm } from "react-hook-form";
-import { CONTEST_CATEGORIES } from "@/constants/contestCategory.constant";
+import { CONTEST_CATEGORIES } from "@/constants/contest.constant";
 import { basicInfoSchema } from "@/schema/createContestSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { DateInput } from "@/components/ui/DateInput";
+import { useUploadFile } from "@/hooks/contest/storage/useUploadFile";
+import Image from "next/image";
+import { useDeleteFiles } from "@/hooks/contest/storage/useDeleteFiles";
 
 export function BasicInfo() {
-  const { data, next } = useContext(CreateContestContext);
+  const { data, next, contestId, submit, isUpdating, updateData } =
+    useContext(CreateContestContext);
 
-  const { control, handleSubmit, setValue, watch } = useForm({
+  const { control, handleSubmit, setValue, watch, getValues } = useForm({
     resolver: yupResolver(basicInfoSchema),
     mode: "onSubmit",
     defaultValues: {
       title: data.title || "",
       category: data.category || "",
-      thumbnailFile: data.thumbnailFile || undefined,
-      thumbnailPreview: data.thumbnailPreview || null,
-      applicationStartDate: data.applicationStartDate || new Date(),
-      applicationEndDate: data.applicationEndDate || new Date(),
-      contestStartDate: data.contestStartDate || new Date(),
-      contestEndDate: data.contestEndDate || new Date(),
+      thumbnail_url: data.thumbnail_url || "",
+      application_start_date: data.application_start_date || new Date(),
+      application_end_date: data.application_end_date || new Date(),
+      contest_start_date: data.contest_start_date || new Date(),
+      contest_end_date: data.contest_end_date || new Date(),
     },
   });
 
-  const thumbnailPreview = watch("thumbnailPreview");
+  const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
+  const watchThumbnail = watch("thumbnail_url");
+
+  const { mutate: uploadThumbnail } = useUploadFile();
+  const { mutate: deleteThumbnail } = useDeleteFiles();
+
+  const handleThumbnailSubmit = (file: File | null) => {
+    if (!file) return;
+
+    setUploadingThumbnail(true);
+
+    uploadThumbnail(
+      {
+        bucket: "contests",
+        path: `${contestId}/thumbnail.png`,
+        file,
+      },
+      {
+        onSuccess: (data) => {
+          setValue("thumbnail_url", data);
+          updateData({
+            thumbnail_url: data,
+          });
+        },
+      },
+    );
+    setUploadingThumbnail(false);
+  };
+
+  const handleDeleteThumbnail = () => {
+    setUploadingThumbnail(true);
+    deleteThumbnail(
+      {
+        bucket: "contests",
+        paths: [`${contestId}/thumbnail.png`],
+      },
+      {
+        onSuccess: () => {
+          setUploadingThumbnail(false);
+          setValue("thumbnail_url", "");
+        },
+      },
+    );
+  };
+
+  const draft = () => {
+    const values = getValues();
+    console.log(values);
+    updateData(values);
+    submit(true, values);
+  };
 
   return (
-    <div>
-      <div className="flex flex-col gap-8 bg-white rounded-lg p-8 shadow-sm">
+    <div className="flex flex-col gap-8">
+      <div className=" gap-8 bg-white rounded-lg p-8 shadow-sm">
         <div className="flex gap-4">
           <div className="w-full">
             <Controller
@@ -70,7 +123,7 @@ export function BasicInfo() {
                     onValueChange={(value) => field.onChange(value)}
                     options={CONTEST_CATEGORIES}
                     placeholder="カテゴリーを選択してください"
-                    className="w-full"
+                    className="w-full py-2"
                   />
                 </FormField>
               )}
@@ -79,58 +132,47 @@ export function BasicInfo() {
         </div>
 
         <div>
-          {/* <Controller
-            control={control}
-            name="thumbnailFile"
-            render={({ field, fieldState }) => (
-              <FormField
-                label="サムネイル画像"
-                required
-                error={fieldState.error?.message}
-              >
-                <FileUpload
-                  file={field.value || null}
-                  preview={thumbnailPreview}
-                  onFileChange={(file) => {
-                    setThumbnail(file);
-                    field.onChange(file);
-                  }}
-                  onPreviewChange={setThumbnailPreview}
-                  accept="image/*"
-                  maxSize={5 * 1024 * 1024}
-                  className="w-full"
-                />
-              </FormField>
-            )}
-          /> */}
           <Controller
             control={control}
-            name="thumbnailFile"
-            render={({ field, fieldState }) => (
+            name="thumbnail_url"
+            render={({ fieldState }) => (
               <FormField
                 label="サムネイル画像"
                 required
                 error={fieldState.error?.message}
               >
                 <FileUpload
-                  file={field.value || null}
-                  preview={thumbnailPreview || null}
-                  onFileChange={(file) => {
-                    field.onChange(file);
-                  }}
-                  onPreviewChange={(filePreview) => {
-                    console.log("filePreview", filePreview);
-                    setValue("thumbnailPreview", filePreview || null);
-                  }}
+                  handleSubmit={handleThumbnailSubmit}
                   accept="image/*"
                   maxSize={5 * 1024 * 1024}
                   className="w-full"
+                  disabled={watchThumbnail !== ""}
                 />
               </FormField>
             )}
           />
+          {watchThumbnail !== "" && (
+            <div className="flex justify-between items-center">
+              <Image
+                src={watchThumbnail || ""}
+                alt="thumbnail"
+                width={160}
+                height={100}
+                className="w-[160px] h-[100px] object-cover"
+              />
+              <Button
+                type="button"
+                variant="danger"
+                onClick={() => handleDeleteThumbnail()}
+              >
+                削除
+              </Button>
+            </div>
+          )}
         </div>
+      </div>
 
+      <div className="flex flex-col gap-8 bg-white rounded-lg p-8 shadow-sm">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-4">
             応募期間 <span className="text-red-500">*</span>
@@ -141,7 +183,7 @@ export function BasicInfo() {
               <label className="block text-sm text-gray-600 mb-2">開始日</label>
               <Controller
                 control={control}
-                name="applicationStartDate"
+                name="application_start_date"
                 render={({ field, fieldState }) => (
                   <div>
                     <DateInput
@@ -162,7 +204,7 @@ export function BasicInfo() {
               <label className="block text-sm text-gray-600 mb-2">終了日</label>
               <Controller
                 control={control}
-                name="applicationEndDate"
+                name="application_end_date"
                 render={({ field, fieldState }) => (
                   <div>
                     <DateInput
@@ -191,7 +233,7 @@ export function BasicInfo() {
               <label className="block text-sm text-gray-600 mb-2">開始日</label>
               <Controller
                 control={control}
-                name="contestStartDate"
+                name="contest_start_date"
                 render={({ field, fieldState }) => (
                   <div>
                     <DateInput
@@ -212,7 +254,7 @@ export function BasicInfo() {
               <label className="block text-sm text-gray-600 mb-2">終了日</label>
               <Controller
                 control={control}
-                name="contestEndDate"
+                name="contest_end_date"
                 render={({ field, fieldState }) => (
                   <div>
                     <DateInput
@@ -232,12 +274,22 @@ export function BasicInfo() {
         </div>
 
         <div className="flex justify-end gap-4 pt-6">
-          <Button type="button" variant="secondary">
-            下書き保存
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={draft}
+            disabled={uploadingThumbnail || isUpdating}
+          >
+            {uploadingThumbnail || isUpdating ? "保存中..." : "下書き保存"}
           </Button>
 
-          <Button type="submit" variant="primary" onClick={handleSubmit(next)}>
-            次へ進む
+          <Button
+            type="submit"
+            variant="primary"
+            onClick={handleSubmit(next)}
+            disabled={uploadingThumbnail || isUpdating}
+          >
+            {uploadingThumbnail || isUpdating ? "保存中..." : "次へ進む"}
           </Button>
         </div>
       </div>

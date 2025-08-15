@@ -22,7 +22,7 @@ export function Header() {
   };
 
   const getLinkClass = (path: string) => {
-    const isActive = pathname.startsWith(path);
+    const isActive = pathname === path;
     return `px-3 py-2 rounded-md text-sm transition-colors ${
       isActive
         ? "text-gray-900 font-semibold bg-gray-100"
