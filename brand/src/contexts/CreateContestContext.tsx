@@ -13,6 +13,9 @@ import { useCreateContest } from "@/hooks/contest/useCreateContest";
 import { BrandContext } from "@/contexts/BrandContext";
 import { AssetItem, InspirationItem } from "@/types/Contest";
 import { useRouter } from "next/navigation";
+import { useGetContest } from "@/hooks/contest/useGetContest";
+import { useGetAssets } from "@/hooks/contest/asset/useGetAssets";
+import { useGetInspirations } from "@/hooks/contest/inspiration/useGetInspirations";
 
 type CreateContestContextType = {
   step: number;
@@ -24,6 +27,8 @@ type CreateContestContextType = {
   isCreating: boolean;
   isUpdating: boolean;
   updateData: <T extends object>(partial: T) => void;
+  setContestId: (contestId: string) => void;
+  initContest: (brandId: string, paramContestId?: string) => void;
 };
 
 export const CreateContestContext = createContext<CreateContestContextType>({
@@ -32,10 +37,12 @@ export const CreateContestContext = createContext<CreateContestContextType>({
   next: () => {},
   back: () => {},
   contestId: null,
-  submit: (isDraft: boolean, newData: Partial<ContestCreateFormData>) => {},
+  submit: () => {},
   isCreating: false,
   isUpdating: false,
-  updateData: <T extends object>(partial: T) => {},
+  updateData: () => {},
+  setContestId: () => {},
+  initContest: () => {},
 });
 
 /** Provider */
@@ -50,6 +57,9 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
 
   const { mutate: createContest, isPending: isCreating } = useCreateContest();
   const { mutate: updateContest, isPending: isUpdating } = useUpdateContest();
+  const { getContestQuery } = useGetContest(contestId || "");
+  const { getAssetsQuery } = useGetAssets(contestId || "");
+  const { getInspirationsQuery } = useGetInspirations(contestId || "");
 
   const next = <T extends object>(partial: T) => {
     setData((prev) => ({ ...prev, ...partial }));
@@ -127,36 +137,64 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  useEffect(() => {
-    if (!brand?.id) return;
-
-    const storageKey = `contest:create:${brand.id}`;
-    let contestId = sessionStorage.getItem(storageKey);
+  const initContest = (brandId: string, paramContestId?: string) => {
+    const storageKey = `contest:create:${brandId}`;
+    let contestId = paramContestId || sessionStorage.getItem(storageKey);
 
     if (contestId) {
       setContestId(contestId);
-      return;
+
+      getContestQuery.refetch();
+      getAssetsQuery.refetch();
+      getInspirationsQuery.refetch();
     } else {
       contestId = crypto.randomUUID();
       sessionStorage.setItem(storageKey, contestId);
-    }
 
-    createContest(
-      {
-        contestId: contestId,
-        brandId: brand.id,
-        contestData: data,
-      },
-      {
-        onSuccess: (id) => {
-          setContestId(id);
+      createContest(
+        {
+          contestId: contestId,
+          brandId: brandId,
+          contestData: data,
         },
-        onError: (error) => {
-          console.error(error);
+        {
+          onSuccess: (id) => {
+            setContestId(id);
+          },
         },
-      },
-    );
-  }, [brand?.id]);
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (getContestQuery.data) {
+      setData(getContestQuery.data as ContestCreateFormData);
+    }
+  }, [getContestQuery.data]);
+
+  useEffect(() => {
+    if (getAssetsQuery.data) {
+      console.log("getAssetsQuery.data", getAssetsQuery.data);
+      const assets = getAssetsQuery.data.map((asset) => ({
+        id: asset.id,
+        file_url: asset.file_url || "",
+        url: asset.url || "",
+        description: asset.description || "",
+      }));
+      setData((prev) => ({ ...prev, assets }));
+    }
+  }, [getAssetsQuery.data]);
+
+  useEffect(() => {
+    if (getInspirationsQuery.data) {
+      const inspirations = getInspirationsQuery.data.map((inspiration) => ({
+        id: inspiration.id,
+        url: inspiration.url || "",
+        description: inspiration.description || "",
+      }));
+      setData((prev) => ({ ...prev, inspirations }));
+    }
+  }, [getInspirationsQuery.data]);
 
   return (
     <CreateContestContext.Provider
@@ -170,6 +208,8 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
         isCreating,
         isUpdating,
         updateData,
+        setContestId,
+        initContest,
       }}
     >
       {children}

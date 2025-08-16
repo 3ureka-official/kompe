@@ -66,6 +66,19 @@ export const createAssets = async (
   }
 };
 
+export const getAssets = async (contestId: string): Promise<AssetItem[]> => {
+  const { data, error } = await supabase
+    .from("contests_assets")
+    .select("*")
+    .eq("contest_id", contestId);
+
+  if (error) {
+    throw new Error(`アセット取得エラー: ${error.message}`);
+  }
+
+  return data as AssetItem[];
+};
+
 /**
  * コンテストの全アセットを削除
  * @param contestId コンテストID

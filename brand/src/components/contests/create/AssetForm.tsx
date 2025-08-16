@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { Controller, useForm } from "react-hook-form";
 import { FormField } from "@/components/ui/FormField";
-import { FileUpload } from "@/components/ui/FileUpload";
+import { AssetFileUpload } from "@/components/contests/create/ui/AssetFileUpload";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { assetFormSchema } from "@/schema/createContestSchema";
@@ -39,7 +39,7 @@ export function AssetForm({ addAsset }: Props) {
 
   useEffect(() => {
     setValue("file", file);
-  }, [file]);
+  }, [file, setValue]);
 
   return (
     <div className="flex flex-col">
@@ -48,7 +48,7 @@ export function AssetForm({ addAsset }: Props) {
         name="file"
         render={({ fieldState }) => (
           <FormField label="画像" error={fieldState.error?.message}>
-            <FileUpload
+            <AssetFileUpload
               onFileChange={(file: File | null) => {
                 setFile(file);
               }}

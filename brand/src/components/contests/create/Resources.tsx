@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,17 +13,17 @@ import {
 import { AssetForm } from "@/components/contests/create/AssetForm";
 import * as yup from "yup";
 import { InspirationForm } from "./InspirationForm";
-import { useUploadFile } from "@/hooks/contest/storage/useUploadFile";
+import { useUploadFile } from "@/hooks/storage/useUploadFile";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
-import { useDeleteFiles } from "@/hooks/contest/storage/useDeleteFiles";
+import { useDeleteFiles } from "@/hooks/storage/useDeleteFiles";
 import { Trash2 } from "lucide-react";
 
 export function Resources() {
-  const { next, back, data, contestId, submit, isUpdating, updateData } =
+  const { next, back, data, contestId, submit, isUpdating } =
     useContext(CreateContestContext);
 
-  const { handleSubmit, getValues, setValue, watch } = useForm({
+  const { handleSubmit, getValues, setValue, watch, reset } = useForm({
     resolver: yupResolver(resourcesSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -31,6 +31,12 @@ export function Resources() {
       inspirations: data.inspirations ?? [],
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      reset({ ...data });
+    }
+  }, [data, reset]);
 
   const { mutate: uploadFile } = useUploadFile();
   const { mutate: deleteFile } = useDeleteFiles();
@@ -95,11 +101,6 @@ export function Resources() {
     );
   };
 
-  const draft = () => {
-    const values = getValues();
-    submit(true, values);
-  };
-
   const addInspiration = (
     inspiration: yup.InferType<typeof inspirationItemSchema>,
   ) => {
@@ -119,6 +120,11 @@ export function Resources() {
 
     const inspirations = getValues("inspirations")?.filter((_, i) => i !== idx);
     setValue("inspirations", inspirations);
+  };
+
+  const draft = () => {
+    const values = getValues();
+    submit(true, values);
   };
 
   return (

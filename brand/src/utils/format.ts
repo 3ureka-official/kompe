@@ -42,7 +42,6 @@ export function formatRelativeTime(dateString: string): string {
   }
 }
 
-const locales = { ja };
 /**
  * 日付を`date-fns`を使用して**日本語で**フォーマットします。
  * デフォルトは "PP" フォーマットです。

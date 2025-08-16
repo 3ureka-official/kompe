@@ -1,5 +1,5 @@
 import supabase from "@/lib/supabase";
-import { Application } from "@/types/application";
+import { Application } from "@/types/Application";
 
 /**
  * 指定されたコンテストIDのアプリケーションを取得

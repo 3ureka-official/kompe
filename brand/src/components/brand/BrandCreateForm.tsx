@@ -9,17 +9,21 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { Logo } from "@/components/ui/Logo";
 import { FormField, Textarea, SnsLinkField } from "./ui";
 import { Input } from "@/components/ui/Input";
-import { FileUpload } from "@/components/ui/FileUpload";
+import { FileUpload } from "@/components/brand/ui/FileUpload";
 import { Button } from "@/components/ui/Button";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { brandCreateSchema } from "@/schema/createBrandSchema";
 import { useCreateBrand } from "@/hooks/brand/useCreateBrand";
+import Image from "next/image";
 
 export function BrandCreateForm() {
   const { user, profile } = useContext(AuthContext);
   const router = useRouter();
 
   const { mutate: createBrand, isPending, error } = useCreateBrand();
+
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const { control, handleSubmit, watch, getValues } = useForm({
     resolver: yupResolver(brandCreateSchema),
@@ -34,9 +38,6 @@ export function BrandCreateForm() {
       instagram_url: null,
     },
   });
-
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const description = watch("description");
 
@@ -120,14 +121,41 @@ export function BrandCreateForm() {
               )}
             />
 
-            <FormField label="ブランドロゴ">
+            <FormField label="ロゴ画像">
               <FileUpload
-                file={logoFile}
-                preview={logoPreview}
-                onFileChange={setLogoFile}
-                onPreviewChange={setLogoPreview}
+                onFileChange={(file: File | null) => {
+                  setLogoFile(file);
+                }}
+                onPreviewChange={(url: string | null) => {
+                  setLogoPreview(url);
+                }}
+                accept="image/*"
+                maxSize={5 * 1024 * 1024}
+                className="w-full"
               />
             </FormField>
+
+            {logoPreview !== null && (
+              <div className="flex justify-between items-center">
+                <Image
+                  src={logoPreview || ""}
+                  alt="file"
+                  width={160}
+                  height={100}
+                  className="w-[160px] h-[100px] object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="danger"
+                  onClick={() => {
+                    setLogoPreview(null);
+                    setLogoFile(null);
+                  }}
+                >
+                  削除
+                </Button>
+              </div>
+            )}
 
             <Controller
               control={control}

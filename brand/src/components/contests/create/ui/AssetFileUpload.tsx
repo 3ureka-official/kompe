@@ -4,25 +4,26 @@ import { useState } from "react";
 import { formatFileSize } from "@/utils/format";
 
 type Props = {
-  handleSubmit: (file: File | null) => void;
+  onFileChange: (file: File | null) => void;
+  onPreviewChange: (preview: string | null) => void;
   accept?: string;
   maxSize?: number; // bytes
   className?: string;
-  disabled?: boolean;
 };
 
-export function FileUpload({
-  handleSubmit,
+export function AssetFileUpload({
+  onFileChange,
+  onPreviewChange,
   accept = "image/*",
   maxSize = 5 * 1024 * 1024, // 5MB
   className = "",
-  disabled = false,
 }: Props) {
   const [dragOver, setDragOver] = useState(false);
 
   const handleFileChange = (selectedFile: File | null) => {
     if (!selectedFile) {
-      handleSubmit(null);
+      onFileChange(null);
+      onPreviewChange(null);
       return;
     }
 
@@ -38,7 +39,13 @@ export function FileUpload({
       return;
     }
 
-    handleSubmit(selectedFile);
+    onFileChange(selectedFile);
+
+    // プレビュー生成
+    if (selectedFile.type.startsWith("image/")) {
+      const url = URL.createObjectURL(selectedFile);
+      onPreviewChange(url);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -52,48 +59,41 @@ export function FileUpload({
 
   return (
     <div className={className}>
+      {/* ファイル選択エリア */}
       <div
         className={`
           flex flex-col items-center border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
           ${dragOver ? "border-blue-400 bg-blue-50" : "border-gray-300 hover:border-gray-400"}
         `}
-        onDrop={(e) => {
-          if (disabled) return;
-          handleDrop(e);
-        }}
+        onDrop={handleDrop}
         onDragOver={(e) => {
-          if (disabled) return;
           e.preventDefault();
           setDragOver(true);
         }}
-        onDragLeave={() => {
-          if (disabled) return;
-          setDragOver(false);
-        }}
-        onClick={() => {
-          if (disabled) return;
-          document.getElementById("file-upload")?.click();
-        }}
+        onDragLeave={() => setDragOver(false)}
+        onClick={() => document.getElementById("file-upload")?.click()}
       >
-        <div className="mx-auto w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
-          <svg
-            className="w-6 h-6 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
+        <div className="space-y-2">
+          <div className="mx-auto w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+            <svg
+              className="w-6 h-6 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-500">
+            ドラッグ&ドロップまたはクリックしてファイルを選択
+          </p>
         </div>
-        <p className="text-sm text-gray-500">
-          ドラッグ&ドロップまたはクリックしてファイルを選択
-        </p>
       </div>
 
       {/* 隠しファイル入力 */}

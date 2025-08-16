@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, use } from "react";
 import { Stepper } from "@/components/contests/create/Stepper";
 import { BasicInfo } from "@/components/contests/create/BasicInfo";
 import { Brief } from "@/components/contests/create/Brief";
@@ -19,7 +19,7 @@ const steps = [
   { id: "prize", title: "賞金設定" },
 ];
 
-function CreateContestContent() {
+function CreateContestContent({ contestId }: { contestId: string }) {
   const { step, initContest } = useContext(CreateContestContext);
   const { brand } = useContext(BrandContext);
 
@@ -41,8 +41,8 @@ function CreateContestContent() {
   useEffect(() => {
     if (!brand?.id) return;
 
-    initContest(brand.id);
-  }, [brand?.id, initContest]);
+    initContest(brand.id, contestId);
+  }, [brand?.id, initContest, contestId]);
 
   return (
     <div className="max-w-4xl mx-auto py-8">
@@ -53,11 +53,17 @@ function CreateContestContent() {
   );
 }
 
-export default function CreateContestPage() {
+export default function CreateContestPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <CreateContestProvider>
-        <CreateContestContent />
+        <CreateContestContent contestId={id} />
       </CreateContestProvider>
     </div>
   );
