@@ -1,8 +1,8 @@
 import supabase from "@/lib/supabase";
 import { Contest, InspirationItem, AssetItem } from "@/types/Contest";
-import { v4 as uuidv4 } from "uuid";
 import { updateAssets } from "./assetService";
 import { updateInspiration } from "./inspirationService";
+import { deleteFiles } from "@/lib/storage";
 
 /**
  * コンテストを作成
@@ -69,6 +69,20 @@ export const getAllContests = async (): Promise<Contest[]> => {
   }
 };
 
+export const getContest = async (contestId: string): Promise<Contest> => {
+  const { data, error } = await supabase
+    .from("contests")
+    .select("*")
+    .eq("id", contestId)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as Contest;
+};
+
 export const updateContest = async (
   brandId: string,
   contestId: string,
@@ -95,8 +109,6 @@ export const updateContest = async (
   >[],
 ): Promise<void> => {
   try {
-    console.log(contestData);
-    console.log(contestId);
     const { error } = await supabase
       .from("contests")
       .update(contestData)
@@ -111,6 +123,32 @@ export const updateContest = async (
     updateInspiration(inspirationData, contestId, brandId);
   } catch (error) {
     console.error("コンテスト更新エラー:", error);
+    throw error;
+  }
+};
+
+/**
+ * コンテストを削除
+ * @param brandId ブランドID
+ * @param contestId コンテストID
+ * @returns 削除されたコンテストのID
+ */
+export const deleteContest = async (contestId: string) => {
+  try {
+    const { error } = await supabase
+      .from("contests")
+      .delete()
+      .eq("id", contestId);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await deleteFiles("contests", [contestId]);
+
+    return contestId;
+  } catch (error) {
+    console.error("コンテスト削除エラー:", error);
     throw error;
   }
 };

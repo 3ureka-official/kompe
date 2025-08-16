@@ -9,10 +9,9 @@ import { FormField } from "@/components/ui/FormField";
 import { CONTEST_PLANS } from "@/constants/contest.constant";
 
 export function Prize() {
-  const { data, back, submit, isUpdating, updateData } =
-    useContext(CreateContestContext);
+  const { data, back, submit, isUpdating } = useContext(CreateContestContext);
 
-  const { control, handleSubmit, watch, setValue, getValues } = useForm({
+  const { control, handleSubmit, watch, setValue, getValues, reset } = useForm({
     resolver: yupResolver(prizeSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -25,6 +24,15 @@ export function Prize() {
   const watchedDistribution = watch("prize_distribution");
 
   const [totalPrize, setTotalPrize] = useState(0);
+
+  useEffect(() => {
+    if (data) {
+      reset({ ...data });
+      setTotalPrize(
+        watchedDistribution.reduce((sum, amount) => sum + amount, 0),
+      );
+    }
+  }, [data, reset, watchedDistribution]);
 
   const addWinner = () => {
     setValue("prize_distribution", [...watchedDistribution, 0]);

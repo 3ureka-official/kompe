@@ -1,16 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllContests } from "@/services/contestService";
+import { getContest } from "@/services/contestService";
 import { Contest } from "@/types/Contest";
 
 type UseGetContest = {
-  getAllContestsQuery: { data: Contest[] | undefined; isPending: boolean };
+  getContestQuery: {
+    data: Contest | undefined;
+    isPending: boolean;
+    refetch: () => void;
+  };
 };
 
-export function useGetContest(): UseGetContest {
-  const getAllContestsQuery = useQuery({
-    queryKey: ["contests"],
-    queryFn: () => getAllContests(),
+export function useGetContest(contestId: string): UseGetContest {
+  const getContestQuery = useQuery({
+    queryKey: ["contests", contestId],
+    queryFn: () => getContest(contestId),
   });
 
-  return { getAllContestsQuery };
+  return { getContestQuery };
 }

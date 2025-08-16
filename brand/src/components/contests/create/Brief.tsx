@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { RichTextEditor } from "@/components/contests/create/ui/RichTextEditer/RichTextEditer";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,7 +10,7 @@ import { FormField } from "@/components/ui/FormField";
 export function Brief() {
   const { data, next, back, submit, isUpdating, updateData } =
     useContext(CreateContestContext);
-  const { control, handleSubmit, getValues, watch } = useForm({
+  const { control, handleSubmit, getValues, reset } = useForm({
     resolver: yupResolver(briefSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -18,6 +18,12 @@ export function Brief() {
       requirements: data.requirements || "",
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      reset({ ...data });
+    }
+  }, [data, reset]);
 
   const draft = () => {
     const values = getValues();

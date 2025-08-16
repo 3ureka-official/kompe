@@ -1,7 +1,9 @@
+// components/contests/create/ui/RichTextEditer/LinkModal.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import * as yup from "yup";
+import { ValidationError } from "yup";
 import { Button } from "../../../../ui/Button";
 import { Input } from "../../../../ui/Input";
 
@@ -25,35 +27,47 @@ export default function LinkModal({
   const schema = yup.string().url("URLが不正です").required("必須です");
 
   useEffect(() => {
-    if (open) {
-      setValue(initialUrl || "");
-      setError(null);
+    if (!open) return;
 
-      setTimeout(() => inputRef.current?.focus(), 0);
+    setValue(initialUrl || "");
+    setError(null);
 
-      const onKey = (e: KeyboardEvent) => {
-        if (e.key === "Escape") onClose();
-      };
-      window.addEventListener("keydown", onKey);
-      return () => window.removeEventListener("keydown", onKey);
-    }
+    // 次フレームでフォーカス
+    const id = setTimeout(() => inputRef.current?.focus(), 0);
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("keydown", onKey);
+    };
   }, [open, initialUrl, onClose]);
 
   if (!open) return null;
 
   const submit = () => {
     const trimmed = value.trim();
+
+    // 空 → リンク解除
     if (!trimmed) {
       onSubmit(null);
       onClose();
       return;
     }
+
     try {
       const url = schema.validateSync(trimmed);
       onSubmit(url);
       onClose();
-    } catch (e: any) {
-      setError(e?.errors?.[0] || "URLが不正です");
+    } catch (err: unknown) {
+      const message =
+        err instanceof ValidationError
+          ? (err.errors?.[0] ?? "URLが不正です")
+          : "URLが不正です";
+      setError(message);
     }
   };
 
@@ -64,14 +78,14 @@ export default function LinkModal({
       role="dialog"
     >
       <div className="w-full max-w-md rounded-2xl bg-white p-4 shadow-xl">
-        <label className="block text-sm text-gray-600 mb-1">URL</label>
+        <label className="mb-1 block text-sm text-gray-600">URL</label>
         <Input
           ref={inputRef}
           type="text"
-          className="w-full rounded-md border px-3 py-2 outline-none focus:ring-0 focus:outline-none ring-0 focus:ring-0"
+          className="w-full rounded-md border px-3 py-2 outline-none ring-0 focus:outline-none focus:ring-0"
           placeholder="URLを入力してください"
           value={value}
-          onChange={(e) => setValue(e)}
+          onChange={(v: string) => setValue(v)}
         />
         {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 

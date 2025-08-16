@@ -1,19 +1,50 @@
 import { Contest } from "@/types/Contest";
 import { Button } from "@/components/ui/Button";
-import Link from "next/link";
 import Image from "next/image";
 import { formatCurrency, formatDate, formatNumber } from "@/utils/format";
 import { CONTEST_STATUS_LABELS } from "@/constants/contest.constant";
 import { getContestStatus } from "@/utils/getContestStatus";
 import { TrashIcon } from "lucide-react";
+import { useDeleteContest } from "@/hooks/contest/useDeleteContest";
+import { useRouter } from "next/navigation";
 
 type Props = {
   contest: Contest;
+  refetch: () => void;
 };
 
-export const ContestCard = ({ contest }: Props) => {
+export const ContestCard = ({ contest, refetch }: Props) => {
+  const router = useRouter();
+  const { mutate: deleteContest } = useDeleteContest();
+
+  const handleClickCard = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    router.push(`/contests/${contest.id}`);
+  };
+
+  const handleDeleteContest = () => {
+    deleteContest(
+      { contestId: contest.id },
+      {
+        onSuccess: () => {
+          refetch();
+        },
+      },
+    );
+  };
+
+  const handleEditContest = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    router.push(`/contests/${contest.id}/edit`);
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200 px-5 py-6">
+    <div
+      onClick={handleClickCard}
+      className="cursor-pointer bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200 px-5 py-6"
+    >
       <div className="flex justify-center">
         {/* サムネイル */}
         {contest.thumbnail_url ? (
@@ -161,32 +192,24 @@ export const ContestCard = ({ contest }: Props) => {
                 </span>
               </div>
             </div>
-            {contest.is_draft ? (
-              <div className="flex items-center gap-2">
-                <Button variant="danger" size="sm" className="cursor-pointer">
-                  <TrashIcon className="w-4 h-4" />
-                </Button>
-                <Link href={`/contests/${contest.id}/edit`}>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
-                  >
-                    編集する
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <Link href={`/contests/${contest.id}`}>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
-                >
-                  詳細を見る
-                </Button>
-              </Link>
-            )}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="danger"
+                size="sm"
+                className="cursor-pointer"
+                onClick={handleDeleteContest}
+              >
+                <TrashIcon className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
+                onClick={handleEditContest}
+              >
+                編集する
+              </Button>
+            </div>
           </div>
         </div>
       </div>

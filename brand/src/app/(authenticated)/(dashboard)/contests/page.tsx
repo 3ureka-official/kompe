@@ -4,11 +4,11 @@ import { ContestList } from "@/components/contests/list/ContestList";
 import { ContestsPageHeader } from "@/components/contests/list/ContestsPageHeader";
 import { ContestsPageLayout } from "@/components/contests/list/ContestsPageLayout";
 import { EmptyContestsState } from "@/components/contests/list/EmptyContestsState";
-import { useGetContest } from "@/hooks/contest/useGetContest";
+import { useGetAllContests } from "@/hooks/contest/useGetAllContests";
 
 export default function ContestsPage() {
-  const { getAllContestsQuery } = useGetContest();
-  const { data, isPending } = getAllContestsQuery;
+  const { allContestsQuery } = useGetAllContests();
+  const { data, isPending, refetch } = allContestsQuery;
   if (isPending) {
     return <div className="text-center py-8">Loading...</div>;
   }
@@ -19,7 +19,7 @@ export default function ContestsPage() {
       {data && data.length === 0 ? (
         <EmptyContestsState />
       ) : (
-        <ContestList contests={data!} isLoading={false} />
+        <ContestList contests={data!} isLoading={false} refetch={refetch} />
       )}
     </ContestsPageLayout>
   );

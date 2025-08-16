@@ -1,24 +1,24 @@
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { SelectWithOptions } from "@/components/ui/Select";
+import { FileUpload } from "@/components/ui/FileUpload";
 import { FormField } from "@/components/ui/FormField";
-import { FileUpload } from "@/components/contests/create/ui/FileUpload";
 import { Controller, useForm } from "react-hook-form";
 import { CONTEST_CATEGORIES } from "@/constants/contest.constant";
 import { basicInfoSchema } from "@/schema/createContestSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { DateInput } from "@/components/ui/DateInput";
-import { useUploadFile } from "@/hooks/contest/storage/useUploadFile";
+import { useUploadFile } from "@/hooks/storage/useUploadFile";
 import Image from "next/image";
-import { useDeleteFiles } from "@/hooks/contest/storage/useDeleteFiles";
+import { useDeleteFiles } from "@/hooks/storage/useDeleteFiles";
 
 export function BasicInfo() {
   const { data, next, contestId, submit, isUpdating, updateData } =
     useContext(CreateContestContext);
 
-  const { control, handleSubmit, setValue, watch, getValues } = useForm({
+  const { control, handleSubmit, setValue, watch, getValues, reset } = useForm({
     resolver: yupResolver(basicInfoSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -31,6 +31,12 @@ export function BasicInfo() {
       contest_end_date: data.contest_end_date || new Date(),
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      reset({ ...data });
+    }
+  }, [data, reset]);
 
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
   const watchThumbnail = watch("thumbnail_url");

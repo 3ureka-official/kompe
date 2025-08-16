@@ -1,4 +1,3 @@
-// components/RichTextToolbar.tsx
 "use client";
 
 import type { FC } from "react";
@@ -23,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import * as yup from "yup";
 
 interface RichTextToolbarProps {
   editor: Editor | null;
@@ -32,12 +30,11 @@ interface RichTextToolbarProps {
 const Divider = () => <div className="h-5 border-l border-gray-300 mx-1" />;
 
 export const RichTextToolbar: FC<RichTextToolbarProps> = ({ editor }) => {
-  if (!editor) return null;
-
   const [open, setOpen] = useState(false);
 
+  if (!editor) return null;
+
   const handleSubmitLink = (url: string | null) => {
-    if (!editor) return;
     if (url === null) {
       editor.chain().focus().unsetLink().run();
       return;
@@ -46,7 +43,6 @@ export const RichTextToolbar: FC<RichTextToolbarProps> = ({ editor }) => {
   };
 
   const openLinkModal = () => setOpen(true);
-
   const unlink = () => editor.chain().focus().unsetLink().run();
 
   const setHeading = (level: number) => {
@@ -66,30 +62,6 @@ export const RichTextToolbar: FC<RichTextToolbarProps> = ({ editor }) => {
       if (editor.isActive("heading", { level: i })) return String(i);
     }
     return "paragraph";
-  };
-
-  // 直接入力でURLを入れたい場合（モーダル使わない運用ならこの関数をボタンに割り当ててください）
-  const setLinkViaPrompt = () => {
-    const prev = editor.getAttributes("link").href as string | undefined;
-    const input = window.prompt("リンクURLを入力", prev || "");
-    if (input === null) return;
-
-    const urlSchema = yup
-      .string()
-      .url("URLを入力してください")
-      .required("URLを入力してください");
-
-    try {
-      const url = urlSchema.validateSync(input);
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url })
-        .run();
-    } catch {
-      alert("URL が不正です。http(s):// または mailto: を指定してください。");
-    }
   };
 
   const can = editor.can().chain().focus();
@@ -188,7 +160,7 @@ export const RichTextToolbar: FC<RichTextToolbarProps> = ({ editor }) => {
       <Button
         size="sm"
         variant={editor.isActive("link") ? "default" : "ghost"}
-        onClick={openLinkModal /* もしくは setLinkViaPrompt */}
+        onClick={openLinkModal}
         aria-label="Insert Link"
         title="リンクを挿入"
       >

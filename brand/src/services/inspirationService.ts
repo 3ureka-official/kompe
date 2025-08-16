@@ -20,19 +20,19 @@ export const updateInspiration = async (
 ): Promise<void> => {
   try {
     const { error: deleteError } = await supabase
-      .from("contests_assets")
+      .from("contests_inspirations")
       .delete()
       .eq("contest_id", contestId);
 
     if (deleteError) {
-      throw new Error(`既存アセット削除エラー: ${deleteError.message}`);
+      throw new Error(
+        `既存インスピレーション削除エラー: ${deleteError.message}`,
+      );
     }
 
-    if (inspirationData.length > 0) {
-      await createInspiration(inspirationData, contestId, brandId);
-    }
+    await createInspiration(inspirationData, contestId, brandId);
   } catch (error) {
-    console.error("アセット更新エラー:", error);
+    console.error("インスピレーション更新エラー:", error);
     throw error;
   }
 };
@@ -63,8 +63,23 @@ export const createInspiration = async (
     .insert(insertData);
 
   if (error) {
-    throw new Error(`アセット作成エラー: ${error.message}`);
+    throw new Error(`インスピレーション作成エラー: ${error.message}`);
   }
+};
+
+export const getInspirations = async (
+  contestId: string,
+): Promise<InspirationItem[]> => {
+  const { data, error } = await supabase
+    .from("contests_inspirations")
+    .select("*")
+    .eq("contest_id", contestId);
+
+  if (error) {
+    throw new Error(`インスピレーション取得エラー: ${error.message}`);
+  }
+
+  return data as InspirationItem[];
 };
 
 /**
@@ -81,10 +96,10 @@ export const deleteAllInspiration = async (
       .eq("contest_id", contestId);
 
     if (error) {
-      throw new Error(`全アセット削除エラー: ${error.message}`);
+      throw new Error(`全インスピレーション削除エラー: ${error.message}`);
     }
   } catch (error) {
-    console.error("全アセット削除エラー:", error);
+    console.error("全インスピレーション削除エラー:", error);
     throw error;
   }
 };
