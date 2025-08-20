@@ -10,20 +10,13 @@ export async function getApplicationsByContestId(
   try {
     const { data, error } = await supabase
       .from("applications")
-      .select("*")
-      .eq("contest_id", contestId);
+      .select("*, creator:creators(*)")
+      .eq("contest_id", contestId)
+      .order("views", { ascending: false });
 
     if (error) throw error;
 
-    const applications: Application[] = [];
-    data.forEach((application) => {
-      applications.push({
-        id: application.id,
-        ...application,
-      } as Application);
-    });
-
-    return applications;
+    return data;
   } catch (error) {
     console.error("アプリケーション取得エラー:", error);
     throw error;
@@ -39,20 +32,12 @@ export async function getApplicationsByCreatorId(
   try {
     const { data, error } = await supabase
       .from("applications")
-      .select("*")
+      .select("*, creator:creators(*)")
       .eq("creator_id", creatorId);
 
     if (error) throw error;
 
-    const applications: Application[] = [];
-    data.forEach((application) => {
-      applications.push({
-        id: application.id,
-        ...application,
-      } as Application);
-    });
-
-    return applications;
+    return data;
   } catch (error) {
     console.error("アプリケーション取得エラー:", error);
     throw error;

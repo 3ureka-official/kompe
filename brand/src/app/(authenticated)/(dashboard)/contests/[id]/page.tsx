@@ -1,38 +1,50 @@
 "use client";
 
-// import { useState } from "react";
-// import { useParams } from "next/navigation";
+import { useParams } from "next/navigation";
+import { ContestHeader } from "@/components/contests/detail/ContestHeader";
+import { ContestOverview } from "@/components/contests/detail/ContestOverview";
+import { ContestAssets } from "@/components/contests/detail/ContestAssets";
+import { ContestCreatorSection } from "@/components/contests/detail/ContestCreatorSection";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { useGetContest } from "@/hooks/contest/useGetContest";
 
 export default function ContestDetailPage() {
-  // const params = useParams();
+  const params = useParams();
+
+  const { getContestQuery } = useGetContest(params.id as string);
+  const { data: contest, isPending, refetch } = getContestQuery;
+
+  if (isPending) return <div>読み込み中...</div>;
+  if (!contest) return <div>コンテストが見つかりません</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* ヘッダー */}
-        {/* <ContestHeader contest={contest as Contest} /> */}
+    <div className="container mx-auto px-4 py-8">
+      {/* ヘッダー */}
+      <ContestHeader contest={contest} refetch={refetch} />
 
-        {/* 統計情報 */}
-        {/* <ContestStats contest={contest as Contest} /> */}
+      {/* タブ形式のコンテンツ */}
+      <Tabs defaultValue="overview" className="mt-8">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview">概要</TabsTrigger>
+          <TabsTrigger value="creators">参加者</TabsTrigger>
+          <TabsTrigger value="assets">アセット</TabsTrigger>
+        </TabsList>
 
-        {/* コンテスト概要 */}
-        {/* <ContestOverview contest={contest as Contest} /> */}
+        <TabsContent value="overview" className="space-y-6">
+          {/* コンテスト概要 */}
+          <ContestOverview contest={contest} />
+        </TabsContent>
 
-        {/* イメージ動画 */}
-        {/* <ContestImageVideos contest={contest as Contest} /> */}
+        <TabsContent value="creators" className="space-y-6">
+          {/* 参加クリエイター */}
+          <ContestCreatorSection contest={contest} />
+        </TabsContent>
 
-        {/* 応募要件 */}
-        {/* <ContestRequirements contest={contest as Contest} /> */}
-
-        {/* ブランド情報 */}
-        {/* <ContestBrandInfo /> */}
-
-        {/* 参加クリエイター */}
-        {/* <ContestCreatorSection
-          creators={mockCreators}
-          onCreatorClick={handleCreatorClick}
-        /> */}
-      </div>
+        <TabsContent value="assets" className="space-y-6">
+          {/* イメージ動画 */}
+          <ContestAssets contest={contest} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

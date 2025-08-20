@@ -5,9 +5,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**.supabase.co", // Supabaseストレージのホスト名を許可
+        hostname: "**.supabase.co",
         port: "",
         pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.dicebear.com",
+        port: "",
+        pathname: "/7.x/**",
       },
     ],
   },

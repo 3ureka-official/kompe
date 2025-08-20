@@ -23,7 +23,10 @@ export const ContestCard = ({ contest, refetch }: Props) => {
     router.push(`/contests/${contest.id}`);
   };
 
-  const handleDeleteContest = () => {
+  const handleDeleteContest = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     deleteContest(
       { contestId: contest.id },
       {
