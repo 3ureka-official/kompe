@@ -62,6 +62,10 @@ export function formatDate(
 }
 
 export function formatNumber(num: number): string {
+  if (num == null) {
+    return "0";
+  }
+
   return new Intl.NumberFormat("ja-JP").format(num);
 }
 
