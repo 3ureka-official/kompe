@@ -75,6 +75,7 @@ export default async function CompetitionPage({ params }: { params: { id: string
         <Tabs defaultValue="summary">
           <TabsList className="w-full">
             <TabsTrigger value="summary">概要</TabsTrigger>
+            <TabsTrigger value="assets">アセット</TabsTrigger>
             <TabsTrigger value="leaderboard">リーダーボード</TabsTrigger>
           </TabsList>
           <TabsContent value="summary" className="grid gap-8 py-8">
@@ -103,6 +104,11 @@ export default async function CompetitionPage({ params }: { params: { id: string
             </div>
             <div className="text-sm text-gray-500">
               <Markdown>{data.description}</Markdown>
+            </div>
+          </TabsContent>
+          <TabsContent value="assets">
+            <div className="grid gap-8 py-8">
+              <h2 className="text-xl font-bold">アセット</h2>
             </div>
           </TabsContent>
           <TabsContent value="leaderboard">
