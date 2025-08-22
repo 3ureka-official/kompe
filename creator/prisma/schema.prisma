@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model brands {
+  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at            DateTime                @default(now()) @db.Timestamptz(6)
+  name                  String                  @default("''::text")
+  description           String
+  logo_url              String                  @default("''::text")
+  email                 String
+  phonenumber           String
+  website               String?
+  tiktok_username       String?
+  instagram_url         String?
+  contests              contests[]
+  contests_assets       contests_assets[]
+  contests_inspirations contests_inspirations[]
+  users                 users[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model contests {
+  id                     String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brand_id               String                  @db.Uuid
+  title                  String?                 @db.VarChar
+  category               String?                 @db.VarChar
+  thumbnail_url          String?
+  application_start_date DateTime                @db.Date
+  application_end_date   DateTime                @db.Date
+  contest_start_date     DateTime                @db.Date
+  contest_end_date       DateTime                @db.Date
+  description            String?
+  requirements           String?
+  prize_pool             BigInt?
+  prize_distribution     Int[]
+  videos                 BigInt                  @default(0)
+  views                  BigInt                  @default(0)
+  likes                  BigInt                  @default(0)
+  comments               BigInt                  @default(0)
+  shares                 BigInt                  @default(0)
+  is_draft               Boolean                 @default(true)
+  created_at             DateTime                @default(now()) @db.Timestamptz(6)
+  brands                 brands                  @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  contests_assets        contests_assets[]
+  contests_inspirations  contests_inspirations[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model contests_assets {
+  id          String   @id(map: "contest_assets_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brand_id    String   @db.Uuid
+  contest_id  String   @db.Uuid
+  file_url    String?
+  url         String?
+  description String?
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  brands      brands   @relation(fields: [brand_id], references: [id], onDelete: Cascade, map: "contest_assets_brand_id_fkey")
+  contests    contests @relation(fields: [contest_id], references: [id], onDelete: Cascade, map: "contest_assets_contest_id_fkey")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model contests_inspirations {
+  id          String   @id(map: "contest_inspirations_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brand_id    String   @db.Uuid
+  contest_id  String   @db.Uuid
+  url         String?
+  description String?
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  brands      brands   @relation(fields: [brand_id], references: [id], onDelete: Cascade, map: "contest_inspirations_brand_id_fkey")
+  contests    contests @relation(fields: [contest_id], references: [id], onDelete: Cascade, map: "contest_inspirations_contest_id_fkey")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model users {
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  email         String
+  profile_image String?
+  brand_id      String?  @db.Uuid
+  id            String   @id @db.Uuid
+  brands        brands?  @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
