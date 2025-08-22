@@ -1,0 +1,24 @@
+import SignIn from "@/components/sign-in";
+import Image from "next/image";
+
+export default function Home() {
+  return (
+    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+        <div className="w-full flex items-center justify-between gap-4">
+          <Image
+            src="/logo-colored.svg"
+            alt="Kompe logo"
+            width={180}
+            height={38}
+            priority
+          />
+          <SignIn />
+        </div>
+        <div className="w-screen max-w-7xl flex items-center gap-4">
+          <h1 className="text-2xl font-bold">コンテスト一覧</h1>
+        </div>
+      </main>
+    </div>
+  );
+}
