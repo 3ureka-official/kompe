@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { auth } from "@/auth";
 import SignIn from "@/components/sign-in";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,17 +34,19 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <nav className="w-full flex items-center justify-between gap-4 px-6 py-8">
-          <Image
-            src="/logo-colored.svg"
-            alt="Kompe logo"
-            width={144}
-            height={38}
-            priority
-          />
+          <Link href="/">
+            <Image
+              src="/logo-colored.svg"
+              alt="Kompe logo"
+              width={144}
+              height={38}
+              priority
+            />
+          </Link>
           {session ? (
             <Avatar>
               <AvatarImage src={session.user?.image || undefined} />
-              <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{session.user?.name?.split('', 2)}</AvatarFallback>
             </Avatar>
           ) : (
             <SignIn variant="minimal" />
