@@ -11,9 +11,9 @@ export async function applyCompetition(
   const session = await auth();
   if (session?.user?.id) {
     console.log("Creating application...", competitionId, session.user.id);
-    let creator = await prisma.creators.findUnique({
+    let creator = await prisma.creators.findFirst({
       where: {
-        id: session.user.id,
+        tiktok_union_id: session.user.id,
       },
     });
     if (!creator) {

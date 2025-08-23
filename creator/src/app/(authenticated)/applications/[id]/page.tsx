@@ -1,10 +1,206 @@
-export default function ApplyPage({ params }: { params: { id: string } }) {
+import prisma from "@/lib/prisma";
+import Image from "next/image";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ArrowRightIcon,
+  CalendarClockIcon,
+  ChevronRightIcon,
+  CircleDollarSignIcon,
+  CloudUploadIcon,
+  DownloadCloudIcon,
+  ExternalLinkIcon,
+  FileVideoCameraIcon,
+  VideoIcon,
+} from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { ja } from "date-fns/locale";
+import Markdown from "react-markdown";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import ApplyDialog from "@/components/applyDialog";
+import { auth } from "@/auth";
+
+export default async function ApplicationPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const { id } = params;
+  const session = await auth();
+  const creator = await prisma.creators.findFirst({
+    where: { tiktok_union_id: session?.user?.id },
+  });
+
+  if (!creator) {
+    return <div>クリエイターが見つかりませんでした。</div>;
+  }
+
+  const application = await prisma.applications.findFirst({
+    where: { contest_id: id, creator_id: creator.id },
+    include: { contests: { include: { brands: true } } },
+  });
+
+  if (!application) {
+    return <div>応募が見つかりませんでした。</div>;
+  }
+
+  const competition = application.contests;
 
   return (
-    <div>
-      <h1>Apply for Competition {id}</h1>
-      {/* Application form goes here */}
-    </div>
+    <>
+      <div className="grid gap-8 p-4 pb-16">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">
+                Kompeクリエイターダッシュボード
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/competitions">
+                参加中コンペティション
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{competition.title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <h1 className="text-2xl font-bold">{competition.title}</h1>
+        <div className="*:border-b *:border-b-foreground/10">
+          <section className="grid gap-2 py-6">
+            <h2 className="text-sm font-bold text-muted-foreground px-2">
+              自分の動画
+            </h2>
+            {application.tiktok_url ? (
+              <p>{application.tiktok_url}</p>
+            ) : (
+              <div className="h-[200px] w-full rounded-lg border border-dashed border-foreground/10 flex flex-col items-center justify-center gap-2 text-sm text-foreground/50">
+                <FileVideoCameraIcon className="size-8 stroke-1" />
+                <p>まだ動画が提出されていません。</p>
+              </div>
+            )}
+          </section>
+          <section className="grid gap-2 py-6">
+            <h2 className="text-sm font-bold text-muted-foreground px-2">
+              コンペティション情報
+            </h2>
+            <Link href={`/competitions/${competition.id}`}>
+              <Card className="h-[100px] py-4">
+                <CardContent className="h-full px-4">
+                  <div className="h-full flex items-center gap-4">
+                    <Image
+                      src={
+                        competition.thumbnail_url ||
+                        "" /* todo: add fallback image */
+                      }
+                      alt={
+                        competition.title || "タイトル未設定のコンペティション"
+                      }
+                      width={500}
+                      height={300}
+                      className="h-full w-auto rounded-lg"
+                    />
+                    <p>{competition.title}</p>
+                    <ChevronRightIcon className="size-4 stroke-2 ml-auto" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <div className="w-full flex items-center gap-2 flex-wrap justify-around pt-4">
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1">
+                  <CalendarClockIcon className="size-4 stroke-2" />
+                  <p>終了まで</p>
+                </div>
+                <p className="text-lg font-semibold">
+                  {formatDistanceToNow(new Date(competition.contest_end_date), {
+                    locale: ja,
+                  })}
+                </p>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1">
+                  <VideoIcon className="size-4 stroke-2" />
+                  <p>応募件数</p>
+                </div>
+                <p className="text-lg font-semibold">{competition.videos}</p>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1">
+                  <CircleDollarSignIcon className="size-4 stroke-2" />
+                  <p>賞金プール</p>
+                </div>
+                <p className="text-lg font-semibold">{`¥${competition.prize_pool?.toLocaleString()}`}</p>
+              </div>
+            </div>
+          </section>
+          <section className="grid gap-2 py-6">
+            <h2 className="text-sm font-bold text-muted-foreground px-2">
+              主催者情報
+            </h2>
+            <Card>
+              <CardContent>
+                <div className="flex items-center gap-4">
+                  <Avatar>
+                    <AvatarImage
+                      src={
+                        competition.brands.logo_url ||
+                        "" /* todo: fallback image */
+                      }
+                    />
+                    <AvatarFallback className="uppercase">
+                      {competition.brands.name.split("", 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <p>{competition.brands.name}</p>
+                  <ChevronRightIcon className="size-4 stroke-2 ml-auto" />
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+      </div>
+      <div className="fixed bottom-0 bg-card border rounded-t-2xl w-full p-4">
+        <Button className="w-full">
+          <CloudUploadIcon />
+          動画を提出
+        </Button>
+      </div>
+    </>
   );
 }
