@@ -17,23 +17,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  ArrowRightIcon,
   CalendarClockIcon,
+  CheckIcon,
   CircleDollarSignIcon,
   DownloadCloudIcon,
   ExternalLinkIcon,
@@ -44,9 +32,21 @@ import { ja } from "date-fns/locale";
 import Markdown from "react-markdown";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import ApplyDialog from "@/components/applyDialog";
+import { auth } from "@/auth";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+const getIsApplied = async (applications: any[]) => {
+  const session = await auth();
+  const unionId = session?.user?.id;
+  if (!unionId) return null;
+  const creator = await prisma.creators.findFirst({
+    where: { tiktok_union_id: unionId },
+  });
+  if (!creator) return null;
+  return applications.find((app) => app.creator_id === creator.id);
+};
 
 export default async function CompetitionPage({
   params,
@@ -69,6 +69,7 @@ export default async function CompetitionPage({
   const inspirations = await prisma.contests_inspirations.findMany({
     where: { contest_id: id },
   });
+  const isApplied = await getIsApplied(applications);
 
   if (!competition) {
     return <div>コンペティションが見つかりませんでした。</div>;
@@ -103,7 +104,15 @@ export default async function CompetitionPage({
           height={300}
           className="rounded-lg"
         />
-        <h1 className="text-2xl font-bold">{competition.title}</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold">
+          {competition.title}
+          {isApplied && (
+            <Badge>
+              <CheckIcon />
+              応募済み
+            </Badge>
+          )}
+        </h1>
         <div className="flex items-center gap-4">
           <Avatar>
             <AvatarImage
@@ -224,7 +233,19 @@ export default async function CompetitionPage({
         </Tabs>
       </div>
       <div className="fixed bottom-0 bg-card border rounded-t-2xl w-full p-4">
-        <ApplyDialog competitionId={competition.id} />
+        {isApplied ? (
+          <Button className="w-full" asChild>
+            <Link href={`/applications/${competition.id}`}>
+              <Badge variant={"secondary"}>
+                <CheckIcon />
+                応募済み
+              </Badge>
+              提出を管理
+            </Link>
+          </Button>
+        ) : (
+          <ApplyDialog competitionId={competition.id} />
+        )}
       </div>
     </>
   );
