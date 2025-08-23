@@ -4,14 +4,14 @@ import { Button } from "./ui/button";
 
 type Props = {
   variant?: "default" | "minimal";
-}
+};
 
 const buttonTexts = {
   default: "TikTokアカウントで始める",
-  minimal: "ログイン"
-}
+  minimal: "ログイン",
+};
 
-export default async function SignIn({ variant = 'default' }: Props) {
+export default async function SignInButton({ variant = "default" }: Props) {
   return (
     <form
       action={async () => {

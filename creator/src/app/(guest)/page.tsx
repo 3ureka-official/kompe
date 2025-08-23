@@ -1,4 +1,4 @@
-import SignIn from "@/components/sign-in";
+import SignInButton from "@/components/signInButton";
 import Image from "next/image";
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
             height={38}
             priority
           />
-          <SignIn />
+          <SignInButton />
         </div>
         <div className="w-screen max-w-7xl flex items-center gap-4">
           <h1 className="text-2xl font-bold">コンテスト一覧</h1>

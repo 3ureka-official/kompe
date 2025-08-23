@@ -4,7 +4,7 @@ import "./globals.css";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { auth } from "@/auth";
-import SignIn from "@/components/sign-in";
+import SignInButton from "@/components/signInButton";
 import Link from "next/link";
 
 const geistSans = Geist({
@@ -46,10 +46,12 @@ export default async function RootLayout({
           {session ? (
             <Avatar>
               <AvatarImage src={session.user?.image || undefined} />
-              <AvatarFallback>{session.user?.name?.split('', 2)}</AvatarFallback>
+              <AvatarFallback>
+                {session.user?.name?.split("", 2)}
+              </AvatarFallback>
             </Avatar>
           ) : (
-            <SignIn variant="minimal" />
+            <SignInButton variant="minimal" />
           )}
         </nav>
         {children}

@@ -1,4 +1,4 @@
-import SignIn from "@/components/sign-in";
+import SignInButton from "@/components/signInButton";
 import Image from "next/image";
 
 export default function Login() {
@@ -15,7 +15,7 @@ export default function Login() {
           />
         </div>
         <div className="flex items-center gap-4">
-          <SignIn />
+          <SignInButton />
         </div>
       </main>
     </div>
