@@ -1,4 +1,4 @@
-import supabase from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { Brand } from "@/types/Brand";
 import { updateUser } from "./userService";
 import { v4 as uuidv4 } from "uuid";
