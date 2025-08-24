@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.env
+*.log
+
+# FastAPI/開発時のキャッシュ
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage.xml
+dist/
+build/
+
+# OS/IDE
+.DS_Store
+.vscode/
+.idea/
