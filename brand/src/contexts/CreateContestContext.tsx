@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation";
 import { useGetContest } from "@/hooks/contest/useGetContest";
 import { useGetAssets } from "@/hooks/contest/asset/useGetAssets";
 import { useGetInspirations } from "@/hooks/contest/inspiration/useGetInspirations";
+import { useGetPayment } from "@/hooks/payment/useGetPayment";
+import { useCreateCheckoutSession } from "@/hooks/stripe/useCreateCheckoutSession";
 
 type CreateContestContextType = {
   step: number;
@@ -52,14 +54,16 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<ContestCreateFormData>(
     ContestFormDefaultValues,
   );
-  const [contestId, setContestId] = useState<string | null>(null);
+  const [contestId, setContestId] = useState<string>("");
   const { brand } = useContext(BrandContext);
 
   const { mutate: createContest, isPending: isCreating } = useCreateContest();
   const { mutate: updateContest, isPending: isUpdating } = useUpdateContest();
-  const { getContestQuery } = useGetContest(contestId || "");
-  const { getAssetsQuery } = useGetAssets(contestId || "");
-  const { getInspirationsQuery } = useGetInspirations(contestId || "");
+  const { getContestQuery } = useGetContest(contestId);
+  const { getAssetsQuery } = useGetAssets(contestId);
+  const { getInspirationsQuery } = useGetInspirations(contestId);
+
+  const { mutate: createCheckoutSession } = useCreateCheckoutSession();
 
   const next = <T extends object>(partial: T) => {
     setData((prev) => ({ ...prev, ...partial }));
@@ -113,48 +117,52 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
       contest_end_date: mergedData.contest_end_date || "",
       prize_pool: mergedData.prize_pool || 0,
       prize_distribution: mergedData.prize_distribution || [],
-      is_draft: isDraft,
+      thumbnail_url: mergedData.thumbnail_url || "",
+      is_draft: true,
     };
 
     if (!brand?.id || !contestId) return;
 
-    updateContest(
-      {
-        brandId: brand.id,
-        contestId: contestId,
-        contestData: completeData,
-        assetsData,
-        inspirationData,
-      },
-      {
-        onSuccess: () => {
-          const storageKey = `contest:create:${brand.id}`;
-          sessionStorage.removeItem(storageKey);
-
-          router.push("/contests");
+    if (contestId) {
+      updateContest(
+        {
+          brandId: brand.id,
+          contestId: contestId,
+          contestData: completeData,
+          assetsData,
+          inspirationData,
         },
-      },
-    );
+        {
+          onSuccess: () => {
+            if (!isDraft) {
+              createCheckoutSession(
+                { contestId: contestId },
+                {
+                  onSuccess: (data) => {
+                    window.location.href = data.url;
+                  },
+                },
+              );
+            } else {
+              router.push("/contests");
+            }
+          },
+        },
+      );
+    }
   };
 
   const initContest = (brandId: string, paramContestId?: string) => {
-    const storageKey = `contest:create:${brandId}`;
-    let contestId = paramContestId || sessionStorage.getItem(storageKey);
+    let contestId = paramContestId;
 
     if (contestId) {
       setContestId(contestId);
-
-      getContestQuery.refetch();
-      getAssetsQuery.refetch();
-      getInspirationsQuery.refetch();
     } else {
       contestId = crypto.randomUUID();
-      sessionStorage.setItem(storageKey, contestId);
-
       createContest(
         {
-          contestId: contestId,
           brandId: brandId,
+          contestId: contestId,
           contestData: data,
         },
         {
@@ -174,7 +182,6 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (getAssetsQuery.data) {
-      console.log("getAssetsQuery.data", getAssetsQuery.data);
       const assets = getAssetsQuery.data.map((asset) => ({
         id: asset.id,
         file_url: asset.file_url || "",
