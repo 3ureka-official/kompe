@@ -15,14 +15,26 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import ApplyCompetitionButton from "./applyCompetitionButton";
+import SignInButton from "./signInButton";
 
 export default function ApplyDialog({
   competitionId,
 }: {
   competitionId: string;
 }) {
+  const { data: session } = useSession();
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  if (!session) {
+    return (
+      <Button className="w-full" onClick={() => signIn("tiktok")}>
+        <ArrowRightIcon />
+        ログインして今すぐ参加
+      </Button>
+    );
+  }
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
