@@ -32,11 +32,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       userinfo:
         "https://open.tiktokapis.com/v2/user/info/?fields=union_id,avatar_url,display_name,username",
       profile: async (profile) => {
-        let user = await prisma.creators.findFirst({
+        let creator = await prisma.creators.findFirst({
           where: { tiktok_union_id: profile.data.user.union_id! },
         });
-        if (!user) {
-          user = await prisma.creators.create({
+        if (!creator) {
+          creator = await prisma.creators.create({
             data: {
               tiktok_union_id: profile.data.user.union_id!,
               display_name: profile.data.user.display_name,
@@ -46,10 +46,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
         }
         return {
-          creator_id: user.id,
-          display_name: user.display_name,
-          avatar_url: user.avatar_url,
-          username: user.username,
+          creator_id: creator.id,
+          display_name: creator.display_name,
+          avatar_url: creator.avatar_url,
+          username: creator.username,
         };
       },
     }),
