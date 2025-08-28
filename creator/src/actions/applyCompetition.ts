@@ -9,26 +9,10 @@ export async function applyCompetition(
   formData: FormData,
 ) {
   const session = await auth();
-  if (session?.user?.id) {
-    console.log("Creating application...", competitionId, session.user.id);
-    let creator = await prisma.creators.findFirst({
-      where: {
-        tiktok_union_id: session.user.id,
-      },
-    });
-    if (!creator) {
-      creator = await prisma.creators.create({
-        data: {
-          tiktok_union_id: session.user.id,
-          display_name: session.user.name || "No Name",
-          username: session.user.email || "no.username",
-          avatar_url: session.user.image || "",
-        },
-      });
-    }
+  if (session?.user?.creator_id) {
     await prisma.applications.create({
       data: {
-        creator_id: creator.id,
+        creator_id: session.user.creator_id,
         contest_id: competitionId,
       },
     });

@@ -45,9 +45,9 @@ export default async function RootLayout({
           </Link>
           {session ? (
             <Avatar>
-              <AvatarImage src={session.user?.image || undefined} />
+              <AvatarImage src={session.user?.avatar_url || undefined} />
               <AvatarFallback>
-                {session.user?.name?.split("", 2)}
+                {session.user?.display_name?.split("", 2)}
               </AvatarFallback>
             </Avatar>
           ) : (

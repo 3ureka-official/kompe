@@ -50,7 +50,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import ApplyDialog from "@/components/applyDialog";
-import { auth } from "@/auth";
+import { auth, signIn } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default async function ApplicationPage({
   params,
@@ -59,16 +60,14 @@ export default async function ApplicationPage({
 }) {
   const { id } = params;
   const session = await auth();
-  const creator = await prisma.creators.findFirst({
-    where: { tiktok_union_id: session?.user?.id },
-  });
 
-  if (!creator) {
-    return <div>クリエイターが見つかりませんでした。</div>;
+  if (!session) {
+    signIn("tiktok");
+    return;
   }
 
   const application = await prisma.applications.findFirst({
-    where: { contest_id: id, creator_id: creator.id },
+    where: { contest_id: id, creator_id: session.user?.creator_id },
     include: { contests: { include: { brands: true } } },
   });
 

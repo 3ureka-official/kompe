@@ -40,15 +40,10 @@ import { SessionProvider } from "next-auth/react";
 
 const getIsApplied = async (applications: any[]) => {
   const session = await auth();
-  const unionId = session?.user?.id;
-  if (!unionId) return null;
-  console.log({ unionId });
-  const creator = await prisma.creators.findFirst({
-    where: { tiktok_union_id: unionId },
-  });
-  console.log({ creator });
-  if (!creator) return null;
-  return applications.find((app) => app.creator_id === creator.id);
+  if (!session) return null;
+  return applications.find(
+    (app) => app.creator_id === session.user?.creator_id,
+  );
 };
 
 export default async function CompetitionPage({
