@@ -103,6 +103,9 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
+      stripe:
+        specifier: ^18.4.0
+        version: 18.4.0(@types/node@20.19.11)
       tailwind-merge:
         specifier: ^3.3.0
         version: 3.3.1
@@ -4167,6 +4170,13 @@ packages:
       }
     engines: { node: ">=6" }
 
+  qs@6.14.0:
+    resolution:
+      {
+        integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==,
+      }
+    engines: { node: ">=0.6" }
+
   queue-microtask@1.2.3:
     resolution:
       {
@@ -4540,6 +4550,18 @@ packages:
         integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==,
       }
     engines: { node: ">=8" }
+
+  stripe@18.4.0:
+    resolution:
+      {
+        integrity: sha512-LKFeDnDYo4U/YzNgx2Lc9PT9XgKN0JNF1iQwZxgkS4lOw5NunWCnzyH5RhTlD3clIZnf54h7nyMWkS8VXPmtTQ==,
+      }
+    engines: { node: ">=12.*" }
+    peerDependencies:
+      "@types/node": ">=12.x.x"
+    peerDependenciesMeta:
+      "@types/node":
+        optional: true
 
   style-to-js@1.1.17:
     resolution:
@@ -7757,6 +7779,10 @@ snapshots:
 
   punycode@2.3.1: {}
 
+  qs@6.14.0:
+    dependencies:
+      side-channel: 1.1.0
+
   queue-microtask@1.2.3: {}
 
   react-dom@19.1.1(react@19.1.1):
@@ -8080,6 +8106,12 @@ snapshots:
   strip-bom@3.0.0: {}
 
   strip-json-comments@3.1.1: {}
+
+  stripe@18.4.0(@types/node@20.19.11):
+    dependencies:
+      qs: 6.14.0
+    optionalDependencies:
+      "@types/node": 20.19.11
 
   style-to-js@1.1.17:
     dependencies:
