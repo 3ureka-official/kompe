@@ -4,6 +4,8 @@ import { Button } from "./ui/button";
 
 type Props = {
   variant?: "default" | "minimal";
+  className?: string;
+  redirectTo?: string;
 };
 
 const buttonTexts = {
@@ -11,13 +13,18 @@ const buttonTexts = {
   minimal: "ログイン",
 };
 
-export default async function SignInButton({ variant = "default" }: Props) {
+export default async function SignInButton({
+  variant = "default",
+  className,
+  redirectTo = "/dashboard",
+}: Props) {
   return (
     <form
       action={async () => {
         "use server";
-        await signIn("tiktok", { redirectTo: "/dashboard" });
+        await signIn("tiktok", { redirectTo });
       }}
+      className={className}
     >
       <Button className="bg-black">
         <Image

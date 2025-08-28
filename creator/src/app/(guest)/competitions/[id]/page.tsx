@@ -20,6 +20,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  ArrowRightIcon,
   CalendarClockIcon,
   CheckIcon,
   CircleDollarSignIcon,
@@ -33,10 +34,11 @@ import Markdown from "react-markdown";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import ApplyDialog from "@/components/applyDialog";
-import { auth } from "@/auth";
+import { auth, signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SessionProvider } from "next-auth/react";
+import SignInButton from "@/components/signInButton";
 
 const getIsApplied = async (applications: any[]) => {
   const session = await auth();
@@ -52,6 +54,7 @@ export default async function CompetitionPage({
   params: { id: string };
 }) {
   const { id } = params;
+  const session = await auth();
   const competition = await prisma.contests.findUnique({
     where: { id },
     include: { brands: true },
@@ -68,7 +71,6 @@ export default async function CompetitionPage({
     where: { contest_id: id },
   });
   const isApplied = await getIsApplied(applications);
-  console.log({ isApplied });
 
   if (!competition) {
     return <div>コンペティションが見つかりませんでした。</div>;
@@ -232,18 +234,25 @@ export default async function CompetitionPage({
         </Tabs>
       </div>
       <div className="fixed bottom-0 bg-card border rounded-t-2xl w-full p-4">
-        {isApplied ? (
-          <Button className="w-full" asChild>
-            <Link href={`/applications/${competition.id}`}>
-              <Badge variant={"secondary"}>
-                <CheckIcon />
-                応募済み
-              </Badge>
-              提出を管理
-            </Link>
-          </Button>
+        {session ? (
+          isApplied ? (
+            <Button className="w-full" asChild>
+              <Link href={`/applications/${competition.id}`}>
+                <Badge variant={"secondary"}>
+                  <CheckIcon />
+                  応募済み
+                </Badge>
+                提出を管理
+              </Link>
+            </Button>
+          ) : (
+            <ApplyDialog competitionId={competition.id} />
+          )
         ) : (
-          <ApplyDialog competitionId={competition.id} />
+          <SignInButton
+            className="*:w-full"
+            redirectTo={`/competitions/${competition.id}`}
+          />
         )}
       </div>
     </SessionProvider>
