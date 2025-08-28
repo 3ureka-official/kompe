@@ -1,4 +1,4 @@
-import supabase from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { InspirationItem } from "@/types/Contest";
 import { v4 as uuidv4 } from "uuid";
 

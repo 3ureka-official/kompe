@@ -1,4 +1,4 @@
-import supabase from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { Contest, InspirationItem, AssetItem } from "@/types/Contest";
 import { updateAssets } from "./assetService";
 import { updateInspiration } from "./inspirationService";

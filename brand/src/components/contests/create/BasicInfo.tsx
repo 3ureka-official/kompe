@@ -58,9 +58,6 @@ export function BasicInfo() {
       {
         onSuccess: (data) => {
           setValue("thumbnail_url", data);
-          updateData({
-            thumbnail_url: data,
-          });
         },
       },
     );
@@ -85,7 +82,6 @@ export function BasicInfo() {
 
   const draft = () => {
     const values = getValues();
-    console.log(values);
     updateData(values);
     submit(true, values);
   };

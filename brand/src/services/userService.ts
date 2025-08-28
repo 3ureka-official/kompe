@@ -1,5 +1,5 @@
 import { User } from "@/types/User";
-import supabase from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 
 /**
  * ユーザープロフィールを取得
