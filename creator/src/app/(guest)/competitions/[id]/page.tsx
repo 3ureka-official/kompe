@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { applications } from "@prisma/client";
 import Image from "next/image";
 import {
   Breadcrumb,
@@ -20,7 +21,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  ArrowRightIcon,
   CalendarClockIcon,
   CheckIcon,
   CircleDollarSignIcon,
@@ -34,13 +34,13 @@ import Markdown from "react-markdown";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import ApplyDialog from "@/components/applyDialog";
-import { auth, signIn } from "@/auth";
+import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SessionProvider } from "next-auth/react";
 import SignInButton from "@/components/signInButton";
 
-const getIsApplied = async (applications: any[]) => {
+const getIsApplied = async (applications: applications[]) => {
   const session = await auth();
   if (!session) return null;
   return applications.find(

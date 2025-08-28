@@ -4,10 +4,7 @@ import { auth, signIn } from "@/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
-export async function applyCompetition(
-  competitionId: string,
-  formData: FormData,
-) {
+export async function applyCompetition(competitionId: string) {
   const session = await auth();
   if (session?.user?.creator_id) {
     await prisma.applications.create({
