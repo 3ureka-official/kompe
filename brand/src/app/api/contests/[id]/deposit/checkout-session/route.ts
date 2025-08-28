@@ -42,12 +42,13 @@ export async function POST(
       return NextResponse.json({ error: "contest_not_found" }, { status: 404 });
 
     const transferGroup = `contest:${contestId}`;
-    const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/contests/${contestId}?checkout=true&session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/contests/${contestId}?checkout=false`;
+    const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/contests/${contestId}?checkout=success&session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/contests/${contestId}?checkout=cancel`;
 
-    // 5) Checkout Session 作成
+    // 4) Checkout Session 作成
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {

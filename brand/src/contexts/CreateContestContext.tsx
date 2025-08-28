@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation";
 import { useGetContest } from "@/hooks/contest/useGetContest";
 import { useGetAssets } from "@/hooks/contest/asset/useGetAssets";
 import { useGetInspirations } from "@/hooks/contest/inspiration/useGetInspirations";
-import { useGetPayment } from "@/hooks/payment/useGetPayment";
 import { useCreateCheckoutSession } from "@/hooks/stripe/useCreateCheckoutSession";
 
 type CreateContestContextType = {
