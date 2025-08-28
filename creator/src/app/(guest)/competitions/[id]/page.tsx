@@ -36,14 +36,17 @@ import ApplyDialog from "@/components/applyDialog";
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SessionProvider } from "next-auth/react";
 
 const getIsApplied = async (applications: any[]) => {
   const session = await auth();
   const unionId = session?.user?.id;
   if (!unionId) return null;
+  console.log({ unionId });
   const creator = await prisma.creators.findFirst({
     where: { tiktok_union_id: unionId },
   });
+  console.log({ creator });
   if (!creator) return null;
   return applications.find((app) => app.creator_id === creator.id);
 };
@@ -70,13 +73,14 @@ export default async function CompetitionPage({
     where: { contest_id: id },
   });
   const isApplied = await getIsApplied(applications);
+  console.log({ isApplied });
 
   if (!competition) {
     return <div>コンペティションが見つかりませんでした。</div>;
   }
 
   return (
-    <>
+    <SessionProvider>
       <div className="grid gap-8 p-4 pb-16">
         <Breadcrumb>
           <BreadcrumbList>
@@ -247,6 +251,6 @@ export default async function CompetitionPage({
           <ApplyDialog competitionId={competition.id} />
         )}
       </div>
-    </>
+    </SessionProvider>
   );
 }
