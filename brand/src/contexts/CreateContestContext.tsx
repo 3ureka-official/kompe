@@ -136,7 +136,7 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
           onSuccess: () => {
             if (!isDraft) {
               createCheckoutSession(
-                { contestId: contestId },
+                { contestId: contestId, amountJpy: mergedData.prize_pool },
                 {
                   onSuccess: (data) => {
                     window.location.href = data.url;
