@@ -78,7 +78,7 @@ export default async function CompetitionPage({
 
   return (
     <SessionProvider>
-      <div className="grid gap-8 p-4 pb-16">
+      <div className="grid gap-8 p-4 pb-20">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
