@@ -7,66 +7,11 @@ import { ContestAssets } from "@/components/contests/detail/ContestAssets";
 import { ContestCreatorSection } from "@/components/contests/detail/ContestCreatorSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { useGetContest } from "@/hooks/contest/useGetContest";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert";
-import { AlertCircleIcon, CheckCircle2Icon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useGetContestPayment } from "@/hooks/contestPayment/useGetPayment";
 import { PaymentPollingOverlay } from "@/components/contests/detail/PaymentPollingOverlay";
-
-function AlertCancel({
-  title,
-  description,
-  setClose,
-}: {
-  title: string;
-  description: string;
-  setClose: (isCancel: boolean) => void;
-}) {
-  return (
-    <Alert
-      variant="destructive"
-      className="flex justify-between mb-4 bg-red-100"
-    >
-      <div>
-        <div className="flex items-center gap-2">
-          <AlertCircleIcon />
-          <AlertTitle>{title}</AlertTitle>
-        </div>
-        <AlertDescription>{description}</AlertDescription>
-      </div>
-      <XIcon
-        className="w-10 h-10 cursor-pointer hover:text-red-900"
-        onClick={() => setClose(false)}
-      />
-    </Alert>
-  );
-}
-
-function AlertSuccess({
-  title,
-  description,
-  setClose,
-}: {
-  title: string;
-  description: string;
-  setClose: (isCancel: boolean) => void;
-}) {
-  return (
-    <Alert className="bg-emerald-50 border-emerald-200 flex justify-between mb-4">
-      <div>
-        <div className="flex items-center gap-2">
-          <CheckCircle2Icon className="text-emerald-600" />
-          <AlertTitle>{title}</AlertTitle>
-        </div>
-        <AlertDescription>{description}</AlertDescription>
-      </div>
-      <XIcon
-        className="w-10 h-10 cursor-pointer hover:text-emerald-600"
-        onClick={() => setClose(false)}
-      />
-    </Alert>
-  );
-}
+import { AlertCancel } from "@/components/contests/detail/AlertCancel";
+import { AlertSuccess } from "@/components/contests/detail/AlertSuccess";
 
 export default function ContestDetailPage() {
   const params = useParams();
