@@ -45,14 +45,14 @@ export default function ContestDetailPage() {
 
   // すでに支払い済み（リロード時など）は即クローズして成功表示
   useEffect(() => {
-    if (!showCheckoutLoading) return;
+    if (!showCheckoutLoading || isPendingContestPayment) return;
     if (contestPayment?.status === "succeeded") {
       setShowCheckoutLoading(false);
       setShowSuccessBanner(true);
     }
-  }, [contestPayment, showCheckoutLoading]);
+  }, [contestPayment, showCheckoutLoading, isPendingContestPayment]);
 
-  if (isPending) return <div>読み込み中...</div>;
+  if (isPending || isPendingContestPayment) return <div>読み込み中...</div>;
   if (!contest) return <div>コンテストが見つかりません</div>;
 
   return (
@@ -74,7 +74,11 @@ export default function ContestDetailPage() {
       )}
 
       {/* ヘッダー */}
-      <ContestHeader contest={contest} refetch={refetch} />
+      <ContestHeader
+        contest={contest}
+        refetch={refetch}
+        contestPayment={contestPayment}
+      />
 
       {/* タブ形式のコンテンツ */}
       <Tabs defaultValue="overview" className="mt-8">

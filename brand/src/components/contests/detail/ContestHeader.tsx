@@ -5,13 +5,15 @@ import { CONTEST_CATEGORIES } from "@/constants/contest.constant";
 import { TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDeleteContest } from "@/hooks/contest/useDeleteContest";
+import { ContestPayment } from "@/types/ContestPayment";
 
 type Props = {
   contest: Contest;
   refetch: () => void;
+  contestPayment: ContestPayment;
 };
 
-export function ContestHeader({ contest, refetch }: Props) {
+export function ContestHeader({ contest, refetch, contestPayment }: Props) {
   const router = useRouter();
   const { mutate: deleteContest } = useDeleteContest();
 
@@ -183,24 +185,26 @@ export function ContestHeader({ contest, refetch }: Props) {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="danger"
-            size="sm"
-            className="cursor-pointer"
-            onClick={handleDeleteContest}
-          >
-            <TrashIcon className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
-            onClick={handleEditContest}
-          >
-            編集する
-          </Button>
-        </div>
+        {!contestPayment && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="danger"
+              size="sm"
+              className="cursor-pointer"
+              onClick={handleDeleteContest}
+            >
+              <TrashIcon className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
+              onClick={handleEditContest}
+            >
+              編集する
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
