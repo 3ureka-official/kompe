@@ -61,15 +61,11 @@ export default async function Competitions() {
                   className="rounded-lg"
                 />
               </CardContent>
-              <CardFooter className="justify-between">
+              <CardFooter className="justify-end">
                 <div className="flex items-center gap-2 text-muted-foreground font-bold">
                   <CalendarClockIcon />
                   <p>{`残り${formatDistanceToNow(new Date(competition.contest_end_date), { locale: ja })}`}</p>
                 </div>
-                <Button>
-                  <ArrowRightIcon />
-                  今すぐ参加
-                </Button>
               </CardFooter>
             </Card>
           </Link>
