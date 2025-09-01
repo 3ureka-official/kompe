@@ -63,7 +63,11 @@ export async function POST(
         transfer_group: transferGroup,
         metadata: { contest_id: contestId, brand_id: contest.brand_id },
       },
-      metadata: { contest_id: contestId, brand_id: contest.brand_id },
+      metadata: {
+        contest_id: contestId,
+        brand_id: contest.brand_id,
+        transfer_group: transferGroup,
+      },
       success_url: successUrl,
       cancel_url: cancelUrl,
     });
