@@ -5,6 +5,7 @@ import {
   upsertPendingFromSession,
   upsertSucceededFromPI,
 } from "@/services/contestPaymentService";
+import { updateContestPublic } from "@/services/contestService";
 
 export const runtime = "nodejs";
 
@@ -39,70 +40,85 @@ export async function POST(req: NextRequest) {
             ? session.payment_intent
             : session.payment_intent?.id) ?? null;
 
-        if (!paymentIntentId)
+        if (!paymentIntentId) {
           throw new Error(
             "payment_intent missing on checkout.session.completed",
           );
+        }
 
+        // 台帳の仮登録（pending）
         await upsertPendingFromSession({
           brand_id: brandId,
           contest_id: contestId,
           stripe_checkout_session_id: session.id,
           stripe_payment_intent_id: paymentIntentId,
           stripe_charge_id: null,
-          transfer_group: "",
+          transfer_group: session.metadata?.transfer_group ?? "",
           currency: session.currency ?? "jpy",
           amount_gross: session.amount_total ?? 0,
           amount_fee: 0,
           amount_net: 0,
           status: "pending",
-          available_on: new Date(),
+          available_on: null,
         });
+
+        break;
       }
 
-      case "payment_intent.succeeded": {
-        const pi = event.data.object as Stripe.PaymentIntent;
+      case "charge.updated": {
+        const chargeEvt = event.data.object as Stripe.Charge;
 
-        const piFull = await stripe.paymentIntents.retrieve(pi.id, {
-          expand: ["latest_charge.balance_transaction"],
-        });
-        const charge = piFull.latest_charge as Stripe.Charge | null;
-        const bt =
-          charge?.balance_transaction as Stripe.BalanceTransaction | null;
+        // balance_transaction を API で取り直す（イベント内は ID のことが多い）
+        const btId =
+          typeof chargeEvt.balance_transaction === "string"
+            ? chargeEvt.balance_transaction
+            : ((chargeEvt.balance_transaction as any)?.id ?? null);
 
+        if (!btId) {
+          // まだ紐付いていない更新ならスキップ（次の updated を待つ）
+          break;
+        }
+
+        const bt = await stripe.balanceTransactions.retrieve(btId);
+
+        // 対応する Checkout Session を逆引き
         const sessions = await stripe.checkout.sessions.list({
-          payment_intent: pi.id,
+          payment_intent: chargeEvt.payment_intent as string,
           limit: 1,
         });
         const session = sessions.data[0] ?? null;
         const sessionId = session?.id ?? null;
         if (!sessionId) {
-          // スキーマ上NOT NULLなら、ここで失敗→Stripe再送に任せるのが安全
           throw new Error("failed to reverse-lookup checkout session for PI");
         }
 
         const contestId =
-          (piFull.metadata?.contest_id ?? session?.metadata?.contest_id) ||
+          (chargeEvt.metadata?.contest_id ?? session?.metadata?.contest_id) ||
           null;
         const brandId =
-          (piFull.metadata?.brand_id ?? session?.metadata?.brand_id) || null;
+          (chargeEvt.metadata?.brand_id ?? session?.metadata?.brand_id) || null;
 
         await upsertSucceededFromPI({
           brand_id: brandId,
           contest_id: contestId,
           stripe_checkout_session_id: sessionId,
-          stripe_payment_intent_id: piFull.id,
-          stripe_charge_id: charge?.id ?? null,
-          transfer_group: piFull.transfer_group ?? "",
-          currency: piFull.currency,
-          amount_gross: charge?.amount ?? piFull.amount_received ?? 0,
-          amount_fee: bt?.fee ?? 0,
-          amount_net: bt?.net ?? piFull.amount_received ?? 0,
+          stripe_payment_intent_id: String(chargeEvt.payment_intent),
+          stripe_charge_id: chargeEvt.id,
+          transfer_group: chargeEvt.transfer_group ?? "",
+          amount_gross: chargeEvt.amount,
+          amount_fee: bt.fee ?? 0,
+          amount_net: chargeEvt.amount - (bt.fee ?? 0),
           status: "succeeded",
-          available_on: bt?.available_on
+          available_on: bt.available_on
             ? new Date(bt.available_on * 1000)
-            : new Date(),
+            : null,
         });
+
+        if (contestId) {
+          await updateContestPublic(contestId);
+        }
+
+        break;
       }
 
       default:
