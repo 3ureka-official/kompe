@@ -2,7 +2,12 @@ import { Contest } from "@/types/Contest";
 import { useGetApplication } from "@/hooks/application/useGetApplication";
 import { formatNumber } from "@/utils/format";
 import { Button } from "@/components/ui/Button";
-import { LinkIcon } from "lucide-react";
+import {
+  LinkIcon,
+  CreditCardIcon,
+  CheckIcon,
+  CircleAlertIcon,
+} from "lucide-react";
 import Image from "next/image";
 import {
   Table,
@@ -12,12 +17,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
+import { useState } from "react";
+import TransactionModal from "./TransactionModal";
+import { Application } from "@/types/Application";
+import { ContestPayment } from "@/types/ContestPayment";
+import { Badge } from "@/components/ui/Badge";
 
 type Props = {
   contest: Contest;
+  contestPayment: ContestPayment;
 };
 
-export function ContestCreatorSection({ contest }: Props) {
+export function ContestCreatorSection({ contest, contestPayment }: Props) {
+  const [showTransactionModal, setShowTransactionModal] = useState<{
+    isOpen: boolean;
+    application: Application | null;
+    amount: number;
+  }>({
+    isOpen: false,
+    application: null,
+    amount: 0,
+  });
   const { getApplicationQuery } = useGetApplication(contest.id);
   const { data: applications, isPending } = getApplicationQuery;
 
@@ -36,6 +56,16 @@ export function ContestCreatorSection({ contest }: Props) {
   if (isPending) {
     return <div>Loading...</div>;
   }
+
+  const handleOpenTransactionModal = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    application: Application,
+    amount: number,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setShowTransactionModal({ isOpen: true, application, amount });
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
@@ -146,12 +176,47 @@ export function ContestCreatorSection({ contest }: Props) {
                     {formatNumber(application.shares)}
                   </TableCell>
                   <TableCell className="py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatNumber(contest.prize_distribution[index])}
+                    {formatNumber(contest.prize_distribution[index])}円
                   </TableCell>
                   <TableCell className="py-4 whitespace-nowrap text-sm font-medium text-center">
-                    <Button variant="outline" size="sm">
-                      <LinkIcon className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center justify-end gap-2 pr-4">
+                      {new Date(contest.application_end_date) < new Date() &&
+                        contestPayment.status === "succeeded" &&
+                        Number(contest.prize_distribution[index]) > 0 && (
+                          <Button
+                            className="relative"
+                            variant="outline"
+                            size="sm"
+                            onClick={(event) =>
+                              handleOpenTransactionModal(
+                                event,
+                                application,
+                                contest.prize_distribution[index],
+                              )
+                            }
+                          >
+                            <CreditCardIcon className="w-4 h-4" />
+                            {application.contest_transfer ? (
+                              <Badge
+                                variant="outline"
+                                className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-5 h-5 text-xs"
+                              >
+                                <CheckIcon className="w-4 h-4" />
+                              </Badge>
+                            ) : (
+                              <Badge
+                                variant="outline"
+                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs"
+                              >
+                                <CircleAlertIcon className="w-4 h-4" />
+                              </Badge>
+                            )}
+                          </Button>
+                        )}
+                      <Button variant="outline" size="sm">
+                        <LinkIcon className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -159,6 +224,22 @@ export function ContestCreatorSection({ contest }: Props) {
           </Table>
         </div>
       </div>
+
+      {showTransactionModal.isOpen && (
+        <TransactionModal
+          isOpen={showTransactionModal.isOpen}
+          onClose={() =>
+            setShowTransactionModal({
+              isOpen: false,
+              application: null,
+              amount: 0,
+            })
+          }
+          contest={contest}
+          application={showTransactionModal.application!}
+          amount={showTransactionModal.amount}
+        />
+      )}
     </div>
   );
 }
