@@ -10,13 +10,21 @@ export async function getApplicationsByContestId(
   try {
     const { data, error } = await supabase
       .from("applications")
-      .select("*, creator:creators(*)")
+      .select(
+        `
+        *,
+        creator:creators(*),
+        contest_transfer:contest_transfers!contest_transfers_application_id_fkey(
+          id, contest_id, application_id, amount, stripe_transfer_id, created_at
+        )
+      `,
+      )
       .eq("contest_id", contestId)
       .order("views", { ascending: false });
 
     if (error) throw error;
 
-    return data;
+    return data as Application[];
   } catch (error) {
     console.error("アプリケーション取得エラー:", error);
     throw error;

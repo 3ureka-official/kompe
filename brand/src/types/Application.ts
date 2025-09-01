@@ -1,4 +1,5 @@
 import { Creator } from "./Creator";
+import { ContestTransfer } from "./ContestTransfer";
 
 /**
  * アプリケーション関連の型定義
@@ -14,4 +15,5 @@ export type Application = {
   shares: number;
   created_at: Date;
   creator: Creator;
+  contest_transfer: ContestTransfer | null;
 };

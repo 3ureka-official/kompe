@@ -95,7 +95,10 @@ export default function ContestDetailPage() {
 
         <TabsContent value="creators" className="space-y-6">
           {/* 参加クリエイター */}
-          <ContestCreatorSection contest={contest} />
+          <ContestCreatorSection
+            contest={contest}
+            contestPayment={contestPayment}
+          />
         </TabsContent>
 
         <TabsContent value="assets" className="space-y-6">
