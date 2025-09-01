@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { Contest, InspirationItem, AssetItem } from "@/types/Contest";
 import { updateAssets } from "./assetService";
 import { updateInspiration } from "./inspirationService";
@@ -150,5 +150,16 @@ export const deleteContest = async (contestId: string) => {
   } catch (error) {
     console.error("コンテスト削除エラー:", error);
     throw error;
+  }
+};
+
+export const updateContestPublic = async (contestId: string) => {
+  const { error } = await supabaseAdmin()
+    .from("contests")
+    .update({ is_draft: false })
+    .eq("id", contestId);
+
+  if (error) {
+    throw new Error(error.message);
   }
 };

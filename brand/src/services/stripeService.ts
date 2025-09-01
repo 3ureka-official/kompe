@@ -27,3 +27,34 @@ export async function createCheckoutSession(
   if (!res.ok) throw new Error("Failed to create checkout session");
   return res.json() as Promise<{ url: string }>;
 }
+
+export async function createContestTransfer(
+  contestId: string,
+  applicationId: string,
+  creatorId: string,
+  amountJpy: number,
+) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) throw new Error("Unauthorized");
+
+  const token = session?.access_token!;
+
+  const res = await fetch(`/api/contests/${contestId}/transfers`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      applicationId: applicationId,
+      creatorId: creatorId,
+      amountJpy: amountJpy,
+    }),
+  });
+
+  if (!res.ok) throw new Error("Failed to create checkout session");
+  return res.json() as Promise<{ url: string }>;
+}
