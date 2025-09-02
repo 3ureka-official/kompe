@@ -20,9 +20,11 @@ export async function POST(req: NextRequest) {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
-  } catch (e: any) {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: `invalid_signature: ${e.message}` },
+      { error: `invalid_signature: ${errorMessage}` },
       { status: 400 },
     );
   }
@@ -72,7 +74,9 @@ export async function POST(req: NextRequest) {
         const btId =
           typeof chargeEvt.balance_transaction === "string"
             ? chargeEvt.balance_transaction
-            : ((chargeEvt.balance_transaction as any)?.id ?? null);
+            : ((
+                chargeEvt.balance_transaction as Stripe.BalanceTransaction | null
+              )?.id ?? null);
 
         if (!btId) {
           // まだ紐付いていない更新ならスキップ（次の updated を待つ）
@@ -109,6 +113,7 @@ export async function POST(req: NextRequest) {
           amount_fee: bt.fee ?? 0,
           amount_net: chargeEvt.amount - (bt.fee ?? 0),
           status: "succeeded",
+          currency: chargeEvt.currency ?? "jpy",
           available_on: bt.available_on
             ? new Date(bt.available_on * 1000)
             : null,
@@ -126,8 +131,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e) {
-    console.error("webhook error:", e);
+  } catch (error: unknown) {
+    console.error("webhook error:", error);
     return NextResponse.json({ error: "handler_failed" }, { status: 500 });
   }
 }

@@ -6,11 +6,18 @@ import { getBearer, userClientFromBearer } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
-function formatYupError(err: any) {
+interface ValidationError {
+  name: string;
+  message: string;
+  inner?: Array<{ path: string; message: string }>;
+  path?: string;
+}
+
+function formatYupError(err: ValidationError) {
   if (err?.name !== "ValidationError")
     return [{ message: String(err?.message ?? "validation error") }];
   return err.inner?.length
-    ? err.inner.map((e: any) => ({ path: e.path, message: e.message }))
+    ? err.inner.map((e) => ({ path: e.path, message: e.message }))
     : [{ path: err.path, message: err.message }];
 }
 
@@ -102,17 +109,26 @@ export async function POST(
     if (contestTransferError) throw contestTransferError;
 
     return NextResponse.json({ ok: true, transfer: tr });
-  } catch (e: any) {
-    console.error("error", e);
-    if (e?.name === "ValidationError") {
+  } catch (error: unknown) {
+    console.error("error", error);
+
+    if (error instanceof Error && error.name === "ValidationError") {
       return NextResponse.json(
-        { error: "validation_error", details: formatYupError(e) },
+        {
+          error: "validation_error",
+          details: formatYupError(error as ValidationError),
+        },
         { status: 400 },
       );
     }
-    const status = e?.code === "insufficient_funds" ? 409 : 400;
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    const errorCode = (error as { code?: string })?.code;
+    const status = errorCode === "insufficient_funds" ? 409 : 400;
+
     return NextResponse.json(
-      { error: e?.message ?? "bad_request" },
+      { error: errorMessage ?? "bad_request" },
       { status },
     );
   }

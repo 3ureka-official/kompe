@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Contest } from "@/types/Contest";
 import { formatCurrency, formatDate, formatNumber } from "@/utils/format";
-import { CONTEST_CATEGORIES } from "@/constants/contest.constant";
 import { TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDeleteContest } from "@/hooks/contest/useDeleteContest";
@@ -10,7 +9,7 @@ import { ContestPayment } from "@/types/ContestPayment";
 type Props = {
   contest: Contest;
   refetch: () => void;
-  contestPayment: ContestPayment;
+  contestPayment: ContestPayment | null;
 };
 
 export function ContestHeader({ contest, refetch, contestPayment }: Props) {
@@ -53,13 +52,6 @@ export function ContestHeader({ contest, refetch, contestPayment }: Props) {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-16 text-sm text-gray-500">
               <div className="flex flex-col items-start">
-                <p className="text-gray-500">応募期間</p>
-                <p className="text-black text-sm">
-                  {formatDate(contest.application_start_date, "PPP")} -{" "}
-                  {formatDate(contest.application_end_date, "PPP")}
-                </p>
-              </div>
-              <div className="flex flex-col items-start">
                 <p className="text-gray-500">開催期間</p>
                 <p className="text-black text-sm">
                   {formatDate(contest.contest_start_date, "PPP")} -{" "}
@@ -70,16 +62,6 @@ export function ContestHeader({ contest, refetch, contestPayment }: Props) {
                 <p className="text-gray-500">総賞金</p>
                 <p className="text-black text-sm">
                   {formatCurrency(contest.prize_pool)}
-                </p>
-              </div>
-              <div className="flex flex-col items-start">
-                <p className="text-gray-500">カテゴリー</p>
-                <p className="text-black text-sm">
-                  {
-                    CONTEST_CATEGORIES.find(
-                      (category) => category.id === contest.category,
-                    )?.label
-                  }
                 </p>
               </div>
             </div>

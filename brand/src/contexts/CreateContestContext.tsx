@@ -108,7 +108,7 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
       title: mergedData.title || "",
       description: mergedData.description || "",
       supply_of_samples: mergedData.supply_of_samples || "",
-      video_conditions: mergedData.video_conditions || "",
+      requirements: mergedData.requirements || "",
       contest_start_date: mergedData.contest_start_date || "",
       contest_end_date: mergedData.contest_end_date || "",
       prize_pool: mergedData.prize_pool || 0,

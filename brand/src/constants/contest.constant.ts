@@ -27,7 +27,6 @@ export const ContestFormDefaultValues = {
   contest_end_date: new Date(new Date().setDate(new Date().getDate() + 7)),
   description: "",
   supply_of_samples: "",
-  video_conditions: "",
   requirements: "",
   prize_pool: 0,
   prize_distribution: [0, 0, 0],
@@ -35,8 +34,6 @@ export const ContestFormDefaultValues = {
 
 export const CONTEST_STATUS_LABELS = {
   0: { text: "下書き", color: "bg-gray-100 text-gray-800" },
-  1: { text: "予定", color: "bg-yellow-100 text-yellow-800" },
-  2: { text: "応募期間", color: "bg-green-100 text-green-800" },
-  3: { text: "開催中", color: "bg-blue-100 text-blue-800" },
-  4: { text: "終了", color: "bg-red-100 text-red-800" },
+  1: { text: "開催中", color: "bg-blue-100 text-blue-800" },
+  2: { text: "終了", color: "bg-red-100 text-red-800" },
 };

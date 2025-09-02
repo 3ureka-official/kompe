@@ -53,6 +53,7 @@ export default function ContestDetailPage() {
   }, [contestPayment, showCheckoutLoading, isPendingContestPayment]);
 
   if (isPending || isPendingContestPayment) return <div>読み込み中...</div>;
+
   if (!contest) return <div>コンテストが見つかりません</div>;
 
   return (
@@ -77,7 +78,7 @@ export default function ContestDetailPage() {
       <ContestHeader
         contest={contest}
         refetch={refetch}
-        contestPayment={contestPayment}
+        contestPayment={contestPayment || null}
       />
 
       {/* タブ形式のコンテンツ */}
@@ -97,7 +98,7 @@ export default function ContestDetailPage() {
           {/* 参加クリエイター */}
           <ContestCreatorSection
             contest={contest}
-            contestPayment={contestPayment}
+            contestPayment={contestPayment || null}
           />
         </TabsContent>
 
@@ -110,12 +111,10 @@ export default function ContestDetailPage() {
       {/* 支払い確定待ちのオーバーレイ */}
       <PaymentPollingOverlay
         visible={!!showCheckoutLoading}
-        contestId={contestId}
         sessionId={sessionId}
-        latestPayment={contestPayment}
         refetchContestPayment={async () => {
           const r = await refetchContestPayment();
-          return r;
+          return { data: r.data || null };
         }}
         onClose={() => setShowCheckoutLoading(false)}
         onSuccess={() => {

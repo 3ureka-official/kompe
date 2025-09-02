@@ -10,7 +10,8 @@ export async function createCheckoutSession(
 
   if (!session) throw new Error("Unauthorized");
 
-  const token = session?.access_token!;
+  const token = session.access_token;
+  if (!token) throw new Error("No access token");
 
   const res = await fetch(
     `/api/contests/${contestId}/deposit/checkout-session`,
@@ -40,7 +41,8 @@ export async function createContestTransfer(
 
   if (!session) throw new Error("Unauthorized");
 
-  const token = session?.access_token!;
+  const token = session.access_token;
+  if (!token) throw new Error("No access token");
 
   const res = await fetch(`/api/contests/${contestId}/transfers`, {
     method: "POST",

@@ -20,7 +20,7 @@ export const briefSchema = yup.object().shape({
   supply_of_samples: yup
     .string()
     .required("試供品の負担についてを入力してください"),
-  video_conditions: yup.string().required("動画の条件を入力してください"),
+  requirements: yup.string().required("動画の条件を入力してください"),
 });
 
 export const assetFormSchema = yup.object().shape({

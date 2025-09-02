@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/Button";
-import { RichTextEditor } from "@/components/contests/create/ui/RichTextEditer/RichTextEditer";
 import { useContext, useEffect } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { Controller, useForm } from "react-hook-form";
@@ -17,7 +16,7 @@ export function Brief() {
     defaultValues: {
       description: data.description || "",
       supply_of_samples: data.supply_of_samples || "",
-      video_conditions: data.video_conditions || "",
+      requirements: data.requirements || "",
     },
   });
 
@@ -78,7 +77,7 @@ export function Brief() {
       <div className="flex flex-col gap-4 bg-white rounded-lg p-8 shadow-sm">
         <Controller
           control={control}
-          name="video_conditions"
+          name="requirements"
           render={({ field, fieldState }) => (
             <FormField
               label="動画の条件"
