@@ -26,9 +26,7 @@ export function BrandUpdateForm() {
   const [isLogoChanged, setIsLogoChanged] = useState(false);
 
   const getDefaultValues = (brand: Partial<Brand>) => ({
-    email: brand?.email || "",
     name: brand?.name || "",
-    phonenumber: brand?.phonenumber || "",
     website: brand?.website || null,
     description: brand?.description || "",
     tiktok_username: brand?.tiktok_username || null,
@@ -71,9 +69,7 @@ export function BrandUpdateForm() {
           brandId: brand?.id,
           brandData: {
             name: data.name,
-            email: data.email,
-            phonenumber: data.phonenumber,
-            description: data.description,
+            description: data.description || "",
             website: data.website || null,
             tiktok_username: data.tiktok_username || null,
             instagram_url: data.instagram_url || null,
@@ -103,26 +99,10 @@ export function BrandUpdateForm() {
 
         {/* フォーム */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <Controller
-              control={control}
-              name="email"
-              render={({ field, fieldState }) => (
-                <FormField
-                  label="ブランドメールアドレス"
-                  required
-                  error={fieldState.error?.message}
-                >
-                  <Input
-                    type="email"
-                    value={field.value}
-                    onChange={field.onChange}
-                    required
-                  />
-                </FormField>
-              )}
-            />
-
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4 flex flex-col gap-4"
+          >
             <Controller
               control={control}
               name="name"
@@ -182,36 +162,15 @@ export function BrandUpdateForm() {
 
             <Controller
               control={control}
-              name="phonenumber"
-              render={({ field, fieldState }) => (
-                <FormField
-                  label="電話番号"
-                  required
-                  error={fieldState.error?.message}
-                >
-                  <Input
-                    type="tel"
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="ハイフンなしで入力してください"
-                    required
-                  />
-                </FormField>
-              )}
-            />
-
-            <Controller
-              control={control}
               name="description"
               render={({ field, fieldState }) => (
                 <FormField
                   label="ブランド紹介"
-                  required
                   description={`${descriptionCount}/240文字`}
                   error={fieldState.error?.message}
                 >
                   <Textarea
-                    value={field.value}
+                    value={field.value || ""}
                     onChange={field.onChange}
                     placeholder="あなたのブランドについて教えてください"
                     maxLength={240}
@@ -228,7 +187,6 @@ export function BrandUpdateForm() {
               render={({ field, fieldState }) => (
                 <FormField
                   label="ブランドウェブサイト"
-                  required
                   error={fieldState.error?.message}
                 >
                   <Input
