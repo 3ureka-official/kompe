@@ -59,7 +59,7 @@ export function Header() {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 p-1 rounded-full cursor-pointer transition-colors bg-gray-400"
+                  className="flex items-center space-x-2 p-1 w-8 h-8 rounded-full cursor-pointer transition-colors bg-gray-400"
                 >
                   {/* プロフィール画像またはアバター */}
                   <UserRound
