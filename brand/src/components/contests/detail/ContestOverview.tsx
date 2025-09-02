@@ -23,7 +23,7 @@ export function ContestOverview({ contest }: Props) {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
         <h2 className="text-lg font-semibold text-gray-900 mb-6">動画の条件</h2>
-        <div className="text-sm text-gray-500">{contest.video_conditions}</div>
+        <div className="text-sm text-gray-500">{contest.requirements}</div>
       </div>
     </div>
   );

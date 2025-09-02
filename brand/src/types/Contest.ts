@@ -20,7 +20,7 @@ export type Contest = {
 
   description: string;
   supply_of_samples: string;
-  video_conditions: string;
+  requirements: string;
 
   prize_pool: number;
   prize_distribution: number[];
