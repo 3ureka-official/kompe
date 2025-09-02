@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { SelectWithOptions } from "@/components/ui/Select";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { FormField } from "@/components/ui/FormField";
 import { Controller, useForm } from "react-hook-form";
-import { CONTEST_CATEGORIES } from "@/constants/contest.constant";
 import { basicInfoSchema } from "@/schema/createContestSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useEffect, useState } from "react";
@@ -23,10 +21,7 @@ export function BasicInfo() {
     mode: "onSubmit",
     defaultValues: {
       title: data.title || "",
-      category: data.category || "",
       thumbnail_url: data.thumbnail_url || "",
-      application_start_date: data.application_start_date || new Date(),
-      application_end_date: data.application_end_date || new Date(),
       contest_start_date: data.contest_start_date || new Date(),
       contest_end_date: data.contest_end_date || new Date(),
     },
@@ -88,50 +83,24 @@ export function BasicInfo() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className=" gap-8 bg-white rounded-lg p-8 shadow-sm">
-        <div className="flex gap-4">
-          <div className="w-full">
-            <Controller
-              control={control}
-              name="title"
-              render={({ field, fieldState }) => (
-                <FormField
-                  label="コンテストタイトル"
-                  required
-                  error={fieldState.error?.message}
-                >
-                  <Input
-                    {...field}
-                    value={field.value}
-                    placeholder="例：コーディネートコンテスト"
-                  />
-                </FormField>
-              )}
-            />
-          </div>
-
-          <div className="w-full">
-            <Controller
-              control={control}
-              name="category"
-              render={({ field, fieldState }) => (
-                <FormField
-                  label="カテゴリー"
-                  required
-                  error={fieldState.error?.message}
-                >
-                  <SelectWithOptions
-                    value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
-                    options={CONTEST_CATEGORIES}
-                    placeholder="カテゴリーを選択してください"
-                    className="w-full py-2"
-                  />
-                </FormField>
-              )}
-            />
-          </div>
-        </div>
+      <div className="flex flex-col gap-4 bg-white rounded-lg p-8 shadow-sm">
+        <Controller
+          control={control}
+          name="title"
+          render={({ field, fieldState }) => (
+            <FormField
+              label="コンテストタイトル"
+              required
+              error={fieldState.error?.message}
+            >
+              <Input
+                {...field}
+                value={field.value}
+                placeholder="例：コーディネートコンテスト"
+              />
+            </FormField>
+          )}
+        />
 
         <div>
           <Controller
@@ -174,104 +143,52 @@ export function BasicInfo() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-8 bg-white rounded-lg p-8 shadow-sm">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-4">
-            応募期間 <span className="text-red-500">*</span>
-          </label>
+      <div className="flex flex-col bg-white rounded-lg p-8 shadow-sm">
+        <label className="block text-sm font-medium text-gray-700 mb-4">
+          開催期間 <span className="text-red-500">*</span>
+        </label>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-600 mb-2">開始日</label>
-              <Controller
-                control={control}
-                name="application_start_date"
-                render={({ field, fieldState }) => (
-                  <div>
-                    <DateInput
-                      value={field.value}
-                      onChange={(e) => field.onChange(e)}
-                    />
-                    {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-600 mb-2">終了日</label>
-              <Controller
-                control={control}
-                name="application_end_date"
-                render={({ field, fieldState }) => (
-                  <div>
-                    <DateInput
-                      value={field.value}
-                      onChange={(e) => field.onChange(e)}
-                    />
-                    {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm text-gray-600 mb-2">開始日</label>
+            <Controller
+              control={control}
+              name="contest_start_date"
+              render={({ field, fieldState }) => (
+                <div>
+                  <DateInput
+                    value={field.value}
+                    onChange={(e) => field.onChange(e)}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
           </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-4">
-            開催期間 <span className="text-red-500">*</span>
-          </label>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-600 mb-2">開始日</label>
-              <Controller
-                control={control}
-                name="contest_start_date"
-                render={({ field, fieldState }) => (
-                  <div>
-                    <DateInput
-                      value={field.value}
-                      onChange={(e) => field.onChange(e)}
-                    />
-                    {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-gray-600 mb-2">終了日</label>
-              <Controller
-                control={control}
-                name="contest_end_date"
-                render={({ field, fieldState }) => (
-                  <div>
-                    <DateInput
-                      value={field.value}
-                      onChange={(e) => field.onChange(e)}
-                    />
-                    {fieldState.error && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {fieldState.error.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-2">終了日</label>
+            <Controller
+              control={control}
+              name="contest_end_date"
+              render={({ field, fieldState }) => (
+                <div>
+                  <DateInput
+                    value={field.value}
+                    onChange={(e) => field.onChange(e)}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
           </div>
         </div>
 

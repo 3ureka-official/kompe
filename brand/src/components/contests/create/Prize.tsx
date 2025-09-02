@@ -7,6 +7,7 @@ import { prizeSchema } from "@/schema/createContestSchema";
 import { NumberInput } from "@/components/ui/NumberInput";
 import { FormField } from "@/components/ui/FormField";
 import { CONTEST_PLANS } from "@/constants/contest.constant";
+import { Trophy } from "lucide-react";
 
 export function Prize() {
   const { data, back, submit, isUpdating } = useContext(CreateContestContext);
@@ -94,15 +95,9 @@ export function Prize() {
                         field.onChange(Number(option.value));
                       }}
                     />
-                    <span className="flex flex-col items-center w-full justify-center">
-                      <svg
-                        className={`w-6 h-6 ${option.textColor}`}
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" />
-                      </svg>
-                      <span className="block text-sm font-medium text-gray-900">
+                    <span className="flex flex-col items-center w-full justify-center gap-4">
+                      <Trophy className={`w-12 h-12 ${option.textColor}`} />
+                      <span className="block font-medium text-gray-900">
                         {option.label}
                       </span>
                     </span>
