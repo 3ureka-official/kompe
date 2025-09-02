@@ -27,7 +27,6 @@ export const ContestFormDefaultValues = {
   contest_end_date: new Date(new Date().setDate(new Date().getDate() + 7)),
   description: "",
   supply_of_samples: "",
-  video_conditions: "",
   requirements: "",
   prize_pool: 0,
   prize_distribution: [0, 0, 0],
