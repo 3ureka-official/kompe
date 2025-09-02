@@ -35,7 +35,7 @@ export function SignupForm() {
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="flex gap-4">
         <Controller
           control={control}
@@ -79,59 +79,59 @@ export function SignupForm() {
         )}
       />
 
-      <Controller
-        control={control}
-        name="password"
-        render={({ field, fieldState }) => (
-          <FormField
-            label="パスワード"
-            required
-            error={fieldState.error?.message}
-          >
-            <Input
-              type="password"
-              value={field.value}
-              onChange={field.onChange}
-            />
-          </FormField>
-        )}
-      />
+      <div className="flex flex-col">
+        <Controller
+          control={control}
+          name="password"
+          render={({ field, fieldState }) => (
+            <FormField
+              label="パスワード"
+              required
+              error={fieldState.error?.message}
+            >
+              <Input
+                type="password"
+                value={field.value}
+                onChange={field.onChange}
+              />
+            </FormField>
+          )}
+        />
 
-      <Controller
-        control={control}
-        name="confirmPassword"
-        render={({ field, fieldState }) => (
-          <FormField
-            label="パスワード（確認）"
-            required
-            error={fieldState.error?.message}
-          >
-            <Input
-              type="password"
-              value={field.value}
-              onChange={field.onChange}
-            />
-          </FormField>
-        )}
-      />
+        <Controller
+          control={control}
+          name="confirmPassword"
+          render={({ field, fieldState }) => (
+            <FormField
+              label="パスワード（確認）"
+              required
+              error={fieldState.error?.message}
+            >
+              <Input
+                type="password"
+                value={field.value}
+                onChange={field.onChange}
+              />
+            </FormField>
+          )}
+        />
+      </div>
 
       <div className="mt-6">
-        <p className="text-red-500">{error?.message}</p>
+        <p className="text-red-500 text-sm">{error?.message}</p>
 
         <Button
           type="submit"
           disabled={isPending}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50"
+          variant="primary"
+          className="w-full"
         >
           {isPending ? "アカウント作成中..." : "アカウント作成"}
         </Button>
       </div>
 
-      <div className="text-sm">
-        <Link
-          href="/auth/login"
-          className="font-medium text-blue-600 hover:text-blue-500"
-        >
+      <div className="text-sm text-center">
+        <Link href="/auth/login" className="font-medium underline">
           ログイン
         </Link>
       </div>
