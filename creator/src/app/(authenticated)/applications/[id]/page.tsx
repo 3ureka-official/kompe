@@ -8,13 +8,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   CalendarClockIcon,
   ChevronRightIcon,
   CircleDollarSignIcon,
-  CloudUploadIcon,
   FileVideoCameraIcon,
   VideoIcon,
 } from "lucide-react";
@@ -23,6 +21,7 @@ import { ja } from "date-fns/locale";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { auth, signIn } from "@/auth";
+import SubmitVideoForm from "@/components/submitVideoForm";
 
 export default async function ApplicationPage({
   params,
@@ -77,7 +76,9 @@ export default async function ApplicationPage({
               自分の動画
             </h2>
             {application.tiktok_url ? (
-              <p>{application.tiktok_url}</p>
+              <Link href={application.tiktok_url} className="truncate px-2">
+                {application.tiktok_url}
+              </Link>
             ) : (
               <div className="h-[200px] w-full rounded-lg border border-dashed border-foreground/10 flex flex-col items-center justify-center gap-2 text-sm text-foreground/50">
                 <FileVideoCameraIcon className="size-8 stroke-1" />
@@ -166,10 +167,10 @@ export default async function ApplicationPage({
         </div>
       </div>
       <div className="fixed bottom-0 bg-card border rounded-t-2xl w-full p-4">
-        <Button className="w-full">
-          <CloudUploadIcon />
-          動画を提出
-        </Button>
+        <SubmitVideoForm
+          competitionId={competition.id}
+          previousValue={application.tiktok_url}
+        />
       </div>
     </>
   );
