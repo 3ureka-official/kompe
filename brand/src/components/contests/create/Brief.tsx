@@ -48,7 +48,7 @@ export function Brief() {
               <Textarea
                 value={field.value || ""}
                 onChange={(e) => field.onChange(e.target.value)}
-                placeholder=""
+                placeholder="例：コンテストを通じた新作の認知・購入促進を目的としています。"
               />
             </FormField>
           )}
@@ -68,6 +68,7 @@ export function Brief() {
               <Textarea
                 value={field.value || ""}
                 onChange={(e) => field.onChange(e.target.value)}
+                placeholder="例：クリエイター自身が試供品の配送料を負担します。"
               />
             </FormField>
           )}
@@ -87,13 +88,14 @@ export function Brief() {
               <Textarea
                 value={field.value || ""}
                 onChange={(e) => field.onChange(e.target.value)}
+                placeholder="例：新作のパンツを着用したコーデを撮影してください。"
               />
             </FormField>
           )}
         />
       </div>
 
-      <div className="flex justify-end gap-4 pt-6">
+      <div className="flex justify-end gap-4">
         <Button
           type="button"
           variant="secondary"

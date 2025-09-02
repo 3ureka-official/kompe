@@ -22,13 +22,12 @@ export const CONTEST_CATEGORIES = [
 
 export const ContestFormDefaultValues = {
   title: "",
-  category: "",
   thumbnail_url: "",
-  application_start_date: new Date(),
-  application_end_date: new Date(new Date().setDate(new Date().getDate() + 7)),
-  contest_start_date: new Date(new Date().setDate(new Date().getDate() + 8)),
-  contest_end_date: new Date(new Date().setDate(new Date().getDate() + 14)),
+  contest_start_date: new Date(),
+  contest_end_date: new Date(new Date().setDate(new Date().getDate() + 7)),
   description: "",
+  supply_of_samples: "",
+  video_conditions: "",
   requirements: "",
   prize_pool: 0,
   prize_distribution: [0, 0, 0],

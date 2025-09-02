@@ -12,7 +12,15 @@ import { Trophy } from "lucide-react";
 export function Prize() {
   const { data, back, submit, isUpdating } = useContext(CreateContestContext);
 
-  const { control, handleSubmit, watch, setValue, getValues, reset } = useForm({
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    getValues,
+    reset,
+    formState: { isSubmitting },
+  } = useForm({
     resolver: yupResolver(prizeSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -62,6 +70,8 @@ export function Prize() {
   };
 
   const publish = () => {
+    if (isSubmitting || isUpdating) return;
+
     const values = getValues();
     submit(false, values);
   };
@@ -215,7 +225,7 @@ export function Prize() {
         </div>
       </div>
 
-      <div className="flex justify-end gap-4 pt-6">
+      <div className="flex justify-end gap-4 mt-8">
         <Button
           type="button"
           variant="secondary"
@@ -235,9 +245,9 @@ export function Prize() {
         </Button>
 
         <Button
-          type="submit"
+          type="button"
           variant="primary"
-          disabled={isUpdating}
+          disabled={isUpdating || isSubmitting}
           onClick={handleSubmit(publish)}
         >
           {isUpdating ? "保存中..." : "コンテストを作成"}

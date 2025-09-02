@@ -8,10 +8,7 @@ export type Contest = {
   brand_id: string;
   is_draft: boolean;
   title: string;
-  category: string;
   thumbnail_url: string;
-  application_start_date: string | Date;
-  application_end_date: string | Date;
   contest_start_date: string | Date;
   contest_end_date: string | Date;
 
@@ -22,22 +19,22 @@ export type Contest = {
   shares: number;
 
   description: string;
-  requirements: string;
+  supply_of_samples: string;
+  video_conditions: string;
 
   prize_pool: number;
   prize_distribution: number[];
 
   created_at: string | Date;
-  contest_payments: ContestPayment;
+  contest_payments?: ContestPayment;
 };
 
 export interface AssetItem {
   id: string;
   brand_id: string;
   contest_id: string;
-  file_url: string | null;
-  url: string | null;
-  description: string | null;
+  url: string;
+  description: string;
   created_at: string | Date;
 }
 
@@ -45,7 +42,7 @@ export interface InspirationItem {
   id: string;
   brand_id: string;
   contest_id: string;
-  url: string | null;
-  description: string | null;
+  url: string;
+  description: string;
   created_at: string | Date;
 }
