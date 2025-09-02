@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/Button";
-import { RichTextEditor } from "@/components/contests/create/ui/RichTextEditer/RichTextEditer";
 import { useContext, useEffect } from "react";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
 import { Controller, useForm } from "react-hook-form";

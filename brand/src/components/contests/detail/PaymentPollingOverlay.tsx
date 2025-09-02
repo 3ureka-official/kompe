@@ -1,57 +1,48 @@
 import { Button } from "@/components/ui/Button";
 import { AlertCircleIcon, Loader2Icon } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ContestPayment } from "@/types/ContestPayment";
 
 export function PaymentPollingOverlay({
   visible,
-  contestId,
   sessionId,
   refetchContestPayment,
-  latestPayment,
   onClose,
   onSuccess,
   onFailed,
 }: {
   visible: boolean;
-  contestId: string;
   sessionId: string | null;
-  refetchContestPayment: () => Promise<any>;
-  latestPayment: any | undefined;
+  refetchContestPayment: () => Promise<{ data: ContestPayment | null }>;
   onClose: () => void;
   onSuccess: () => void;
   onFailed: () => void;
 }) {
   const INTERVAL_MS = 2000;
-  const TIMEOUT_MS = 2 * 60 * 1000; // 2min でいったん諦めUIに切替
+  const TIMEOUT_MS = 2 * 60 * 1000;
   const startedAtRef = useRef<number | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // 直近のstatus（最新フェッチ済みデータからも見る）
-  const status = useMemo(
-    () => latestPayment?.status as string | undefined,
-    [latestPayment],
-  );
-
   useEffect(() => {
     if (!visible) return;
     let mounted = true;
-    let timer: any;
+    let timer: NodeJS.Timeout | undefined;
 
     const tick = async () => {
       try {
         const res = await refetchContestPayment();
-        const data = (res as any)?.data ?? undefined;
-        const s = data?.status as string | undefined;
+        const data = res?.data;
+        const status = data?.status;
 
         if (!mounted) return;
 
-        if (s === "succeeded") {
+        if (status === "succeeded") {
           onSuccess();
           return;
         }
-        if (s === "failed") {
+        if (status === "failed") {
           setErrorMsg(
             "決済に失敗しました。カード会社の認証や残高をご確認ください。",
           );
@@ -62,12 +53,12 @@ export function PaymentPollingOverlay({
         // 進行中（pending/processing/未作成）
         const now = Date.now();
         if (startedAtRef.current == null) startedAtRef.current = now;
-        const e = now - startedAtRef.current;
-        setElapsed(e);
-        if (e > TIMEOUT_MS) {
+        const elapsedTime = now - startedAtRef.current;
+        setElapsed(elapsedTime);
+        if (elapsedTime > TIMEOUT_MS) {
           setTimedOut(true);
         }
-      } catch (e: any) {
+      } catch {
         // フェッチエラー時も次回で回復する可能性があるので継続
       } finally {
         if (mounted) {
@@ -83,7 +74,7 @@ export function PaymentPollingOverlay({
       mounted = false;
       if (timer) clearTimeout(timer);
     };
-  }, [visible, refetchContestPayment, onSuccess, onFailed]);
+  }, [visible, refetchContestPayment, onSuccess, onFailed, TIMEOUT_MS]);
 
   if (!visible) return null;
 

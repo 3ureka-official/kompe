@@ -54,7 +54,6 @@ export const createAssets = async (
     id: uuidv4(),
     contest_id: contestId,
     brand_id: brandId,
-    file_url: assetData.file_url,
     url: assetData.url,
     description: assetData.description,
   }));

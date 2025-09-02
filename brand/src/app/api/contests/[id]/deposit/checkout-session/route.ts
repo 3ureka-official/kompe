@@ -79,12 +79,16 @@ export async function POST(
       );
 
     return NextResponse.json({ url: session.url }, { status: 200 });
-  } catch (e: any) {
-    console.error(e);
+  } catch (error: unknown) {
+    console.error(error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    const errorName = error instanceof Error ? error.name : "";
+
     const msg =
-      e?.name === "ValidationError"
+      errorName === "ValidationError"
         ? "invalid_body"
-        : e?.message || "internal_error";
+        : errorMessage || "internal_error";
     const status = msg === "invalid_body" ? 400 : 500;
     return NextResponse.json({ error: msg }, { status });
   }

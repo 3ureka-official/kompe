@@ -9,7 +9,7 @@ import { ContestPayment } from "@/types/ContestPayment";
 type Props = {
   contest: Contest;
   refetch: () => void;
-  contestPayment: ContestPayment;
+  contestPayment: ContestPayment | null;
 };
 
 export function ContestHeader({ contest, refetch, contestPayment }: Props) {

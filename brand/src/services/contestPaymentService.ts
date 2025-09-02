@@ -35,14 +35,18 @@ export const getContestPayment = async (
   }
 };
 
-export async function upsertPendingFromSession(payload: ContestPayment) {
+export async function upsertPendingFromSession(
+  payload: Omit<ContestPayment, "id" | "created_at">,
+) {
   const { error } = await supabaseAdmin()
     .from("contest_payments")
     .upsert(payload, { onConflict: "stripe_checkout_session_id" });
   if (error) throw error;
 }
 
-export async function upsertSucceededFromPI(payload: ContestPayment) {
+export async function upsertSucceededFromPI(
+  payload: Omit<ContestPayment, "id" | "created_at">,
+) {
   const { error } = await supabaseAdmin()
     .from("contest_payments")
     .upsert(payload, { onConflict: "stripe_payment_intent_id" });

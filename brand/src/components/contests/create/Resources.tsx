@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,14 +13,11 @@ import {
 import { AssetForm } from "@/components/contests/create/AssetForm";
 import * as yup from "yup";
 import { InspirationForm } from "./InspirationForm";
-import { useUploadFile } from "@/hooks/storage/useUploadFile";
 import { v4 as uuidv4 } from "uuid";
-import Image from "next/image";
-import { useDeleteFiles } from "@/hooks/storage/useDeleteFiles";
 import { Trash2, Link } from "lucide-react";
 
 export function Resources() {
-  const { next, back, data, contestId, submit, isUpdating } =
+  const { next, back, data, submit, isUpdating } =
     useContext(CreateContestContext);
 
   const { handleSubmit, getValues, setValue, watch, reset } = useForm({
@@ -37,11 +34,6 @@ export function Resources() {
       reset({ ...data });
     }
   }, [data, reset]);
-
-  const { mutate: uploadFile } = useUploadFile();
-  const { mutate: deleteFile } = useDeleteFiles();
-
-  const [assetLoading, setAssetLoading] = useState(false);
 
   const watchedAssets = watch("assets");
   const watchedInspirations = watch("inspirations");
@@ -197,27 +189,27 @@ export function Resources() {
           type="button"
           variant="secondary"
           onClick={draft}
-          disabled={assetLoading || isUpdating}
+          disabled={isUpdating}
         >
-          {assetLoading || isUpdating ? "保存中..." : "下書き保存"}
+          {isUpdating ? "保存中..." : "下書き保存"}
         </Button>
 
         <Button
           type="button"
           variant="secondary"
           onClick={() => back(getValues())}
-          disabled={assetLoading || isUpdating}
+          disabled={isUpdating}
         >
-          {assetLoading || isUpdating ? "保存中..." : "前へ戻る"}
+          {isUpdating ? "保存中..." : "前へ戻る"}
         </Button>
 
         <Button
           type="button"
           variant="primary"
           onClick={handleSubmit(next)}
-          disabled={assetLoading || isUpdating}
+          disabled={isUpdating}
         >
-          {assetLoading || isUpdating ? "保存中..." : "次へ進む"}
+          {isUpdating ? "保存中..." : "次へ進む"}
         </Button>
       </div>
     </div>
