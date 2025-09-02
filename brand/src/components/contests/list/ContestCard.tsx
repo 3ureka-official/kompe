@@ -195,24 +195,26 @@ export const ContestCard = ({ contest, refetch }: Props) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="danger"
-                size="sm"
-                className="cursor-pointer"
-                onClick={handleDeleteContest}
-              >
-                <TrashIcon className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
-                onClick={handleEditContest}
-              >
-                編集する
-              </Button>
-            </div>
+            {!contest.contest_payments && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="danger"
+                  size="sm"
+                  className="cursor-pointer"
+                  onClick={handleDeleteContest}
+                >
+                  <TrashIcon className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-gray-100 border-gray-500 text-gray-600 cursor-pointer"
+                  onClick={handleEditContest}
+                >
+                  編集する
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { ContestPayment } from "./ContestPayment";
+
 /**
  * コンテスト関連の型定義
  */
@@ -26,6 +28,7 @@ export type Contest = {
   prize_distribution: number[];
 
   created_at: string | Date;
+  contest_payments: ContestPayment;
 };
 
 export interface AssetItem {

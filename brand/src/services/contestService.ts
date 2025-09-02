@@ -56,7 +56,9 @@ export const createContest = async (
 
 export const getAllContests = async (): Promise<Contest[]> => {
   try {
-    const { data, error } = await supabase.from("contests").select("*");
+    const { data, error } = await supabase
+      .from("contests")
+      .select("*, contest_payments(*)");
 
     if (error) {
       throw new Error(error.message);
