@@ -82,9 +82,9 @@ export const ContestCard = ({ contest, refetch }: Props) => {
           <div className="flex-1">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="flex flex-col gap-2">
-                <span className="text-gray-500">応募期間</span>
+                <span className="text-gray-500">開催期間</span>
                 <p className="text-base text-gray-900">
-                  {`${formatDate(contest.application_start_date, "PPP")} 〜 ${formatDate(contest.application_end_date, "PPP")}`}
+                  {`${formatDate(contest.contest_start_date, "PPP")} 〜 ${formatDate(contest.contest_end_date, "PPP")}`}
                 </p>
               </div>
               <div className="flex flex-col gap-2">
