@@ -89,10 +89,9 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
       "id" | "created_at" | "brand_id" | "contest_id"
     >[] =
       mergedData.assets?.map((asset) => ({
-        id: asset.id || null,
-        file_url: asset.file_url || null,
-        url: asset.url || null,
-        description: asset.description || null,
+        id: asset.id || "",
+        url: asset.url || "",
+        description: asset.description || "",
       })) || [];
 
     const inspirationData: Omit<
@@ -100,18 +99,16 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
       "id" | "created_at" | "brand_id" | "contest_id"
     >[] =
       mergedData.inspirations?.map((inspiration) => ({
-        id: inspiration.id || null,
-        url: inspiration.url || null,
-        description: inspiration.description || null,
+        id: inspiration.id || "",
+        url: inspiration.url || "",
+        description: inspiration.description || "",
       })) || [];
 
     const completeData = {
       title: mergedData.title || "",
-      category: mergedData.category || "",
       description: mergedData.description || "",
-      requirements: mergedData.requirements || "",
-      application_start_date: mergedData.application_start_date || "",
-      application_end_date: mergedData.application_end_date || "",
+      supply_of_samples: mergedData.supply_of_samples || "",
+      video_conditions: mergedData.video_conditions || "",
       contest_start_date: mergedData.contest_start_date || "",
       contest_end_date: mergedData.contest_end_date || "",
       prize_pool: mergedData.prize_pool || 0,
@@ -183,7 +180,6 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
     if (getAssetsQuery.data) {
       const assets = getAssetsQuery.data.map((asset) => ({
         id: asset.id,
-        file_url: asset.file_url || "",
         url: asset.url || "",
         description: asset.description || "",
       }));
