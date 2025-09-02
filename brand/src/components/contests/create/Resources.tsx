@@ -103,11 +103,11 @@ export function Resources() {
         <AssetForm addAsset={addAsset} />
 
         {watchedAssets && watchedAssets.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
             {watchedAssets.map((asset, idx) => (
               <div
                 key={idx}
-                className="flex flex-col justify-between border rounded-lg p-2 bg-gray-50 relative"
+                className="flex flex-col justify-between border rounded-lg p-4 bg-gray-50 gap-4 relative"
               >
                 {/* 削除ボタン */}
                 <Button
@@ -121,22 +121,22 @@ export function Resources() {
 
                 {/* URL */}
                 {asset.url && (
-                  <div className="text-sm rounded h-full flex items-center gap-2 pr-4">
-                    <Link className="w-4 h-4 flex-shrink-0" />
+                  <div className="text-sm rounded h-30 w-30 bg-gray-100 border border-gray-200 flex items-center justify-center gap-2">
                     <a
                       href={asset.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm underline text-blue-500 whitespace-nowrap overflow-hidden text-ellipsis"
                     >
-                      {asset.url}
+                      <Link className="w-10 h-10 flex-shrink-0" />
                     </a>
                   </div>
                 )}
 
                 {/* 説明 */}
                 {asset.description && (
-                  <div className="text-sm rounded">{asset.description}</div>
+                  <div className="text-sm h-10 rounded overflow-hidden line-clamp-2">
+                    {asset.description}
+                  </div>
                 )}
               </div>
             ))}
@@ -156,7 +156,7 @@ export function Resources() {
             {watchedInspirations.map((inspiration, idx) => (
               <div
                 key={idx}
-                className="flex flex-col justify-between border rounded-lg p-2 bg-gray-50 relative"
+                className="flex flex-col justify-between border rounded-lg p-4 bg-gray-50 gap-4 relative"
               >
                 {/* 削除ボタン */}
                 <Button
@@ -169,21 +169,19 @@ export function Resources() {
                 </Button>
 
                 {inspiration.url && (
-                  <div className="text-sm break-all rounded h-full flex items-center gap-2 pr-4">
-                    <Link className="w-4 h-4 flex-shrink-0" />
+                  <div className="text-sm break-all rounded h-30 w-30 bg-gray-100 border border-gray-200 flex items-center justify-center gap-2">
                     <a
                       href={inspiration.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm underline text-blue-500 whitespace-nowrap overflow-hidden text-ellipsis"
                     >
-                      {inspiration.url}
+                      <Link className="w-10 h-10 flex-shrink-0" />
                     </a>
                   </div>
                 )}
 
                 {inspiration.description && (
-                  <div className="text-sm rounded">
+                  <div className="text-sm h-10 rounded overflow-hidden line-clamp-2">
                     {inspiration.description}
                   </div>
                 )}
@@ -194,7 +192,7 @@ export function Resources() {
       </div>
 
       {/* ナビゲーションボタン */}
-      <div className="flex justify-end gap-4 pt-6">
+      <div className="flex justify-end gap-4">
         <Button
           type="button"
           variant="secondary"

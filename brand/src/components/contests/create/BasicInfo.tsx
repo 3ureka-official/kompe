@@ -191,26 +191,26 @@ export function BasicInfo() {
             />
           </div>
         </div>
+      </div>
 
-        <div className="flex justify-end gap-4 pt-6">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={draft}
-            disabled={uploadingThumbnail || isUpdating}
-          >
-            {uploadingThumbnail || isUpdating ? "保存中..." : "下書き保存"}
-          </Button>
+      <div className="flex justify-end gap-4">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={draft}
+          disabled={uploadingThumbnail || isUpdating}
+        >
+          {uploadingThumbnail || isUpdating ? "保存中..." : "下書き保存"}
+        </Button>
 
-          <Button
-            type="submit"
-            variant="primary"
-            onClick={handleSubmit(next)}
-            disabled={uploadingThumbnail || isUpdating}
-          >
-            {uploadingThumbnail || isUpdating ? "保存中..." : "次へ進む"}
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          variant="primary"
+          onClick={handleSubmit(next)}
+          disabled={uploadingThumbnail || isUpdating}
+        >
+          {uploadingThumbnail || isUpdating ? "保存中..." : "次へ進む"}
+        </Button>
       </div>
     </div>
   );

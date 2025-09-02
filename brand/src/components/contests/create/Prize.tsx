@@ -215,7 +215,7 @@ export function Prize() {
         </div>
       </div>
 
-      <div className="flex justify-end gap-4 pt-6">
+      <div className="flex justify-end gap-4">
         <Button
           type="button"
           variant="secondary"
