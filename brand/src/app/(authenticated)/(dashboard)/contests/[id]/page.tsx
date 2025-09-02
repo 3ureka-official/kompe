@@ -53,6 +53,7 @@ export default function ContestDetailPage() {
   }, [contestPayment, showCheckoutLoading, isPendingContestPayment]);
 
   if (isPending || isPendingContestPayment) return <div>読み込み中...</div>;
+
   if (!contest) return <div>コンテストが見つかりません</div>;
 
   return (

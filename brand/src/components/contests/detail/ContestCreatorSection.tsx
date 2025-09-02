@@ -180,7 +180,7 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
                   </TableCell>
                   <TableCell className="py-4 whitespace-nowrap text-sm font-medium text-center">
                     <div className="flex items-center justify-end gap-2 pr-4">
-                      {new Date(contest.application_end_date) < new Date() &&
+                      {new Date(contest.contest_end_date) < new Date() &&
                         contestPayment.status === "succeeded" &&
                         Number(contest.prize_distribution[index]) > 0 && (
                           <Button
