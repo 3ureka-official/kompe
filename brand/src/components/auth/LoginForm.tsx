@@ -24,7 +24,6 @@ export function LoginForm() {
 
   const onSubmit = () => {
     const data = getValues();
-    console.log(data);
     signIn({ email: data.email, password: data.password });
   };
 
@@ -70,33 +69,20 @@ export function LoginForm() {
         />
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="text-sm">
-          <Link
-            href="/auth/forgot-password"
-            className="font-medium text-blue-600 hover:text-blue-500"
-          >
-            パスワードを忘れた方
-          </Link>
-        </div>
-      </div>
-
       <div>
-        <p className="text-red-500">{error?.message}</p>
+        <p className="text-red-500 text-sm">{error?.message}</p>
 
         <Button
           type="submit"
           disabled={isPending}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50"
+          variant="primary"
+          className="w-full"
         >
           {isPending ? "ログイン中..." : "ログイン"}
         </Button>
       </div>
-      <div className="text-sm">
-        <Link
-          href="/auth/signup"
-          className="font-medium text-blue-600 hover:text-blue-500"
-        >
+      <div className="text-sm text-center">
+        <Link href="/auth/signup" className="font-medium underline">
           アカウントを作成
         </Link>
       </div>
