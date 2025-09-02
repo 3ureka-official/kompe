@@ -17,7 +17,7 @@ import { useUploadFile } from "@/hooks/storage/useUploadFile";
 import { v4 as uuidv4 } from "uuid";
 import Image from "next/image";
 import { useDeleteFiles } from "@/hooks/storage/useDeleteFiles";
-import { Trash2 } from "lucide-react";
+import { Trash2, Link } from "lucide-react";
 
 export function Resources() {
   const { next, back, data, contestId, submit, isUpdating } =
@@ -47,58 +47,21 @@ export function Resources() {
   const watchedInspirations = watch("inspirations");
 
   const addAsset = (asset: yup.InferType<typeof assetFormSchema>) => {
-    const assetId = uuidv4();
-    if (asset.file) {
-      setAssetLoading(true);
-
-      uploadFile(
-        {
-          bucket: "contests",
-          path: `${contestId}/assets/${assetId}`,
-          file: asset.file,
-        },
-        {
-          onSuccess: (data: string) => {
-            const assets = getValues("assets") || [];
-            assets.push({
-              id: assetId,
-              file_url: data,
-              url: "",
-              description: asset.description,
-            });
-            setValue("assets", assets);
-          },
-        },
-      );
-      setAssetLoading(false);
-    } else {
-      const assets = getValues("assets") || [];
-      assets.push({
-        id: assetId,
-        file_url: undefined,
-        url: asset.url,
-        description: asset.description,
-      });
-      setValue("assets", assets);
-    }
+    const assets = getValues("assets") || [];
+    assets.push({
+      id: uuidv4(),
+      url: asset.url,
+      description: asset.description,
+    });
+    setValue("assets", assets);
   };
 
   const removeAsset = (idx: number) => {
     const asset = getValues("assets")?.[idx];
     if (!asset) return;
 
-    deleteFile(
-      {
-        bucket: "contests",
-        paths: [`${contestId}/assets/${asset.id}`],
-      },
-      {
-        onSuccess: () => {
-          const assets = getValues("assets")?.filter((_, i) => i !== idx);
-          setValue("assets", assets);
-        },
-      },
-    );
+    const assets = getValues("assets")?.filter((_, i) => i !== idx);
+    setValue("assets", assets);
   };
 
   const addInspiration = (
@@ -131,7 +94,12 @@ export function Resources() {
     <div className="">
       {/* Assets セクション */}
       <div className="mb-8 bg-white rounded-lg p-8 ">
-        <h3 className="text-lg font-medium text-gray-900 mb-6">画像素材</h3>
+        <div className="flex flex-col gap-2 mb-4">
+          <h3 className="text-lg font-medium text-gray-900">動画素材</h3>
+          <p className="text-sm text-gray-500">
+            Google Drive の URL を入力してください
+          </p>
+        </div>
         <AssetForm addAsset={addAsset} />
 
         {watchedAssets && watchedAssets.length > 0 && (
@@ -139,7 +107,7 @@ export function Resources() {
             {watchedAssets.map((asset, idx) => (
               <div
                 key={idx}
-                className="flex flex-col justify-between border rounded-lg p-4 bg-gray-50 relative"
+                className="flex flex-col justify-between border rounded-lg p-2 bg-gray-50 relative"
               >
                 {/* 削除ボタン */}
                 <Button
@@ -151,27 +119,24 @@ export function Resources() {
                   <Trash2 className="w-4 h-4" />
                 </Button>
 
-                {/* ファイルプレビュー */}
-                {asset.file_url && (
-                  <Image
-                    src={asset.file_url}
-                    alt={`asset - ${idx + 1}`}
-                    width={100}
-                    height={100}
-                    className="w-32 h-20 object-cover rounded border"
-                  />
-                )}
-
                 {/* URL */}
                 {asset.url && (
-                  <div className="text-sm w-32 h-20 break-all p-2 rounded h-full flex items-center">
-                    {asset.url}
+                  <div className="text-sm rounded h-full flex items-center gap-2 pr-4">
+                    <Link className="w-4 h-4 flex-shrink-0" />
+                    <a
+                      href={asset.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm underline text-blue-500 whitespace-nowrap overflow-hidden text-ellipsis"
+                    >
+                      {asset.url}
+                    </a>
                   </div>
                 )}
 
                 {/* 説明 */}
                 {asset.description && (
-                  <div className="text-sm p-2 rounded">{asset.description}</div>
+                  <div className="text-sm rounded">{asset.description}</div>
                 )}
               </div>
             ))}
@@ -191,7 +156,7 @@ export function Resources() {
             {watchedInspirations.map((inspiration, idx) => (
               <div
                 key={idx}
-                className="flex flex-col justify-between border rounded-lg p-4 bg-gray-50 relative"
+                className="flex flex-col justify-between border rounded-lg p-2 bg-gray-50 relative"
               >
                 {/* 削除ボタン */}
                 <Button
@@ -204,13 +169,21 @@ export function Resources() {
                 </Button>
 
                 {inspiration.url && (
-                  <div className="text-sm break-all p-2 rounded h-full flex items-center">
-                    {inspiration.url}
+                  <div className="text-sm break-all rounded h-full flex items-center gap-2 pr-4">
+                    <Link className="w-4 h-4 flex-shrink-0" />
+                    <a
+                      href={inspiration.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm underline text-blue-500 whitespace-nowrap overflow-hidden text-ellipsis"
+                    >
+                      {inspiration.url}
+                    </a>
                   </div>
                 )}
 
                 {inspiration.description && (
-                  <div className="text-sm p-2 rounded">
+                  <div className="text-sm rounded">
                     {inspiration.description}
                   </div>
                 )}

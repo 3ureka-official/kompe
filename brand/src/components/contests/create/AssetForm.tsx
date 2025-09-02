@@ -22,7 +22,6 @@ export function AssetForm({ addAsset }: Props) {
     resolver: yupResolver(assetFormSchema),
     mode: "onSubmit",
     defaultValues: {
-      file: file,
       url: "",
       description: "",
     },
@@ -37,57 +36,8 @@ export function AssetForm({ addAsset }: Props) {
     },
   );
 
-  useEffect(() => {
-    setValue("file", file);
-  }, [file, setValue]);
-
   return (
     <div className="flex flex-col">
-      <Controller
-        control={control}
-        name="file"
-        render={({ fieldState }) => (
-          <FormField label="画像" error={fieldState.error?.message}>
-            <AssetFileUpload
-              onFileChange={(file: File | null) => {
-                setFile(file);
-              }}
-              onPreviewChange={(url: string | null) => {
-                setPreview(url);
-              }}
-              accept="image/*"
-              maxSize={5 * 1024 * 1024}
-              className="w-full"
-            />
-          </FormField>
-        )}
-      />
-      {preview !== null && (
-        <div className="flex justify-between items-center">
-          <Image
-            src={preview || ""}
-            alt="file"
-            width={160}
-            height={100}
-            className="w-[160px] h-[100px] object-cover"
-          />
-          <Button
-            type="button"
-            variant="danger"
-            onClick={() => {
-              setPreview(null);
-              setFile(null);
-            }}
-          >
-            削除
-          </Button>
-        </div>
-      )}
-
-      <div className="flex items-center justify-center my-2">
-        <span className="text-gray-500">または</span>
-      </div>
-
       <Controller
         control={control}
         name="url"

@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { briefSchema } from "@/schema/createContestSchema";
 import { FormField } from "@/components/ui/FormField";
+import { Textarea } from "@/components/ui/Textarea";
 
 export function Brief() {
   const { data, next, back, submit, isUpdating, updateData } =
@@ -15,7 +16,8 @@ export function Brief() {
     mode: "onSubmit",
     defaultValues: {
       description: data.description || "",
-      requirements: data.requirements || "",
+      supply_of_samples: data.supply_of_samples || "",
+      video_conditions: data.video_conditions || "",
     },
   });
 
@@ -32,48 +34,63 @@ export function Brief() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-8">
       <div className="bg-white rounded-lg p-8 shadow-sm">
-        {/* Project Overview */}
-        <div className="mb-8">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            プロジェクト概要
-          </h3>
+        <Controller
+          control={control}
+          name="description"
+          render={({ field, fieldState }) => (
+            <FormField
+              label="コンテスト概要"
+              required
+              error={fieldState.error?.message}
+            >
+              <Textarea
+                value={field.value || ""}
+                onChange={(e) => field.onChange(e.target.value)}
+                placeholder=""
+              />
+            </FormField>
+          )}
+        />
+      </div>
 
-          <Controller
-            control={control}
-            name="description"
-            render={({ field, fieldState }) => (
-              <FormField
-                label="プロジェクト概要"
-                error={fieldState.error?.message}
-              >
-                <RichTextEditor
-                  value={field.value || ""}
-                  onChange={(md) => field.onChange(md)}
-                />
-              </FormField>
-            )}
-          />
-        </div>
+      <div className="flex flex-col gap-4 bg-white rounded-lg p-8 shadow-sm">
+        <Controller
+          control={control}
+          name="supply_of_samples"
+          render={({ field, fieldState }) => (
+            <FormField
+              label="試供品の負担について"
+              required
+              error={fieldState.error?.message}
+            >
+              <Textarea
+                value={field.value || ""}
+                onChange={(e) => field.onChange(e.target.value)}
+              />
+            </FormField>
+          )}
+        />
+      </div>
 
-        {/* Set rules */}
-        <div className="mb-8">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">ルール設定</h3>
-
-          <Controller
-            control={control}
-            name="requirements"
-            render={({ field, fieldState }) => (
-              <FormField label="ルール設定" error={fieldState.error?.message}>
-                <RichTextEditor
-                  value={field.value || ""}
-                  onChange={(md) => field.onChange(md)}
-                />
-              </FormField>
-            )}
-          />
-        </div>
+      <div className="flex flex-col gap-4 bg-white rounded-lg p-8 shadow-sm">
+        <Controller
+          control={control}
+          name="video_conditions"
+          render={({ field, fieldState }) => (
+            <FormField
+              label="動画の条件"
+              required
+              error={fieldState.error?.message}
+            >
+              <Textarea
+                value={field.value || ""}
+                onChange={(e) => field.onChange(e.target.value)}
+              />
+            </FormField>
+          )}
+        />
       </div>
 
       <div className="flex justify-end gap-4 pt-6">
