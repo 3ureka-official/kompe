@@ -76,13 +76,6 @@ export function Header() {
                       <div className="px-4 py-2 text-sm text-gray-500 border-b">
                         {profile?.email}
                       </div>
-                      <Link
-                        href="/settings"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        設定
-                      </Link>
                       <button
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
