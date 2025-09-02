@@ -91,7 +91,7 @@ export function Resources() {
   };
 
   return (
-    <div className="">
+    <div>
       {/* Assets セクション */}
       <div className="mb-8 bg-white rounded-lg p-8 ">
         <div className="flex flex-col gap-2 mb-4">
