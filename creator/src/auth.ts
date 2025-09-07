@@ -3,6 +3,9 @@ import TikTok from "next-auth/providers/tiktok";
 import prisma from "./lib/prisma";
 import type { JWT } from "next-auth/jwt";
 
+const AUTH_TIKTOK_ID = process.env.AUTH_TIKTOK_ID!;
+const AUTH_TIKTOK_SECRET = process.env.AUTH_TIKTOK_SECRET!;
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
@@ -27,8 +30,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   providers: [
     TikTok({
-      clientId: process.env.AUTH_TIKTOK_ID!,
-      clientSecret: process.env.AUTH_TIKTOK_SECRET!,
+      clientId: AUTH_TIKTOK_ID,
+      clientSecret: AUTH_TIKTOK_SECRET,
+      authorization: {
+        url: "https://www.tiktok.com/v2/auth/authorize",
+        params: {
+          client_key: AUTH_TIKTOK_ID,
+          scope: "user.info.profile",
+        },
+      },
       userinfo:
         "https://open.tiktokapis.com/v2/user/info/?fields=union_id,avatar_url,display_name,username",
       profile: async (profile) => {
