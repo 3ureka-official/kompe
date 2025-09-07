@@ -46,7 +46,7 @@ export default async function Dashboard() {
   });
   const tiktokUser = userInfo.data.user;
   return (
-    <div className="w-full grid gap-8 p-8">
+    <div className="w-full grid gap-4 p-4">
       <Card className="bg-black text-white">
         <CardHeader>
           <CardTitle className="text-sm font-bold">
@@ -100,7 +100,7 @@ export default async function Dashboard() {
             {applications.length}
           </CardAction>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4">
           {applications.length === 0 && (
             <p className="text-center text-muted-foreground text-sm">
               まだコンペティションに参加していません。
@@ -111,8 +111,8 @@ export default async function Dashboard() {
               {applications.map((app) => {
                 const competition = app.contests;
                 return (
-                  <Link href={`/competitions/${competition.id}`}>
-                    <Card className="h-[100px] py-4">
+                  <Link href={`/competitions/${competition.id}`} key={app.id}>
+                    <Card className="h-[100px] py-4 bg-secondary shadow-none">
                       <CardContent className="h-full px-4">
                         <div className="h-full flex items-center gap-4">
                           <Image

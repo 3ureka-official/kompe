@@ -48,8 +48,8 @@ export default async function ApplicationPage({
   const competition = application.contests;
 
   return (
-    <>
-      <div className="grid gap-8 p-4 pb-16">
+    <div className="flex flex-col max-h-full">
+      <div className="grow min-h-0 overflow-auto grid gap-8 p-4 pb-16">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -166,12 +166,12 @@ export default async function ApplicationPage({
           </section>
         </div>
       </div>
-      <div className="fixed bottom-0 bg-card border rounded-t-2xl w-full p-4">
+      <div className="bg-card border border-b-0 rounded-t-2xl w-full p-4">
         <SubmitVideoForm
           competitionId={competition.id}
           previousValue={application.tiktok_url}
         />
       </div>
-    </>
+    </div>
   );
 }

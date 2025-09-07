@@ -6,6 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { auth } from "@/auth";
 import SignInButton from "@/components/signInButton";
 import Link from "next/link";
+import {
+  BellIcon,
+  CircleDollarSignIcon,
+  CrownIcon,
+  UserIcon,
+} from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,28 +39,56 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <nav className="w-full flex items-center justify-between gap-4 px-6 py-8">
-          <Link href="/">
-            <Image
-              src="/logo-colored.svg"
-              alt="Kompe logo"
-              width={144}
-              height={38}
-              priority
-            />
-          </Link>
-          {session ? (
-            <Avatar>
-              <AvatarImage src={session.user?.avatar_url || undefined} />
-              <AvatarFallback>
-                {session.user?.display_name?.split("", 2)}
-              </AvatarFallback>
-            </Avatar>
-          ) : (
-            <SignInButton variant="minimal" />
-          )}
-        </nav>
-        {children}
+        <div className="flex flex-col h-screen">
+          <nav className="w-full flex items-center justify-between gap-4 px-6 py-8">
+            <Link href="/">
+              <Image
+                src="/logo-colored.svg"
+                alt="Kompe logo"
+                width={144}
+                height={38}
+                priority
+              />
+            </Link>
+            {session ? (
+              <Avatar>
+                <AvatarImage src={session.user?.avatar_url || undefined} />
+                <AvatarFallback>
+                  {session.user?.display_name?.split("", 2)}
+                </AvatarFallback>
+              </Avatar>
+            ) : (
+              <SignInButton variant="minimal" />
+            )}
+          </nav>
+          <main className="grow min-h-0 overflow-auto relative">
+            {children}
+          </main>
+          <nav className="bg-card border rounded-t-2xl w-full p-4">
+            <div className="grid grid-cols-4 text-center">
+              <Link href="/competitions">
+                <div className="flex flex-col items-center text-gray-500">
+                  <CrownIcon className="size-4 stroke-2" />
+                  <p className="text-xs font-semibold">コンペ</p>
+                </div>
+              </Link>
+              <div className="flex flex-col items-center text-gray-500">
+                <CircleDollarSignIcon className="size-4 stroke-2" />
+                <p className="text-xs font-semibold">賞金</p>
+              </div>
+              <div className="flex flex-col items-center text-gray-500">
+                <BellIcon className="size-4 stroke-2" />
+                <p className="text-xs font-semibold">お知らせ</p>
+              </div>
+              <Link href="/dashboard">
+                <div className="flex flex-col items-center text-gray-500">
+                  <UserIcon className="size-4 stroke-2" />
+                  <p className="text-xs font-semibold">マイページ</p>
+                </div>
+              </Link>
+            </div>
+          </nav>
+        </div>
       </body>
     </html>
   );
