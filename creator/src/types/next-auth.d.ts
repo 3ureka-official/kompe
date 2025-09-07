@@ -14,6 +14,7 @@ declare module "next-auth" {
       avatar_url: string;
       username: string;
     };
+    accessToken?: string;
   }
 }
 declare module "next-auth/jwt" {
