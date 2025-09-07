@@ -4,6 +4,7 @@ import {
   TikTokUserInfoResponse,
   TikTokUserInfoResponseSchema,
   UserInfoFields,
+  UserInfoFieldsSchema,
   GetUserInfoParamsSchema,
 } from "@/models/tiktok/user";
 import {
@@ -70,13 +71,17 @@ export class TikTokAPIClient {
    * @returns Promise<TikTokUserInfoResponse>
    */
   async getUserInfo(
-    fields: UserInfoFields[]
+    fields?: UserInfoFields[]
   ): Promise<TikTokUserInfoResponse> {
     try {
       // Get access token from NextAuth session
       const session = await auth();
       if (!session?.accessToken) {
         throw new TikTokAPIError("No access token available. User must be authenticated.");
+      }
+
+      if (fields === undefined) {
+        fields = UserInfoFieldsSchema.options as UserInfoFields[];
       }
 
       // Validate input parameters
