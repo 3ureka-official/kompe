@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
+import { auth } from "@/auth";
 import {
   TikTokUserInfoResponse,
   TikTokUserInfoResponseSchema,
@@ -64,15 +65,20 @@ export class TikTokAPIClient {
 
   /**
    * Get user information from TikTok API
-   * @param accessToken - OAuth access token
+   * Automatically retrieves access token from NextAuth session
    * @param fields - Array of fields to request
    * @returns Promise<TikTokUserInfoResponse>
    */
   async getUserInfo(
-    accessToken: string,
     fields: UserInfoFields[]
   ): Promise<TikTokUserInfoResponse> {
     try {
+      // Get access token from NextAuth session
+      const session = await auth();
+      if (!session?.accessToken) {
+        throw new TikTokAPIError("No access token available. User must be authenticated.");
+      }
+
       // Validate input parameters
       const validatedParams = GetUserInfoParamsSchema.parse({ fields });
 
@@ -85,7 +91,7 @@ export class TikTokAPIClient {
           fields: fieldsQuery,
         },
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${session.accessToken}`,
         },
       });
 
@@ -103,17 +109,22 @@ export class TikTokAPIClient {
 
   /**
    * Query videos from TikTok API
-   * @param accessToken - OAuth access token
+   * Automatically retrieves access token from NextAuth session
    * @param videoIds - Array of video IDs (max 20)
    * @param fields - Array of fields to request
    * @returns Promise<TikTokVideoQueryResponse>
    */
   async queryVideos(
-    accessToken: string,
     videoIds: string[],
     fields: VideoFields[]
   ): Promise<TikTokVideoQueryResponse> {
     try {
+      // Get access token from NextAuth session
+      const session = await auth();
+      if (!session?.accessToken) {
+        throw new TikTokAPIError("No access token available. User must be authenticated.");
+      }
+
       // Validate and create request body
       const requestBody: VideoQueryRequest = createVideoQueryRequest(videoIds);
 
@@ -126,7 +137,7 @@ export class TikTokAPIClient {
           fields: fieldsQuery,
         },
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${session.accessToken}`,
           "Content-Type": "application/json",
         },
       });

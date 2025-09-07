@@ -8,9 +8,9 @@ The implementation provides a complete solution for integrating with TikTok's Di
 
 - **Type-safe API models** with Zod validation
 - **API client** with axios and error handling
-- **React hooks** for easy component integration
+- **Server-side authentication** with automatic token retrieval
 - **Environment configuration**
-- **Example components**
+- **Secure server-side execution**
 
 ## Architecture
 
@@ -19,12 +19,8 @@ creator/src/
 ├── models/tiktok/          # Type definitions and Zod schemas
 │   ├── user.ts            # User info models
 │   └── video.ts           # Video query models
-├── lib/api/               # API clients
-│   └── tiktok.ts          # TikTok API client
-├── hooks/                 # Custom React hooks
-│   └── useTikTokDisplayAPI.ts
-└── components/            # Example components
-    └── TikTokAPIExample.tsx
+└── lib/api/               # API clients
+    └── tiktok.ts          # TikTok API client (server-side only)
 ```
 
 ## API Endpoints Implemented
@@ -67,10 +63,10 @@ scope: "user.info.profile,user.info.stats,video.list"
 
 ### 3. Access Token Handling
 
-Update your NextAuth configuration to include access tokens in the session:
+The access token is automatically handled by the API client through NextAuth session:
 
 ```javascript
-// In src/auth.ts - callbacks
+// In src/auth.ts - callbacks (already configured)
 jwt({ token, account }) {
   if (account?.access_token) {
     token.accessToken = account.access_token;
@@ -85,60 +81,78 @@ session({ session, token }) {
 
 ## Usage Examples
 
-### Basic Hook Usage
-
-```tsx
-import { useTikTokDisplayAPI } from "@/hooks/useTikTokDisplayAPI";
-
-function MyComponent() {
-  const { userInfo, videos, isAuthenticated } = useTikTokDisplayAPI();
-
-  const handleGetUserInfo = async () => {
-    await userInfo.getUserInfo(['display_name', 'username', 'follower_count']);
-  };
-
-  const handleQueryVideos = async () => {
-    await videos.queryVideos(['video_id_1', 'video_id_2'], ['title', 'like_count']);
-  };
-
-  if (!isAuthenticated) {
-    return <div>Please sign in with TikTok</div>;
-  }
-
-  return (
-    <div>
-      <button onClick={handleGetUserInfo}>
-        {userInfo.loading ? 'Loading...' : 'Get User Info'}
-      </button>
-      
-      {userInfo.userInfo && (
-        <div>
-          <h3>{userInfo.userInfo.display_name}</h3>
-          <p>Followers: {userInfo.userInfo.follower_count}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-```
-
-### Direct API Client Usage
+### Server Component Usage
 
 ```tsx
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 
-// Get user info
-const userInfo = await tikTokAPIClient.getUserInfo(
-  accessToken,
-  ['display_name', 'username', 'follower_count']
-);
+// Server Component (サーバーサイドでのみ実行)
+async function TikTokUserProfile() {
+  try {
+    // アクセストークンは自動で取得されます
+    const userInfo = await tikTokAPIClient.getUserInfo([
+      'display_name', 
+      'username', 
+      'follower_count'
+    ]);
 
-// Query videos
-const videos = await tikTokAPIClient.queryVideos(
-  accessToken,
-  ['video_id_1', 'video_id_2'],
-  ['title', 'like_count', 'duration']
-);
+    if (tikTokAPIClient.isSuccessResponse(userInfo)) {
+      return (
+        <div>
+          <h3>{userInfo.data.user.display_name}</h3>
+          <p>Username: @{userInfo.data.user.username}</p>
+          <p>Followers: {userInfo.data.user.follower_count}</p>
+        </div>
+      );
+    }
+  } catch (error) {
+    return <div>Error loading user info</div>;
+  }
+}
+```
+
+### Server Action Usage
+
+```tsx
+"use server";
+
+import { tikTokAPIClient } from "@/lib/api/tiktok";
+
+export async function getTikTokVideos(videoIds: string[]) {
+  try {
+    const videos = await tikTokAPIClient.queryVideos(
+      videoIds,
+      ['title', 'like_count', 'duration']
+    );
+    
+    return { success: true, data: videos.data.videos };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+```
+
+### API Route Usage
+
+```tsx
+// app/api/tiktok/user/route.ts
+import { tikTokAPIClient } from "@/lib/api/tiktok";
+
+export async function GET() {
+  try {
+    const userInfo = await tikTokAPIClient.getUserInfo([
+      'display_name', 
+      'follower_count'
+    ]);
+    
+    return Response.json(userInfo.data.user);
+  } catch (error) {
+    return Response.json(
+      { error: 'Failed to fetch user info' }, 
+      { status: 500 }
+    );
+  }
+}
 ```
 
 ## Available Fields
@@ -214,22 +228,40 @@ const videos: TikTokVideo[] = videos.videos;
 
 ## Testing
 
-Use the example component to test the integration:
+Test the integration by creating a Server Component:
 
 ```tsx
-import { TikTokAPIExample } from "@/components/TikTokAPIExample";
+// app/test-tiktok/page.tsx
+import { tikTokAPIClient } from "@/lib/api/tiktok";
 
-function TestPage() {
-  return <TikTokAPIExample />;
+export default async function TestTikTokPage() {
+  try {
+    const userInfo = await tikTokAPIClient.getUserInfo(['display_name']);
+    
+    return (
+      <div>
+        <h1>TikTok API Test</h1>
+        <p>User: {userInfo.data.user.display_name}</p>
+      </div>
+    );
+  } catch (error) {
+    return (
+      <div>
+        <h1>TikTok API Test</h1>
+        <p>Error: {error.message}</p>
+      </div>
+    );
+  }
 }
 ```
 
 ## Limitations
 
-1. **Rate Limiting**: TikTok API has rate limits - implement appropriate caching
-2. **Video IDs**: Video query requires valid video IDs that belong to the authenticated user
-3. **Scopes**: Different fields require different OAuth scopes
-4. **Token Expiry**: Access tokens expire - implement refresh logic if needed
+1. **Server-side Only**: API client can only be used in Server Components, Server Actions, or API Routes
+2. **Rate Limiting**: TikTok API has rate limits - implement appropriate caching
+3. **Video IDs**: Video query requires valid video IDs that belong to the authenticated user
+4. **Scopes**: Different fields require different OAuth scopes
+5. **Token Expiry**: Access tokens expire - implement refresh logic if needed
 
 ## Troubleshooting
 
@@ -238,6 +270,7 @@ function TestPage() {
 1. **"User not authenticated"**
    - Ensure user is signed in with TikTok
    - Check if access token is available in session
+   - Verify JWT and Session callbacks are properly configured
 
 2. **"Network error"**
    - Verify environment variables are set correctly
@@ -245,9 +278,12 @@ function TestPage() {
 
 3. **"Invalid fields"**
    - Ensure requested fields match available scopes
-   - Use `validateFieldsForScopes` helper function
 
-4. **TypeScript errors**
+4. **"Can only be used in server components"**
+   - API client is server-side only
+   - Use Server Components, Server Actions, or API Routes
+
+5. **TypeScript errors**
    - Ensure all types are imported correctly
    - Check if NextAuth types are extended properly
 
