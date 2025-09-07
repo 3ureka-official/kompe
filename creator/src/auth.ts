@@ -41,7 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         url: "https://www.tiktok.com/v2/auth/authorize",
         params: {
           client_key: AUTH_TIKTOK_ID,
-          scope: "user.info.profile",
+          scope: "user.info.profile,user.info.stats,video.list",
         },
       },
       userinfo:
