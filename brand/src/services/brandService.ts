@@ -1,8 +1,8 @@
-import supabase from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { Brand } from "@/types/Brand";
 import { updateUser } from "./userService";
-import { uploadFile } from "@/lib/storage";
 import { v4 as uuidv4 } from "uuid";
+import { uploadFile } from "@/lib/storage";
 
 /**
  * ブランドを作成

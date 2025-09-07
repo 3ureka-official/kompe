@@ -1,5 +1,5 @@
-import supabase from "@/lib/supabase";
-import { Application } from "@/types/application";
+import { supabase } from "@/lib/supabase";
+import { Application } from "@/types/Application";
 
 /**
  * 指定されたコンテストIDのアプリケーションを取得
@@ -10,20 +10,21 @@ export async function getApplicationsByContestId(
   try {
     const { data, error } = await supabase
       .from("applications")
-      .select("*")
-      .eq("contest_id", contestId);
+      .select(
+        `
+        *,
+        creator:creators(*),
+        contest_transfer:contest_transfers!contest_transfers_application_id_fkey(
+          id, contest_id, application_id, amount, stripe_transfer_id, created_at
+        )
+      `,
+      )
+      .eq("contest_id", contestId)
+      .order("views", { ascending: false });
 
     if (error) throw error;
 
-    const applications: Application[] = [];
-    data.forEach((application) => {
-      applications.push({
-        id: application.id,
-        ...application,
-      } as Application);
-    });
-
-    return applications;
+    return data as Application[];
   } catch (error) {
     console.error("アプリケーション取得エラー:", error);
     throw error;
@@ -39,20 +40,12 @@ export async function getApplicationsByCreatorId(
   try {
     const { data, error } = await supabase
       .from("applications")
-      .select("*")
+      .select("*, creator:creators(*)")
       .eq("creator_id", creatorId);
 
     if (error) throw error;
 
-    const applications: Application[] = [];
-    data.forEach((application) => {
-      applications.push({
-        id: application.id,
-        ...application,
-      } as Application);
-    });
-
-    return applications;
+    return data;
   } catch (error) {
     console.error("アプリケーション取得エラー:", error);
     throw error;

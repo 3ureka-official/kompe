@@ -3,84 +3,73 @@ import * as yup from "yup";
 // ステップごとのスキーマ
 export const basicInfoSchema = yup.object().shape({
   title: yup.string().required("タイトルを入力してください"),
-  category: yup.string().required("カテゴリを選択してください"),
+  thumbnail_url: yup.string().required("サムネイルを選択してください"),
 
-  thumbnailFile: yup
-    .mixed<File>()
-    .required("サムネイル画像を選択してください")
-    .test("fileSize", "5 MB 以内にしてください", (file) =>
-      file ? file.size <= 5 * 1024 * 1024 : false,
-    )
-    .test("fileType", "画像ファイルを選択してください", (file) =>
-      file ? file.type.startsWith("image/") : false,
-    ),
-  thumbnailPreview: yup.string().nullable(),
-
-  applicationStartDate: yup.date().required("応募開始日を選択してください"),
-  applicationEndDate: yup
-    .date()
-    .required("応募終了日を選択してください")
-    .min(
-      yup.ref("applicationStartDate"),
-      "応募終了日は開始日より後にしてください",
-    ),
-
-  contestStartDate: yup.date().required("開催開始日を選択してください"),
-  contestEndDate: yup
+  contest_start_date: yup.date().required("開催開始日を選択してください"),
+  contest_end_date: yup
     .date()
     .required("開催終了日を選択してください")
-    .min(yup.ref("contestStartDate"), "開催終了日は開始日より後にしてください"),
+    .min(
+      yup.ref("contest_start_date"),
+      "開催終了日は開始日より後にしてください",
+    ),
 });
 
 export const briefSchema = yup.object().shape({
   description: yup.string().required("説明を入力してください"),
-  requirements: yup.string().required("要件を入力してください"),
+  supply_of_samples: yup
+    .string()
+    .required("試供品の負担についてを入力してください"),
+  requirements: yup.string().required("動画の条件を入力してください"),
 });
 
-const assetItemSchema = yup.object({
-  description: yup.string().nullable(),
-
-  url: yup.string().url("URL 形式で入力してください").nullable(),
-
-  filePreview: yup.string().nullable(),
-
-  file: yup
-    .mixed<File>()
-    .nullable()
-    .test("is-file", "無効なファイルです", (v) =>
-      v == null ? true : v instanceof File,
-    ),
+export const assetFormSchema = yup.object().shape({
+  url: yup.string().url("URL 形式で入力してください"),
+  description: yup.string().required("説明を入力してください"),
 });
 
-const videoItemSchema = yup.object({
-  url: yup.string().url("URL 形式で入力してください").nullable(),
-  description: yup.string().nullable(),
+export const assetItemSchema = yup.object().shape({
+  id: yup.string(),
+  url: yup.string().url("URL 形式で入力してください"),
+  description: yup.string().required("説明を入力してください"),
 });
 
-export const resourcesSchema = yup.object({
+export const inspirationItemSchema = yup.object().shape({
+  id: yup.string(),
+  url: yup
+    .string()
+    .url("URL 形式で入力してください")
+    .required("URL を入力してください"),
+  description: yup.string().required("説明を入力してください"),
+});
+
+export const resourcesSchema = yup.object().shape({
   assets: yup.array().of(assetItemSchema).min(0),
-  inspirations: yup.array().of(videoItemSchema).min(0),
+  inspirations: yup.array().of(inspirationItemSchema).min(0),
 });
 
 export const prizeSchema = yup.object().shape({
-  prizePool: yup
+  prize_pool: yup
     .number()
     .min(1000, "賞金額を選択してください")
     .required("賞金額を選択してください"),
 
-  prizeDistribution: yup
-    .array()
-    .min(1, "報酬配分を設定してください")
+  prize_distribution: yup
+    .array(yup.number().min(0).required("報酬配分を設定してください"))
     .test(
       "total-matches-pool",
       "配分金額の合計が総賞金額と一致しません",
       function (value) {
-        const { prizePool } = this.parent;
-        if (!value || !prizePool) return true;
-        const total = value.reduce((sum, amount) => sum + amount, 0);
-        return total === prizePool;
+        const { prize_pool } = this.parent;
+        if (!value || !prize_pool) return true;
+        const total = value.reduce(
+          (sum: number, amount?: number) => sum + (amount || 0),
+          0,
+        );
+        return total === prize_pool;
       },
-    ),
+    )
+    .required("報酬配分を設定してください"),
 });
 
 export type ContestCreateFormData = yup.InferType<typeof basicInfoSchema> &

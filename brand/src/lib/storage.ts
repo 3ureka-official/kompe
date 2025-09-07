@@ -1,4 +1,4 @@
-import supabase from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 
 /**
  * ファイルをアップロードして、パブリックURL を返す
@@ -28,7 +28,10 @@ export async function uploadFile(
 /**
  * ファイルを削除する
  */
-export async function deleteFile(bucket: string, path: string): Promise<void> {
-  const { error } = await supabase.storage.from(bucket).remove([path]);
+export async function deleteFiles(
+  bucket: string,
+  paths: string[],
+): Promise<void> {
+  const { error } = await supabase.storage.from(bucket).remove(paths);
   if (error) throw error;
 }

@@ -1,37 +1,30 @@
 import { useMutation } from "@tanstack/react-query";
 import { createContest } from "@/services/contestService";
-import { Contest, FormAssetItem, InspirationItem } from "@/types/Contest";
+import { Contest } from "@/types/Contest";
 
 export function useCreateContest() {
   return useMutation({
     mutationFn: ({
       brandId,
+      contestId,
       contestData,
-      thumbnailFile,
-      assetsData,
-      inspirationData,
     }: {
       brandId: string;
+      contestId: string;
       contestData: Omit<
         Contest,
-        "id" | "created_at" | "status" | "brandId" | "thumbnail_url"
+        | "id"
+        | "created_at"
+        | "thumbnail_url"
+        | "is_draft"
+        | "brand_id"
+        | "videos"
+        | "views"
+        | "likes"
+        | "comments"
+        | "shares"
       >;
-      thumbnailFile: File;
-      assetsData: FormAssetItem[] | null;
-      inspirationData:
-        | Omit<
-            InspirationItem,
-            "id" | "created_at" | "brand_id" | "contest_id"
-          >[]
-        | null;
-    }) =>
-      createContest(
-        brandId,
-        contestData,
-        thumbnailFile,
-        assetsData,
-        inspirationData,
-      ),
+    }) => createContest(brandId, contestId, contestData),
 
     onError: (error: Error) => {
       alert(`コンテスト作成に失敗しました：${error.message}`);

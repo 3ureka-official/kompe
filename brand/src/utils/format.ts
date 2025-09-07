@@ -42,7 +42,6 @@ export function formatRelativeTime(dateString: string): string {
   }
 }
 
-const locales = { ja };
 /**
  * 日付を`date-fns`を使用して**日本語で**フォーマットします。
  * デフォルトは "PP" フォーマットです。
@@ -63,6 +62,10 @@ export function formatDate(
 }
 
 export function formatNumber(num: number): string {
+  if (num == null) {
+    return "0";
+  }
+
   return new Intl.NumberFormat("ja-JP").format(num);
 }
 

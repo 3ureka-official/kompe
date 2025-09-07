@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Stepper } from "@/components/contests/create/Stepper";
 import { BasicInfo } from "@/components/contests/create/BasicInfo";
 import { Brief } from "@/components/contests/create/Brief";
@@ -10,6 +10,7 @@ import {
   CreateContestContext,
   CreateContestProvider,
 } from "@/contexts/CreateContestContext";
+import { BrandContext } from "@/contexts/BrandContext";
 
 const steps = [
   { id: "basic", title: "基本情報" },
@@ -19,7 +20,9 @@ const steps = [
 ];
 
 function CreateContestContent() {
-  const { step } = useContext(CreateContestContext);
+  const { step, initContest } = useContext(CreateContestContext);
+  const { brand } = useContext(BrandContext);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const renderStep = () => {
     switch (step) {
@@ -35,6 +38,13 @@ function CreateContestContent() {
         return null;
     }
   };
+
+  useEffect(() => {
+    if (brand?.id && !hasInitialized) {
+      initContest(brand.id);
+      setHasInitialized(true);
+    }
+  }, [brand?.id, hasInitialized]);
 
   return (
     <div className="max-w-4xl mx-auto py-8">

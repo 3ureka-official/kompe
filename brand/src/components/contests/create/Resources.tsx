@@ -1,271 +1,215 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Textarea";
-import { Input } from "@/components/ui/Input";
-import { CustomFileUpload } from "@/components/contests/create/ui/CustomFileUpload";
-import { FormField } from "@/components/ui/FormField";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CreateContestContext } from "@/contexts/CreateContestContext";
-import { resourcesSchema } from "@/schema/createContestSchema";
+import {
+  assetFormSchema,
+  inspirationItemSchema,
+  resourcesSchema,
+} from "@/schema/createContestSchema";
+import { AssetForm } from "@/components/contests/create/AssetForm";
+import * as yup from "yup";
+import { InspirationForm } from "./InspirationForm";
+import { v4 as uuidv4 } from "uuid";
+import { Trash2, Link } from "lucide-react";
 
 export function Resources() {
-  const { next, back, data } = useContext(CreateContestContext);
+  const { next, back, data, submit, isUpdating } =
+    useContext(CreateContestContext);
 
-  const [currentFile, setCurrentFile] = useState<File | null>(null);
-  const [currentFilePreview, setCurrentFilePreview] = useState<string | null>(
-    null,
-  );
-  const [selectIdx, setSelectIdx] = useState<number | null>(null);
-
-  const {
-    control,
-    handleSubmit,
-    getValues,
-    setValue,
-    formState: { errors },
-  } = useForm({
+  const { handleSubmit, getValues, setValue, watch, reset } = useForm({
     resolver: yupResolver(resourcesSchema),
     mode: "onSubmit",
     defaultValues: {
-      assets: data.assets ?? [
-        {
-          file: null,
-          filePreview: null,
-          url: null,
-          description: null,
-        },
-      ],
-      inspirations: data.inspirations ?? [
-        {
-          url: null,
-          description: null,
-        },
-      ],
+      assets: data.assets ?? [],
+      inspirations: data.inspirations ?? [],
     },
   });
 
   useEffect(() => {
-    if (selectIdx !== null) {
-      const value = getValues("assets");
-      const newAssets = (value || []).map((a, i) =>
-        i === selectIdx
-          ? { ...a, file: currentFile, filePreview: currentFilePreview }
-          : a,
-      );
-      setValue("assets", newAssets);
+    if (data) {
+      reset({ ...data });
     }
-  }, [selectIdx]);
+  }, [data, reset]);
+
+  const watchedAssets = watch("assets");
+  const watchedInspirations = watch("inspirations");
+
+  const addAsset = (asset: yup.InferType<typeof assetFormSchema>) => {
+    const assets = getValues("assets") || [];
+    assets.push({
+      id: uuidv4(),
+      url: asset.url,
+      description: asset.description,
+    });
+    setValue("assets", assets);
+  };
+
+  const removeAsset = (idx: number) => {
+    const asset = getValues("assets")?.[idx];
+    if (!asset) return;
+
+    const assets = getValues("assets")?.filter((_, i) => i !== idx);
+    setValue("assets", assets);
+  };
+
+  const addInspiration = (
+    inspiration: yup.InferType<typeof inspirationItemSchema>,
+  ) => {
+    const inspirationId = uuidv4();
+    const inspirations = getValues("inspirations") || [];
+    inspirations.push({
+      id: inspirationId,
+      url: inspiration.url,
+      description: inspiration.description,
+    });
+    setValue("inspirations", inspirations);
+  };
+
+  const removeInspiration = (idx: number) => {
+    const inspiration = getValues("inspirations")?.[idx];
+    if (!inspiration) return;
+
+    const inspirations = getValues("inspirations")?.filter((_, i) => i !== idx);
+    setValue("inspirations", inspirations);
+  };
+
+  const draft = () => {
+    const values = getValues();
+    submit(true, values);
+  };
 
   return (
-    <div className="bg-white rounded-lg p-8 shadow-sm">
+    <div>
       {/* Assets セクション */}
-      <div className="mb-8">
-        <h3 className="text-lg font-medium text-gray-900 mb-6">アセット</h3>
-        <Controller
-          control={control}
-          name="assets"
-          render={({ field }) => {
-            // assetsをfield.valueから直接取得
-            // const assets = field.value || [];
+      <div className="mb-8 bg-white rounded-lg p-8 ">
+        <div className="flex flex-col gap-2 mb-4">
+          <h3 className="text-lg font-medium text-gray-900">動画素材</h3>
+          <p className="text-sm text-gray-500">
+            Google Drive の URL を入力してください
+          </p>
+        </div>
+        <AssetForm addAsset={addAsset} />
 
-            return (
-              <>
-                {(field.value || []).map((asset, idx) => (
-                  <div
-                    key={idx}
-                    className="flex flex-col gap-2 mb-6 border p-4 rounded"
-                  >
-                    <FormField
-                      label={`アセット ${idx + 1}`}
-                      error={errors.assets?.[idx]?.message}
+        {watchedAssets && watchedAssets.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+            {watchedAssets.map((asset, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col justify-between border rounded-lg p-4 bg-gray-50 gap-4 relative"
+              >
+                {/* 削除ボタン */}
+                <Button
+                  type="button"
+                  onClick={() => removeAsset(idx)}
+                  variant="danger"
+                  className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm hover:bg-red-600"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+
+                {/* URL */}
+                {asset.url && (
+                  <div className="text-sm rounded h-30 w-30 bg-gray-100 border border-gray-200 flex items-center justify-center gap-2">
+                    <a
+                      href={asset.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      <CustomFileUpload
-                        file={field.value?.[idx]?.file || null}
-                        preview={field.value?.[idx]?.filePreview || null}
-                        onFileChange={(file) => {
-                          field.onChange(
-                            (field.value || []).map((a, i) =>
-                              i === idx
-                                ? {
-                                    ...a,
-                                    file: file,
-                                    filePreview: file ? a.filePreview : null,
-                                  }
-                                : a,
-                            ),
-                          );
-                          setCurrentFile(file);
-                        }}
-                        onPreviewChange={(filePreview) => {
-                          field.onChange(
-                            (field.value || []).map((a, i) =>
-                              i === idx
-                                ? { ...a, filePreview: filePreview }
-                                : a,
-                            ),
-                          );
-                          setCurrentFilePreview(filePreview);
-                          setSelectIdx(idx);
-                        }}
-                        accept="image/*"
-                        maxSize={5 * 1024 * 1024}
-                        className="w-full mb-4"
-                      />
-                    </FormField>
-
-                    <div className="flex items-center justify-center mb-2">
-                      or
-                    </div>
-
-                    <FormField
-                      label="URL"
-                      error={errors.assets?.[idx]?.url?.message}
-                    >
-                      <Input
-                        value={field.value?.[idx]?.url || ""}
-                        placeholder="外部リンク URL"
-                        onChange={(e) =>
-                          field.onChange(
-                            (field.value || []).map((a, i) =>
-                              i === idx ? { ...a, url: e, file: null } : a,
-                            ),
-                          )
-                        }
-                        className="mb-4"
-                      />
-                    </FormField>
-
-                    <FormField
-                      label="説明"
-                      error={errors.assets?.[idx]?.description?.message}
-                    >
-                      <Textarea
-                        value={asset.description || ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            (field.value || []).map((a, i) =>
-                              i === idx
-                                ? { ...a, description: e.target.value }
-                                : a,
-                            ),
-                          )
-                        }
-                        placeholder="説明をここに追加"
-                        rows={3}
-                        className="w-full border rounded p-2"
-                      />
-                    </FormField>
+                      <Link className="w-10 h-10 flex-shrink-0" />
+                    </a>
                   </div>
-                ))}
+                )}
 
-                {/* アセット追加ボタン */}
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() =>
-                      field.onChange([
-                        ...(field.value || []),
-                        { file: null, url: "", description: "" },
-                      ])
-                    }
-                  >
-                    追加
-                  </Button>
-                </div>
-              </>
-            );
-          }}
-        />
+                {/* 説明 */}
+                {asset.description && (
+                  <div className="text-sm h-10 rounded overflow-hidden line-clamp-2">
+                    {asset.description}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Inspiration セクション */}
-      <div className="mb-8">
-        <h3 className="text-lg font-medium text-gray-900 mb-6">
+      <div className="mb-8 bg-white rounded-lg p-8">
+        <h3 className="text-lg  font-medium text-gray-900 mb-6">
           インスピレーション
         </h3>
-        <Controller
-          control={control}
-          name="inspirations"
-          render={({ field }) => {
-            const inspirations = field.value || [];
+        <InspirationForm addInspiration={addInspiration} />
 
-            return (
-              <>
-                {inspirations.map((inspiration, idx) => (
-                  <div
-                    key={idx}
-                    className="flex flex-col gap-4 mb-6 border p-4 rounded"
-                  >
-                    <FormField
-                      label="URL"
-                      error={errors.inspirations?.[idx]?.url?.message}
-                    >
-                      <Input
-                        placeholder="URL"
-                        value={inspiration.url || ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            inspirations.map((a, i) =>
-                              i === idx ? { ...a, url: e } : a,
-                            ),
-                          )
-                        }
-                      />
-                    </FormField>
+        {watchedInspirations && watchedInspirations.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {watchedInspirations.map((inspiration, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col justify-between border rounded-lg p-4 bg-gray-50 gap-4 relative"
+              >
+                {/* 削除ボタン */}
+                <Button
+                  type="button"
+                  onClick={() => removeInspiration(idx)}
+                  variant="danger"
+                  className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm hover:bg-red-600"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
 
-                    <FormField
-                      label="説明"
-                      error={errors.inspirations?.[idx]?.description?.message}
+                {inspiration.url && (
+                  <div className="text-sm break-all rounded h-30 w-30 bg-gray-100 border border-gray-200 flex items-center justify-center gap-2">
+                    <a
+                      href={inspiration.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      <Textarea
-                        placeholder="説明をここに追加"
-                        rows={3}
-                        value={inspiration.description || ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            inspirations.map((a, i) =>
-                              i === idx
-                                ? { ...a, description: e.target.value }
-                                : a,
-                            ),
-                          )
-                        }
-                      />
-                    </FormField>
+                      <Link className="w-10 h-10 flex-shrink-0" />
+                    </a>
                   </div>
-                ))}
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() =>
-                      field.onChange([
-                        ...inspirations,
-                        { url: "", description: "" },
-                      ])
-                    }
-                  >
-                    追加
-                  </Button>
-                </div>
-              </>
-            );
-          }}
-        />
+                )}
+
+                {inspiration.description && (
+                  <div className="text-sm h-10 rounded overflow-hidden line-clamp-2">
+                    {inspiration.description}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ナビゲーションボタン */}
-      <div className="flex justify-end gap-4 pt-6">
-        <Button type="button" variant="secondary" onClick={back}>
-          前へ戻る
+      <div className="flex justify-end gap-4">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={draft}
+          disabled={isUpdating}
+        >
+          {isUpdating ? "保存中..." : "下書き保存"}
         </Button>
 
-        <Button type="button" variant="primary" onClick={handleSubmit(next)}>
-          次へ進む
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => back(getValues())}
+          disabled={isUpdating}
+        >
+          {isUpdating ? "保存中..." : "前へ戻る"}
+        </Button>
+
+        <Button
+          type="button"
+          variant="primary"
+          onClick={handleSubmit(next)}
+          disabled={isUpdating}
+        >
+          {isUpdating ? "保存中..." : "次へ進む"}
         </Button>
       </div>
     </div>

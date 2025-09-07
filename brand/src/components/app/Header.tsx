@@ -7,6 +7,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { logout } from "@/services/userService";
 import { Logo } from "@/components/ui/Logo";
 import { usePathname } from "next/navigation";
+import { UserRound } from "lucide-react";
 
 export function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -22,7 +23,7 @@ export function Header() {
   };
 
   const getLinkClass = (path: string) => {
-    const isActive = pathname.startsWith(path);
+    const isActive = pathname === path;
     return `px-3 py-2 rounded-md text-sm transition-colors ${
       isActive
         ? "text-gray-900 font-semibold bg-gray-100"
@@ -58,14 +59,14 @@ export function Header() {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  className="flex items-center space-x-2 p-1 w-8 h-8 rounded-full cursor-pointer transition-colors bg-gray-400"
                 >
                   {/* プロフィール画像またはアバター */}
-                  <div className="w-8 h-8 border border-black rounded-full flex items-center justify-center">
-                    <span className="text-sm font-medium text-black">
-                      {profile?.email?.charAt(0)?.toUpperCase() || "U"}
-                    </span>
-                  </div>
+                  <UserRound
+                    className="w-8 h-8 text-white"
+                    fill="currentColor"
+                    strokeWidth={1.5}
+                  />
                 </button>
 
                 {/* ドロップダウンメニュー */}
@@ -75,13 +76,6 @@ export function Header() {
                       <div className="px-4 py-2 text-sm text-gray-500 border-b">
                         {profile?.email}
                       </div>
-                      <Link
-                        href="/settings"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        設定
-                      </Link>
                       <button
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

@@ -6,9 +6,14 @@ import { ContestCard } from "@/components/contests/list/ContestCard";
 interface ContestListProps {
   contests: Contest[];
   isLoading?: boolean;
+  refetch: () => void;
 }
 
-export function ContestList({ contests, isLoading = false }: ContestListProps) {
+export function ContestList({
+  contests,
+  isLoading = false,
+  refetch,
+}: ContestListProps) {
   if (isLoading) {
     return (
       <div className="grid gap-6">
@@ -64,7 +69,7 @@ export function ContestList({ contests, isLoading = false }: ContestListProps) {
     <div className="grid gap-6 mt-2">
       {contests &&
         contests.map((contest, index) => (
-          <ContestCard key={index} contest={contest} />
+          <ContestCard key={index} contest={contest} refetch={refetch} />
         ))}
     </div>
   );

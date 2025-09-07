@@ -9,21 +9,24 @@ import { FormField, Textarea, SnsLinkField } from "./ui";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { FileUpload } from "@/components/ui/FileUpload";
+import { FileUpload } from "@/components/brand/ui/FileUpload";
 import { brandCreateSchema } from "@/schema/createBrandSchema";
 import { useUpdateBrand } from "@/hooks/brand/useUpdateBrand";
 import { BrandContext } from "@/contexts/BrandContext";
 import { Brand } from "@/types/Brand";
+import Image from "next/image";
 
 export function BrandUpdateForm() {
   const { brand } = useContext(BrandContext);
 
   const { mutate: updateBrand, isPending, error } = useUpdateBrand();
 
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [isLogoChanged, setIsLogoChanged] = useState(false);
+
   const getDefaultValues = (brand: Partial<Brand>) => ({
-    email: brand?.email || "",
     name: brand?.name || "",
-    phonenumber: brand?.phonenumber || "",
     website: brand?.website || null,
     description: brand?.description || "",
     tiktok_username: brand?.tiktok_username || null,
@@ -43,36 +46,14 @@ export function BrandUpdateForm() {
     defaultValues: getDefaultValues({}),
   });
 
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(
-    brand?.logo_url || null,
-  );
-  const [isLogoChanged, setIsLogoChanged] = useState(false);
-
   const descriptionCount = watch("description")?.length || 0;
 
   useEffect(() => {
     if (brand) {
-      reset(getDefaultValues(brand));
-      setLogoFile(null);
       setLogoPreview(brand?.logo_url || null);
+      reset(getDefaultValues(brand));
     }
   }, [brand, reset]);
-
-  const handleLogoChange = (file: File | null) => {
-    setLogoFile(file);
-    setIsLogoChanged(true);
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setLogoPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setLogoPreview(brand?.logo_url || null);
-    }
-  };
 
   const onSubmit = async () => {
     if (!brand) {
@@ -88,13 +69,11 @@ export function BrandUpdateForm() {
           brandId: brand?.id,
           brandData: {
             name: data.name,
-            logo_url: logoPreview || null,
-            email: data.email,
-            phonenumber: data.phonenumber,
-            description: data.description,
+            description: data.description || "",
             website: data.website || null,
             tiktok_username: data.tiktok_username || null,
             instagram_url: data.instagram_url || null,
+            logo_url: brand?.logo_url || null,
           },
           logoFile: logoFile,
         },
@@ -120,26 +99,10 @@ export function BrandUpdateForm() {
 
         {/* フォーム */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <Controller
-              control={control}
-              name="email"
-              render={({ field, fieldState }) => (
-                <FormField
-                  label="ブランドメールアドレス"
-                  required
-                  error={fieldState.error?.message}
-                >
-                  <Input
-                    type="email"
-                    value={field.value}
-                    onChange={field.onChange}
-                    required
-                  />
-                </FormField>
-              )}
-            />
-
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4 flex flex-col gap-4"
+          >
             <Controller
               control={control}
               name="name"
@@ -158,34 +121,44 @@ export function BrandUpdateForm() {
               )}
             />
 
-            <FormField label="ブランドロゴ">
+            {isLogoChanged}
+            <FormField label="ロゴ画像">
               <FileUpload
-                file={logoFile}
-                preview={logoPreview}
-                onFileChange={handleLogoChange}
-                onPreviewChange={setLogoPreview}
+                onFileChange={(file: File | null) => {
+                  setLogoFile(file);
+                  console.log("file", file);
+                  setIsLogoChanged(true);
+                }}
+                onPreviewChange={(url: string | null) => {
+                  setLogoPreview(url);
+                }}
+                accept="image/*"
+                maxSize={5 * 1024 * 1024}
+                className="w-full"
               />
             </FormField>
 
-            <Controller
-              control={control}
-              name="phonenumber"
-              render={({ field, fieldState }) => (
-                <FormField
-                  label="電話番号"
-                  required
-                  error={fieldState.error?.message}
+            {logoPreview !== null && (
+              <div className="flex justify-between items-center">
+                <Image
+                  src={logoPreview || ""}
+                  alt="file"
+                  width={160}
+                  height={100}
+                  className="w-[160px] h-[100px] object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="danger"
+                  onClick={() => {
+                    setLogoPreview(null);
+                    setLogoFile(null);
+                  }}
                 >
-                  <Input
-                    type="tel"
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="ハイフンなしで入力してください"
-                    required
-                  />
-                </FormField>
-              )}
-            />
+                  削除
+                </Button>
+              </div>
+            )}
 
             <Controller
               control={control}
@@ -193,12 +166,11 @@ export function BrandUpdateForm() {
               render={({ field, fieldState }) => (
                 <FormField
                   label="ブランド紹介"
-                  required
                   description={`${descriptionCount}/240文字`}
                   error={fieldState.error?.message}
                 >
                   <Textarea
-                    value={field.value}
+                    value={field.value || ""}
                     onChange={field.onChange}
                     placeholder="あなたのブランドについて教えてください"
                     maxLength={240}
@@ -215,7 +187,6 @@ export function BrandUpdateForm() {
               render={({ field, fieldState }) => (
                 <FormField
                   label="ブランドウェブサイト"
-                  required
                   error={fieldState.error?.message}
                 >
                   <Input
@@ -261,7 +232,7 @@ export function BrandUpdateForm() {
                 type="submit"
                 variant="primary"
                 className="px-6 py-2"
-                disabled={isPending || !(isDirty || isLogoChanged)}
+                disabled={isPending || (!isDirty && !isLogoChanged)}
               >
                 {isPending ? "更新中..." : "更新する"}
               </Button>
