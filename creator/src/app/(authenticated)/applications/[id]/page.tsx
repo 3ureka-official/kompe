@@ -26,9 +26,9 @@ import SubmitVideoForm from "@/components/submitVideoForm";
 export default async function ApplicationPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
   const session = await auth();
 
   if (!session) {
