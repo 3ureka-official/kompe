@@ -14,13 +14,14 @@ import {
   ChevronRightIcon,
   CircleDollarSignIcon,
   FileVideoCameraIcon,
+  PlayIcon,
   VideoIcon,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { auth, signIn } from "@/auth";
+import { auth } from "@/auth";
 import SubmitVideoForm from "@/components/submitVideoForm";
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 import { redirect } from "next/navigation";
@@ -37,10 +38,26 @@ export default async function ApplicationPage({
     redirect("/api/auth/signin");
   }
 
+  const videoList = await tikTokAPIClient.listVideos([
+    "id",
+    "title",
+    "cover_image_url",
+    "view_count",
+  ]);
+
   const application = await prisma.applications.findFirst({
     where: { contest_id: id, creator_id: session.user?.creator_id },
     include: { contests: { include: { brands: true } } },
   });
+
+  const appliedVideo = application?.tiktok_url
+    ? (
+        await tikTokAPIClient.queryVideos(
+          [application.tiktok_url],
+          ["id", "title", "cover_image_url", "view_count"],
+        )
+      ).data.videos[0]
+    : null;
 
   if (!application) {
     return <div>応募が見つかりませんでした。</div>;
@@ -50,7 +67,7 @@ export default async function ApplicationPage({
 
   return (
     <div className="flex flex-col max-h-full">
-      <div className="grow min-h-0 overflow-auto grid gap-8 p-4 pb-16">
+      <div className="grow min-h-0 overflow-auto p-4 pb-16">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -70,15 +87,37 @@ export default async function ApplicationPage({
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <h1 className="text-2xl font-bold">{competition.title}</h1>
+        <h1 className="text-2xl font-bold pt-8">{competition.title}</h1>
         <div className="*:border-b *:border-b-foreground/10">
           <section className="grid gap-2 py-6">
             <h2 className="text-sm font-bold text-muted-foreground px-2">
               自分の動画
             </h2>
-            {application.tiktok_url ? (
-              <Link href={application.tiktok_url} className="truncate px-2">
-                {application.tiktok_url}
+            {application.tiktok_url && appliedVideo ? (
+              <Link href={application.tiktok_url}>
+                <Card className="h-[100px] py-4">
+                  <CardContent className="h-full px-4">
+                    <div className="h-full flex items-center gap-4">
+                      <Image
+                        src={
+                          appliedVideo.cover_image_url ||
+                          "" /* todo: add fallback image */
+                        }
+                        alt={appliedVideo.title || "タイトル未設定の動画"}
+                        width={500}
+                        height={500}
+                        className="h-full w-auto rounded-lg"
+                      />
+                      <div>
+                        <p className="text-md">{appliedVideo.title}</p>
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <PlayIcon className="size-4" />
+                          <p className="text-sm">{`${appliedVideo.view_count}回再生`}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </Link>
             ) : (
               <div className="h-[200px] w-full rounded-lg border border-dashed border-foreground/10 flex flex-col items-center justify-center gap-2 text-sm text-foreground/50">
@@ -171,6 +210,23 @@ export default async function ApplicationPage({
         <SubmitVideoForm
           competitionId={competition.id}
           previousValue={application.tiktok_url}
+          videos={
+            // TODO: tiktokAPIClientでここらへんの型の絞り込みをする
+            videoList.data.videos.filter(
+              (
+                video,
+              ): video is {
+                id: string;
+                title: string;
+                cover_image_url: string;
+                view_count: number;
+              } =>
+                video.id !== undefined &&
+                video.title !== undefined &&
+                video.cover_image_url !== undefined &&
+                video.view_count !== undefined,
+            )
+          }
         />
       </div>
     </div>
