@@ -10,13 +10,19 @@ import {
 import {
   TikTokVideoQueryResponse,
   TikTokVideoQueryResponseSchema,
+  TikTokVideoListResponse,
+  TikTokVideoListResponseSchema,
   VideoFields,
   VideoQueryRequest,
+  VideoListRequest,
   createVideoQueryRequest,
+  createVideoListRequest,
+  VideoFieldsSchema,
 } from "@/models/tiktok/video";
 
 // TikTok API configuration
-const TIKTOK_API_BASE_URL = process.env.TIKTOK_API_BASE_URL || "https://open.tiktokapis.com";
+const TIKTOK_API_BASE_URL =
+  process.env.TIKTOK_API_BASE_URL || "https://open.tiktokapis.com";
 const TIKTOK_API_VERSION = process.env.TIKTOK_API_VERSION || "v2";
 const API_TIMEOUT = parseInt(process.env.TIKTOK_API_TIMEOUT || "10000");
 
@@ -25,7 +31,7 @@ export class TikTokAPIError extends Error {
   constructor(
     message: string,
     public statusCode?: number,
-    public apiError?: unknown
+    public apiError?: unknown,
   ) {
     super(message);
     this.name = "TikTokAPIError";
@@ -53,14 +59,16 @@ export class TikTokAPIClient {
           throw new TikTokAPIError(
             `TikTok API Error: ${error.response.status} ${error.response.statusText}`,
             error.response.status,
-            error.response.data
+            error.response.data,
           );
         } else if (error.request) {
-          throw new TikTokAPIError("Network error: No response from TikTok API");
+          throw new TikTokAPIError(
+            "Network error: No response from TikTok API",
+          );
         } else {
           throw new TikTokAPIError(`Request setup error: ${error.message}`);
         }
-      }
+      },
     );
   }
 
@@ -71,13 +79,15 @@ export class TikTokAPIClient {
    * @returns Promise<TikTokUserInfoResponse>
    */
   async getUserInfo(
-    fields?: UserInfoFields[]
+    fields?: UserInfoFields[],
   ): Promise<TikTokUserInfoResponse> {
     try {
       // Get access token from NextAuth session
       const session = await auth();
       if (!session?.accessToken) {
-        throw new TikTokAPIError("No access token available. User must be authenticated.");
+        throw new TikTokAPIError(
+          "No access token available. User must be authenticated.",
+        );
       }
 
       if (fields === undefined) {
@@ -101,7 +111,9 @@ export class TikTokAPIClient {
       });
 
       // Validate and parse response
-      const validatedResponse = TikTokUserInfoResponseSchema.parse(response.data);
+      const validatedResponse = TikTokUserInfoResponseSchema.parse(
+        response.data,
+      );
 
       return validatedResponse;
     } catch (error) {
@@ -121,13 +133,15 @@ export class TikTokAPIClient {
    */
   async queryVideos(
     videoIds: string[],
-    fields: VideoFields[]
+    fields: VideoFields[],
   ): Promise<TikTokVideoQueryResponse> {
     try {
       // Get access token from NextAuth session
       const session = await auth();
       if (!session?.accessToken) {
-        throw new TikTokAPIError("No access token available. User must be authenticated.");
+        throw new TikTokAPIError(
+          "No access token available. User must be authenticated.",
+        );
       }
 
       // Validate and create request body
@@ -137,18 +151,24 @@ export class TikTokAPIClient {
       const fieldsQuery = fields.join(",");
 
       // Make API request
-      const response = await this.axiosInstance.post("/video/query/", requestBody, {
-        params: {
-          fields: fieldsQuery,
+      const response = await this.axiosInstance.post(
+        "/video/query/",
+        requestBody,
+        {
+          params: {
+            fields: fieldsQuery,
+          },
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
         },
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-          "Content-Type": "application/json",
-        },
-      });
+      );
 
       // Validate and parse response
-      const validatedResponse = TikTokVideoQueryResponseSchema.parse(response.data);
+      const validatedResponse = TikTokVideoQueryResponseSchema.parse(
+        response.data,
+      );
 
       return validatedResponse;
     } catch (error) {
@@ -156,6 +176,65 @@ export class TikTokAPIClient {
         throw error;
       }
       throw new TikTokAPIError(`Failed to query videos: ${error}`);
+    }
+  }
+
+  /**
+   * List videos from TikTok API
+   * Automatically retrieves access token from NextAuth session
+   * @param fields - Array of fields to request
+   * @param options - Optional parameters for pagination and count
+   * @returns Promise<TikTokVideoListResponse>
+   */
+  async listVideos(
+    fields: VideoFields[],
+    options?: { cursor?: number; maxCount?: number },
+  ): Promise<TikTokVideoListResponse> {
+    try {
+      // Get access token from NextAuth session
+      const session = await auth();
+      if (!session?.accessToken) {
+        throw new TikTokAPIError(
+          "No access token available. User must be authenticated.",
+        );
+      }
+
+      if (fields === undefined) {
+        fields = VideoFieldsSchema.options as VideoFields[];
+      }
+
+      // Validate and create request body
+      const requestBody: VideoListRequest = createVideoListRequest(options);
+
+      // Prepare query parameters
+      const fieldsQuery = fields.join(",");
+
+      // Make API request
+      const response = await this.axiosInstance.post(
+        "/video/list/",
+        requestBody,
+        {
+          params: {
+            fields: fieldsQuery,
+          },
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      // Validate and parse response
+      const validatedResponse = TikTokVideoListResponseSchema.parse(
+        response.data,
+      );
+
+      return validatedResponse;
+    } catch (error) {
+      if (error instanceof TikTokAPIError) {
+        throw error;
+      }
+      throw new TikTokAPIError(`Failed to list videos: ${error}`);
     }
   }
 

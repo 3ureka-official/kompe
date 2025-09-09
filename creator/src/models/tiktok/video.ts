@@ -76,8 +76,12 @@ export type TikTokVideo = z.infer<typeof TikTokVideoSchema>;
 export type TikTokError = z.infer<typeof TikTokErrorSchema>;
 export type VideoFilters = z.infer<typeof VideoFiltersSchema>;
 export type VideoQueryRequest = z.infer<typeof VideoQueryRequestSchema>;
-export type QueryUserVideoResponseData = z.infer<typeof QueryUserVideoResponseDataSchema>;
-export type TikTokVideoQueryResponse = z.infer<typeof TikTokVideoQueryResponseSchema>;
+export type QueryUserVideoResponseData = z.infer<
+  typeof QueryUserVideoResponseDataSchema
+>;
+export type TikTokVideoQueryResponse = z.infer<
+  typeof TikTokVideoQueryResponseSchema
+>;
 export type VideoFields = z.infer<typeof VideoFieldsSchema>;
 export type VideoQueryParams = z.infer<typeof VideoQueryParamsSchema>;
 
@@ -99,7 +103,69 @@ export function createVideoQueryRequest(videoIds: string[]): VideoQueryRequest {
   };
 }
 
+// Video list request body schema
+export const VideoListRequestSchema = z.object({
+  cursor: z.number().int().optional(),
+  max_count: z.number().int().min(1).max(20).optional(),
+});
+
+// Video list response data schema
+export const VideoListResponseDataSchema = z.object({
+  videos: z.array(TikTokVideoSchema),
+  cursor: z.number().int(),
+  has_more: z.boolean(),
+});
+
+// Video list response schema
+export const TikTokVideoListResponseSchema = z.object({
+  data: VideoListResponseDataSchema,
+  error: TikTokErrorSchema,
+});
+
+// Video list parameters schema
+export const VideoListParamsSchema = z.object({
+  fields: z.array(VideoFieldsSchema).min(1),
+  cursor: z.number().int().optional(),
+  max_count: z.number().int().min(1).max(20).optional(),
+});
+
+// TypeScript types for video list
+export type VideoListRequest = z.infer<typeof VideoListRequestSchema>;
+export type VideoListResponseData = z.infer<typeof VideoListResponseDataSchema>;
+export type TikTokVideoListResponse = z.infer<
+  typeof TikTokVideoListResponseSchema
+>;
+export type VideoListParams = z.infer<typeof VideoListParamsSchema>;
+
+// Helper function to create video list request
+export function createVideoListRequest(options?: {
+  cursor?: number;
+  maxCount?: number;
+}): VideoListRequest {
+  const request: VideoListRequest = {};
+
+  if (options?.cursor !== undefined) {
+    request.cursor = options.cursor;
+  }
+
+  if (options?.maxCount !== undefined) {
+    if (options.maxCount < 1 || options.maxCount > 20) {
+      throw new Error("Max count must be between 1 and 20");
+    }
+    request.max_count = options.maxCount;
+  }
+
+  return request;
+}
+
 // Helper function to parse video query response
-export function parseVideoQueryResponse(data: unknown): TikTokVideoQueryResponse {
+export function parseVideoQueryResponse(
+  data: unknown,
+): TikTokVideoQueryResponse {
   return TikTokVideoQueryResponseSchema.parse(data);
+}
+
+// Helper function to parse video list response
+export function parseVideoListResponse(data: unknown): TikTokVideoListResponse {
+  return TikTokVideoListResponseSchema.parse(data);
 }
