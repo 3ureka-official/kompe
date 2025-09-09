@@ -40,7 +40,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex flex-col h-screen">
-          <nav className="w-full flex items-center justify-between gap-4 px-6 py-8">
+          <nav className="w-full flex items-center justify-between gap-4 px-6 pt-6 pb-4 border-b">
             <Link href="/">
               <Image
                 src="/logo-colored.svg"
@@ -61,33 +61,7 @@ export default async function RootLayout({
               <SignInButton variant="minimal" />
             )}
           </nav>
-          <main className="grow min-h-0 overflow-auto relative">
-            {children}
-          </main>
-          <nav className="bg-card border rounded-t-2xl w-full p-4">
-            <div className="grid grid-cols-4 text-center">
-              <Link href="/competitions">
-                <div className="flex flex-col items-center text-gray-500">
-                  <CrownIcon className="size-4 stroke-2" />
-                  <p className="text-xs font-semibold">コンペ</p>
-                </div>
-              </Link>
-              <div className="flex flex-col items-center text-gray-500">
-                <CircleDollarSignIcon className="size-4 stroke-2" />
-                <p className="text-xs font-semibold">賞金</p>
-              </div>
-              <div className="flex flex-col items-center text-gray-500">
-                <BellIcon className="size-4 stroke-2" />
-                <p className="text-xs font-semibold">お知らせ</p>
-              </div>
-              <Link href="/dashboard">
-                <div className="flex flex-col items-center text-gray-500">
-                  <UserIcon className="size-4 stroke-2" />
-                  <p className="text-xs font-semibold">マイページ</p>
-                </div>
-              </Link>
-            </div>
-          </nav>
+          {children}
         </div>
       </body>
     </html>

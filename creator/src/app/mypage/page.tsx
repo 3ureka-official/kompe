@@ -23,7 +23,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function Dashboard() {
+export default async function MyPage() {
   const session = await auth();
   if (!session) {
     return <div>ログインしてください。</div>;
@@ -91,6 +91,37 @@ export default async function Dashboard() {
             <p className="text-sm text-gray-500 font-semibold">いいね</p>
           </div>
         </CardFooter>
+      </Card>
+      <Card className="bg-indigo-700 text-white">
+        <CardHeader>
+          <CardTitle className="text-sm font-bold">Stripe口座情報</CardTitle>
+          <CardDescription className="text-indigo-400 font-semibold">
+            Stripeアカウントと連携しています
+          </CardDescription>
+          <CardAction>
+            <Badge className="bg-cyan-600">
+              連携済み
+              <BadgeCheckIcon />
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardContent className="flex flex-row items-center gap-4">
+          <Image
+            src={tiktokUser.avatar_url_100 || ""}
+            alt="Avatar"
+            width={64}
+            height={64}
+            className="rounded-full size-12"
+          />
+          <div className="">
+            <p className="text-center text-lg font-bold">
+              {tiktokUser.display_name}
+            </p>
+            <p className="text-center text-sm text-indigo-400 font-semibold">
+              @{tiktokUser.username}
+            </p>
+          </div>
+        </CardContent>
       </Card>
       <Card>
         <CardHeader>
