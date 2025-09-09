@@ -22,11 +22,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function MyPage() {
   const session = await auth();
   if (!session) {
-    return <div>ログインしてください。</div>;
+    redirect("/api/auth/signin");
   }
   const userInfo = await tikTokAPIClient.getUserInfo([
     "display_name",

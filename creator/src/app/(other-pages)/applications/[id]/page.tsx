@@ -22,6 +22,8 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { auth, signIn } from "@/auth";
 import SubmitVideoForm from "@/components/submitVideoForm";
+import { tikTokAPIClient } from "@/lib/api/tiktok";
+import { redirect } from "next/navigation";
 
 export default async function ApplicationPage({
   params,
@@ -32,8 +34,7 @@ export default async function ApplicationPage({
   const session = await auth();
 
   if (!session) {
-    signIn("tiktok");
-    return;
+    redirect("/api/auth/signin");
   }
 
   const application = await prisma.applications.findFirst({
