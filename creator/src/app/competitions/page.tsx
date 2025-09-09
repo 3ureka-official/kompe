@@ -18,9 +18,9 @@ import { ArrowRightIcon, BanknoteIcon, CalendarClockIcon } from "lucide-react";
 export default async function Competitions() {
   const data = await prisma.contests.findMany({ include: { brands: true } });
   return (
-    <div className="flex flex-col gap-8 p-4">
-      <h1 className="text-2xl font-bold text-slate-800 p-2">
-        開催中のコンペティション
+    <div className="p-4">
+      <h1 className="text-sm font-bold text-muted-foreground px-2 py-4">
+        {data.length}件のコンペティションが開催中
       </h1>
       <div className="grid gap-4">
         {data.map((competition) => (

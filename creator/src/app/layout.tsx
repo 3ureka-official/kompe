@@ -40,12 +40,12 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex flex-col h-screen">
-          <nav className="w-full flex items-center justify-between gap-4 px-6 pt-6 pb-4 border-b">
+          <nav className="w-full flex items-center justify-between gap-4 px-6 pt-4 pb-2 border-b">
             <Link href="/">
               <Image
                 src="/logo-colored.svg"
                 alt="Kompe logo"
-                width={144}
+                width={120}
                 height={38}
                 priority
               />
