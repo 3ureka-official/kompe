@@ -11,7 +11,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, account }) {
+      // TikTokDisplayAPIなどで利用するためにaccessTokenを保存(ログイン直後のみ値が入る)
+      if (account) {
+        token.accessToken = account.access_token
+      }
       if (user) {
         token.creator_id = user.creator_id;
         token.display_name = user.display_name;
@@ -25,6 +29,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.display_name = token.display_name;
       session.user.avatar_url = token.avatar_url;
       session.user.username = token.username;
+      session.accessToken = token.accessToken;
       return session;
     },
   },
@@ -36,7 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         url: "https://www.tiktok.com/v2/auth/authorize",
         params: {
           client_key: AUTH_TIKTOK_ID,
-          scope: "user.info.profile",
+          scope: "user.info.profile,user.info.stats,video.list",
         },
       },
       userinfo:

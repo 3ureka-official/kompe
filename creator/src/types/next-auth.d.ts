@@ -14,6 +14,7 @@ declare module "next-auth" {
       avatar_url: string;
       username: string;
     };
+    accessToken?: string;
   }
 }
 declare module "next-auth/jwt" {
@@ -22,5 +23,6 @@ declare module "next-auth/jwt" {
     display_name: string;
     avatar_url: string;
     username: string;
+    accessToken?: string;
   }
 }

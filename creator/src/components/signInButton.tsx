@@ -16,7 +16,7 @@ const buttonTexts = {
 export default async function SignInButton({
   variant = "default",
   className,
-  redirectTo = "/dashboard",
+  redirectTo = "/mypage",
 }: Props) {
   return (
     <form

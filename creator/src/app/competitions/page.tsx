@@ -13,14 +13,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
-import { ArrowRightIcon, BanknoteIcon, CalendarClockIcon } from "lucide-react";
+import {
+  ArrowRightIcon,
+  BanknoteIcon,
+  CalendarClockIcon,
+  CrownIcon,
+} from "lucide-react";
 
 export default async function Competitions() {
   const data = await prisma.contests.findMany({ include: { brands: true } });
   return (
-    <div className="flex flex-col gap-8 p-4">
-      <h1 className="text-2xl font-bold text-slate-800 p-2">
-        開催中のコンペティション
+    <div className="p-4">
+      <h1 className="text-sm font-bold text-muted-foreground px-2 py-4">
+        {data.length}件のコンペティションが開催中
       </h1>
       <div className="grid gap-4">
         {data.map((competition) => (
@@ -41,8 +46,8 @@ export default async function Competitions() {
                   </Avatar>
                   <p>{competition.brands.name}</p>
                 </div>
-                <CardAction className="h-full flex items-center gap-2 font-bold text-xl">
-                  <BanknoteIcon className="size-6 stroke-2" />¥
+                <CardAction className="h-full flex items-center gap-2 font-bold text-xl text-primary">
+                  <CrownIcon className="size-4 stroke-2" />¥
                   {competition.prize_pool?.toLocaleString()}
                 </CardAction>
               </CardHeader>

@@ -1,39 +1,51 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowRightIcon,
   CloudUploadIcon,
   EditIcon,
   LoaderCircleIcon,
+  PlayIcon,
   SaveIcon,
 } from "lucide-react";
-import { useActionState, useState } from "react";
+import { useState, useTransition } from "react";
 import { submitVideo } from "@/actions/submitVideo";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 export default function SubmitVideoDialog({
   competitionId,
   previousValue,
+  videos,
+  initialSelectedVideoId,
 }: {
   competitionId: string;
   previousValue: string | null;
+  videos: {
+    id: string;
+    title: string;
+    cover_image_url: string;
+    view_count: number;
+  }[];
+  initialSelectedVideoId?: string;
 }) {
-  const submitVideoWithId = submitVideo.bind(null, competitionId);
-  const [state, action, isPending] = useActionState(
-    submitVideoWithId,
-    undefined,
+  const [open, setOpen] = useState(false);
+  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(
+    initialSelectedVideoId || null,
   );
+  const [isPending, startTransition] = useTransition();
+  const onSubmitButtonClick = () => {
+    if (!selectedVideoId) return;
+    startTransition(() => {
+      submitVideo(competitionId, selectedVideoId);
+    });
+    setOpen(false);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button type="submit" className="w-full">
           {previousValue ? (
@@ -51,21 +63,59 @@ export default function SubmitVideoDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {previousValue ? "動画の紐づけを編集" : "動画を提出"}
-          </DialogTitle>
+          <DialogTitle>紐づける動画を選択</DialogTitle>
         </DialogHeader>
-        <form action={action} className="flex flex-col gap-4">
-          <Label htmlFor="tiktok_url">TikTok URL</Label>
-          <Input
-            type="text"
-            id="tiktok_url"
-            name="tiktok_url"
-            placeholder="https://www.tiktok.com/..."
-            defaultValue={previousValue || ""}
-            required
-          />
-          <Button type="submit" className="w-full">
+        <div className="flex flex-col gap-4">
+          <RadioGroup
+            className="flex flex-col gap-4 mb-4"
+            onValueChange={(value) => setSelectedVideoId(value)}
+            value={selectedVideoId || undefined}
+          >
+            {!videos.length && (
+              <div className="text-sm text-muted-foreground px-4 py-16 text-center">
+                TikTokに動画が見つかりません。動画を投稿してから、再度この画面を開いてください。
+              </div>
+            )}
+            {videos.map((video) => (
+              <Card
+                className={`h-[100px] py-4 ${selectedVideoId === video.id ? "border-primary border-2" : ""}`}
+                key={video.id}
+                onClick={() => setSelectedVideoId(video.id)}
+              >
+                <CardContent className="h-full px-4">
+                  <div className="h-full flex items-center gap-4">
+                    <Image
+                      src={
+                        video.cover_image_url ||
+                        "" /* todo: add fallback image */
+                      }
+                      alt={video.title || "タイトル未設定の動画"}
+                      width={500}
+                      height={500}
+                      className="h-full w-auto rounded-lg"
+                    />
+                    <div>
+                      <p className="text-md">{video.title}</p>
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <PlayIcon className="size-4" />
+                        <p className="text-sm">{`${video.view_count}回再生`}</p>
+                      </div>
+                    </div>
+                    <RadioGroupItem
+                      value={video.id}
+                      id={video.id}
+                      className="ml-auto"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </RadioGroup>
+          <Button
+            className="w-full"
+            onClick={() => onSubmitButtonClick()}
+            disabled={!selectedVideoId || isPending}
+          >
             {isPending ? (
               <>
                 <LoaderCircleIcon className="animate-spin" />
@@ -83,7 +133,7 @@ export default function SubmitVideoDialog({
               </>
             )}
           </Button>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

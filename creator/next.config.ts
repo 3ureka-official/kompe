@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
       new URL(
         "https://hmxnzqebhlkddboypidy.supabase.co/storage/v1/object/public/**",
       ),
+      {
+        protocol: "https",
+        hostname: "*.tiktokcdn.com",
+      },
     ],
   },
 };
