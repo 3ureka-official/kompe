@@ -19,6 +19,7 @@ export default function SubmitVideoDialog({
   competitionId,
   previousValue,
   videos,
+  initialSelectedVideoId,
 }: {
   competitionId: string;
   previousValue: string | null;
@@ -28,9 +29,12 @@ export default function SubmitVideoDialog({
     cover_image_url: string;
     view_count: number;
   }[];
+  initialSelectedVideoId?: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(
+    initialSelectedVideoId || null,
+  );
   const [isPending, startTransition] = useTransition();
   const onSubmitButtonClick = () => {
     if (!selectedVideoId) return;

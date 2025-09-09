@@ -13,6 +13,7 @@ import {
   CalendarClockIcon,
   ChevronRightIcon,
   CircleDollarSignIcon,
+  ExternalLinkIcon,
   FileVideoCameraIcon,
   PlayIcon,
   VideoIcon,
@@ -54,7 +55,7 @@ export default async function ApplicationPage({
     ? (
         await tikTokAPIClient.queryVideos(
           [application.tiktok_url],
-          ["id", "title", "cover_image_url", "view_count"],
+          ["id", "title", "cover_image_url", "view_count", "share_url"],
         )
       ).data.videos[0]
     : null;
@@ -94,7 +95,11 @@ export default async function ApplicationPage({
               自分の動画
             </h2>
             {application.tiktok_url && appliedVideo ? (
-              <Link href={application.tiktok_url}>
+              <Link
+                href={appliedVideo.share_url || ""}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Card className="h-[100px] py-4">
                   <CardContent className="h-full px-4">
                     <div className="h-full flex items-center gap-4">
@@ -115,6 +120,7 @@ export default async function ApplicationPage({
                           <p className="text-sm">{`${appliedVideo.view_count}回再生`}</p>
                         </div>
                       </div>
+                      <ExternalLinkIcon className="size-4 stroke-2 ml-auto" />
                     </div>
                   </CardContent>
                 </Card>
@@ -227,6 +233,7 @@ export default async function ApplicationPage({
                 video.view_count !== undefined,
             )
           }
+          initialSelectedVideoId={appliedVideo?.id}
         />
       </div>
     </div>
