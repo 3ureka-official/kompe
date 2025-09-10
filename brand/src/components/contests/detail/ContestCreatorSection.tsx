@@ -82,11 +82,8 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">
-          参加クリエイター
-        </h2>
+    <div className="bg-white">
+      <div className="flex items-center justify-between my-6">
         <div className="text-sm text-gray-500">
           {applications?.length}名が参加中
         </div>

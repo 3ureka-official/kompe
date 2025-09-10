@@ -82,11 +82,11 @@ export default function ContestDetailPage() {
       />
 
       {/* タブ形式のコンテンツ */}
-      <Tabs defaultValue="overview" className="mt-8">
+      <Tabs defaultValue="overview">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="overview">概要</TabsTrigger>
-          <TabsTrigger value="creators">参加者</TabsTrigger>
           <TabsTrigger value="assets">アセット</TabsTrigger>
+          <TabsTrigger value="creators">リーダーボード</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">

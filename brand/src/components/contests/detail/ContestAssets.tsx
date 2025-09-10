@@ -3,6 +3,7 @@ import { useGetAssets } from "@/hooks/contest/asset/useGetAssets";
 import { useGetInspirations } from "@/hooks/contest/inspiration/useGetInspirations";
 import { AssetItem, InspirationItem } from "@/types/Contest";
 import { Link } from "lucide-react";
+import { Separator } from "@/components/ui/Separator";
 
 type Props = {
   contest: Contest;
@@ -17,9 +18,12 @@ export function ContestAssets({ contest }: Props) {
 
   return (
     <div>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+      <div className="mt-4 mb-10">
         <h2 className="mb-1">動画素材</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {assets?.length === 0 && (
+            <div className="text-sm text-gray-500">動画素材がありません</div>
+          )}
           {assets?.map((asset: AssetItem, index: number) => (
             <div
               key={index}
@@ -48,9 +52,16 @@ export function ContestAssets({ contest }: Props) {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <Separator />
+
+      <div className="mt-4 mb-10">
         <h2 className="mb-1">イメージ動画</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {inspirations?.length === 0 && (
+            <div className="text-sm text-gray-500">
+              イメージ動画がありません
+            </div>
+          )}
           {inspirations?.map((inspiration: InspirationItem, index: number) => (
             <div
               key={index}

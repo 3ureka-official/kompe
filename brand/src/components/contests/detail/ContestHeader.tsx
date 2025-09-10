@@ -43,7 +43,7 @@ export function ContestHeader({ contest, refetch, contestPayment }: Props) {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+      <div className="bg-white mb-6">
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
@@ -55,17 +55,17 @@ export function ContestHeader({ contest, refetch, contestPayment }: Props) {
               {contest.title}
             </h1>
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-16 text-sm text-gray-500">
+              <div className="flex items-center gap-16 text-gray-500">
                 <div className="flex flex-col items-start">
-                  <p className="text-gray-500">開催期間</p>
-                  <p className="text-black text-sm">
+                  <h2 className="text-gray-500">開催期間</h2>
+                  <p className="text-black">
                     {formatDate(contest.contest_start_date, "PPP")} -{" "}
                     {formatDate(contest.contest_end_date, "PPP")}
                   </p>
                 </div>
                 <div className="flex flex-col items-start">
-                  <p className="text-gray-500">総賞金</p>
-                  <p className="text-black text-sm">
+                  <h2 className="text-gray-500">総賞金</h2>
+                  <p className="text-black">
                     {formatCurrency(contest.prize_pool)}
                   </p>
                 </div>
