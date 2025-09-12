@@ -20,7 +20,9 @@ export function BrandCreateForm() {
   const { profile } = useContext(AuthContext);
   const router = useRouter();
 
-  const { mutate: createBrand, isPending, error } = useCreateBrand();
+  const [isPending, setIsPending] = useState(false);
+
+  const { mutate: createBrand, error } = useCreateBrand();
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -44,30 +46,32 @@ export function BrandCreateForm() {
 
     const data = getValues();
 
-    try {
-      await createBrand(
-        {
-          userId: profile.id,
-          brandData: {
-            name: data.name,
-            logo_url: logoPreview || null,
-            description: data.description || "",
-            website: data.website || null,
-            tiktok_username: data.tiktok_username || null,
-            instagram_url: data.instagram_url || null,
-          },
-          logoFile: logoFile,
+    setIsPending(true);
+
+    createBrand(
+      {
+        userId: profile.id,
+        brandData: {
+          name: data.name,
+          logo_url: logoPreview || null,
+          description: data.description || "",
+          website: data.website || null,
+          tiktok_username: data.tiktok_username || null,
+          instagram_url: data.instagram_url || null,
         },
-        {
-          onSuccess: () => {
-            router.push("/contests");
-          },
+        logoFile: logoFile,
+      },
+      {
+        onSuccess: () => {
+          router.push("/contests");
         },
-      );
-    } catch (error) {
-      console.error("ブランド作成エラー:", error);
-    }
+      },
+    );
   };
+
+  if (isPending) {
+    return <div>ブランド作成中...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -152,7 +156,6 @@ export function BrandCreateForm() {
                     placeholder="あなたのブランドについて教えてください"
                     maxLength={240}
                     showCharCount={false}
-                    required
                   />
                 </FormField>
               )}
@@ -171,7 +174,6 @@ export function BrandCreateForm() {
                     value={field.value || ""}
                     onChange={field.onChange}
                     placeholder="https://"
-                    required
                   />
                 </FormField>
               )}
