@@ -7,18 +7,23 @@ import { ContestAssets } from "@/components/contests/detail/ContestAssets";
 import { ContestCreatorSection } from "@/components/contests/detail/ContestCreatorSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { useGetContest } from "@/hooks/contest/useGetContest";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useGetContestPayment } from "@/hooks/contestPayment/useGetPayment";
 import { PaymentPollingOverlay } from "@/components/contests/detail/PaymentPollingOverlay";
 import { AlertCancel } from "@/components/contests/detail/AlertCancel";
 import { AlertSuccess } from "@/components/contests/detail/AlertSuccess";
+import { BrandContext } from "@/contexts/BrandContext";
 
 export default function ContestDetailPage() {
   const params = useParams();
   const contestId = params.id as string;
+  const { brand } = useContext(BrandContext);
 
-  const { getContestQuery } = useGetContest(contestId);
-  const { data: contest, isPending, refetch } = getContestQuery;
+  const {
+    data: contest,
+    isPending,
+    refetch,
+  } = useGetContest(contestId, brand?.id || "");
 
   const {
     data: contestPayment,
