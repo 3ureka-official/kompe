@@ -54,11 +54,12 @@ export const createContest = async (
   }
 };
 
-export const getAllContests = async (): Promise<Contest[]> => {
+export const getAllContests = async (brandId: string): Promise<Contest[]> => {
   try {
     const { data, error } = await supabase
       .from("contests")
-      .select("*, contest_payments(*)");
+      .select("*, contest_payments(*)")
+      .eq("brand_id", brandId);
 
     if (error) {
       throw new Error(error.message);
@@ -71,11 +72,15 @@ export const getAllContests = async (): Promise<Contest[]> => {
   }
 };
 
-export const getContest = async (contestId: string): Promise<Contest> => {
+export const getContest = async (
+  contestId: string,
+  brandId: string,
+): Promise<Contest> => {
   const { data, error } = await supabase
     .from("contests")
     .select("*")
     .eq("id", contestId)
+    .eq("brand_id", brandId)
     .single();
 
   if (error) {
