@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { upsertContestTransferUnique } from "@/services/contestTransfer";
+import { upsertContestTransferUnique } from "@/services/contestTransferService";
 import { ContestTransfer } from "@/types/ContestTransfer";
 
 export function useCreateContestTransfer() {

@@ -1,5 +1,6 @@
 import { User } from "@/types/User";
 import { supabase } from "@/lib/supabase";
+import { supabaseAuthErrorCodeToJapaneseMessage } from "@/constants/auth.constant";
 
 /**
  * ユーザープロフィールを取得
@@ -14,13 +15,11 @@ export async function getUser(userId: string): Promise<User | null> {
       .eq("id", userId)
       .single();
 
-    if (error) {
-      console.error("ユーザープロフィール取得エラー:", error);
-      throw error;
+    if (error?.code) {
+      throw new Error(supabaseAuthErrorCodeToJapaneseMessage[error.code]);
     }
     return data as User;
   } catch (error) {
-    console.error("ユーザープロフィール取得エラー:", error);
     throw error;
   }
 }
@@ -39,14 +38,13 @@ export async function createUser(
       .insert(user_data)
       .select("*")
       .single();
-    if (error) {
-      console.error("ユーザープロフィール作成エラー:", error);
-      throw error;
+
+    if (error?.code) {
+      throw new Error(supabaseAuthErrorCodeToJapaneseMessage[error.code]);
     }
 
     return data as User;
   } catch (error) {
-    console.error("ユーザープロフィール作成エラー:", error);
     throw error;
   }
 }
@@ -68,13 +66,12 @@ export async function updateUser(
       .eq("id", userId)
       .select("*")
       .single();
-    if (error) {
-      console.error("ユーザー編集エラー:", error);
-      throw error;
+
+    if (error?.code) {
+      throw new Error(supabaseAuthErrorCodeToJapaneseMessage[error.code]);
     }
     return data as User;
   } catch (error) {
-    console.error("ユーザー編集エラー:", error);
     throw error;
   }
 }
@@ -91,14 +88,12 @@ export const signIn = async (email: string, password: string) => {
       password: password,
     });
 
-    if (error) {
-      console.error("ログインエラー:", error);
-      throw new Error(error.message);
+    if (error?.code) {
+      throw new Error(supabaseAuthErrorCodeToJapaneseMessage[error.code]);
     }
 
     return data.user;
   } catch (error) {
-    console.error("ログインエラー:", error);
     throw error;
   }
 };
@@ -110,13 +105,16 @@ export const signIn = async (email: string, password: string) => {
  */
 export const signUp = async (email: string, password: string) => {
   try {
-    const { data } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
     });
 
+    if (error?.code) {
+      throw new Error(supabaseAuthErrorCodeToJapaneseMessage[error.code]);
+    }
+
     if (!data.user) {
-      console.error("サインアップエラー:", data);
       throw new Error("ユーザーが作成できませんでした");
     }
 
@@ -127,7 +125,6 @@ export const signUp = async (email: string, password: string) => {
 
     return user;
   } catch (error) {
-    console.error("サインアップエラー:", error);
     throw error;
   }
 };
@@ -139,7 +136,6 @@ export const logout = async () => {
   try {
     await supabase.auth.signOut();
   } catch (error) {
-    console.error("ログアウトエラー:", error);
     throw error;
   }
 };

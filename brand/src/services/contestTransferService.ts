@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabase";
-import { ContestTransfer } from "@/types/ContestTransfer";
 
 export async function findStripeAccountIdByCreator(creatorId: string) {
   const { data, error } = await supabase
