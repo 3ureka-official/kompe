@@ -19,6 +19,8 @@ import {
   createVideoListRequest,
   VideoFieldsSchema,
 } from "@/models/tiktok/video";
+import { getToken } from "next-auth/jwt";
+import { headers } from "next/headers";
 
 // TikTok API configuration
 const TIKTOK_API_BASE_URL =
@@ -82,9 +84,16 @@ export class TikTokAPIClient {
     fields?: UserInfoFields[],
   ): Promise<TikTokUserInfoResponse> {
     try {
-      // Get access token from NextAuth session
-      const session = await auth();
-      if (!session?.accessToken) {
+      // Get access token from jwt
+      const token = await getToken({
+        req: {
+          headers: await headers(),
+        },
+        secret: process.env.AUTH_SECRET,
+        cookieName: "__Secure-authjs.session-token"
+      });
+
+      if (!token?.accessToken) {
         throw new TikTokAPIError(
           "No access token available. User must be authenticated.",
         );
@@ -106,7 +115,7 @@ export class TikTokAPIClient {
           fields: fieldsQuery,
         },
         headers: {
-          Authorization: `Bearer ${session.accessToken}`,
+          Authorization: `Bearer ${token.accessToken}`,
         },
       });
 
@@ -136,9 +145,16 @@ export class TikTokAPIClient {
     fields: VideoFields[],
   ): Promise<TikTokVideoQueryResponse> {
     try {
-      // Get access token from NextAuth session
-      const session = await auth();
-      if (!session?.accessToken) {
+      // Get access token from jwt
+      const token = await getToken({
+        req: {
+          headers: await headers(),
+        },
+        secret: process.env.AUTH_SECRET,
+        cookieName: "__Secure-authjs.session-token"
+      });
+
+      if (!token?.accessToken) {
         throw new TikTokAPIError(
           "No access token available. User must be authenticated.",
         );
@@ -159,7 +175,7 @@ export class TikTokAPIClient {
             fields: fieldsQuery,
           },
           headers: {
-            Authorization: `Bearer ${session.accessToken}`,
+            Authorization: `Bearer ${token.accessToken}`,
             "Content-Type": "application/json",
           },
         },
@@ -191,9 +207,16 @@ export class TikTokAPIClient {
     options?: { cursor?: number; maxCount?: number },
   ): Promise<TikTokVideoListResponse> {
     try {
-      // Get access token from NextAuth session
-      const session = await auth();
-      if (!session?.accessToken) {
+      // Get access token from jwt
+      const token = await getToken({
+        req: {
+          headers: await headers(),
+        },
+        secret: process.env.AUTH_SECRET,
+        cookieName: "__Secure-authjs.session-token"
+      });
+
+      if (!token?.accessToken) {
         throw new TikTokAPIError(
           "No access token available. User must be authenticated.",
         );
@@ -218,7 +241,7 @@ export class TikTokAPIClient {
             fields: fieldsQuery,
           },
           headers: {
-            Authorization: `Bearer ${session.accessToken}`,
+            Authorization: `Bearer ${token.accessToken}`,
             "Content-Type": "application/json",
           },
         },
