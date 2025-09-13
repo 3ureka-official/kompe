@@ -33,28 +33,30 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <nav className="w-full flex items-center justify-between gap-4 px-6 py-8">
-          <Link href="/">
-            <Image
-              src="/logo-colored.svg"
-              alt="Kompe logo"
-              width={144}
-              height={38}
-              priority
-            />
-          </Link>
-          {session ? (
-            <Avatar>
-              <AvatarImage src={session.user?.avatar_url || undefined} />
-              <AvatarFallback>
-                {session.user?.display_name?.split("", 2)}
-              </AvatarFallback>
-            </Avatar>
-          ) : (
-            <SignInButton variant="minimal" />
-          )}
-        </nav>
-        {children}
+        <div className="flex flex-col h-screen">
+          <nav className="w-full flex items-center justify-between gap-4 px-6 pt-4 pb-2 border-b">
+            <Link href="/">
+              <Image
+                src="/logo-colored.svg"
+                alt="Kompe logo"
+                width={120}
+                height={38}
+                priority
+              />
+            </Link>
+            {session ? (
+              <Avatar>
+                <AvatarImage src={session.user?.avatar_url || undefined} />
+                <AvatarFallback>
+                  {session.user?.display_name?.split("", 2)}
+                </AvatarFallback>
+              </Avatar>
+            ) : (
+              <SignInButton variant="minimal" />
+            )}
+          </nav>
+          {children}
+        </div>
       </body>
     </html>
   );
