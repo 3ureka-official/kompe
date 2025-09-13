@@ -1,4 +1,6 @@
 import { auth } from "@/auth";
+import CheckStripeHistoryButton from "@/components/CheckStripeHistoryButton";
+import ConnectStripeButton from "@/components/ConnectStripeButton";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -41,6 +43,14 @@ export default async function MyPage() {
     include: { contests: { include: { brands: true } } },
   });
   const tiktokUser = userInfo.data.user;
+
+  const creatorId = session?.user?.creator_id;
+  const account = await prisma.stripe_connect_accounts.findUnique({
+    where: {
+      creator_id: creatorId,
+    },
+  });
+
   return (
     <div className="w-full grid gap-4 p-4">
       <Card className="bg-black text-white">
@@ -92,31 +102,19 @@ export default async function MyPage() {
         <CardHeader>
           <CardTitle className="text-sm font-bold">Stripe口座情報</CardTitle>
           <CardDescription className="text-indigo-400 font-semibold">
-            Stripeアカウントと連携しています
+            {account ? 'Stripeアカウントと連携しています' : 'Stripeアカウントが登録されていません'}
           </CardDescription>
-          <CardAction>
-            <Badge className="bg-cyan-600">
-              連携済み
-              <BadgeCheckIcon />
-            </Badge>
-          </CardAction>
+          {account && (
+            <CardAction>
+              <Badge className="bg-cyan-600">
+                連携済み
+                <BadgeCheckIcon />
+              </Badge>
+            </CardAction>
+          )}
         </CardHeader>
         <CardContent className="flex flex-row items-center gap-4">
-          <Image
-            src={tiktokUser.avatar_url_100 || ""}
-            alt="Avatar"
-            width={64}
-            height={64}
-            className="rounded-full size-12"
-          />
-          <div className="">
-            <p className="text-center text-lg font-bold">
-              {tiktokUser.display_name}
-            </p>
-            <p className="text-center text-sm text-indigo-400 font-semibold">
-              @{tiktokUser.username}
-            </p>
-          </div>
+          {account ? <CheckStripeHistoryButton /> : <ConnectStripeButton />}
         </CardContent>
       </Card>
       <Card>
