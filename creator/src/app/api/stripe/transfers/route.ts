@@ -1,0 +1,125 @@
+// app/api/contests/[id]/transfers/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { stripe } from "@/lib/stripe";
+import { auth } from "@/auth";
+import prisma from "@/lib/prisma";
+import { TransferSchema } from "@/models/stripe/transfer";
+
+export const runtime = "nodejs";
+
+interface ValidationError {
+  name: string;
+  message: string;
+  inner?: Array<{ path: string; message: string }>;
+  path?: string;
+}
+
+function formatYupError(err: ValidationError) {
+  if (err?.name !== "ValidationError")
+    return [{ message: String(err?.message ?? "validation error") }];
+  return err.inner?.length
+    ? err.inner.map((e) => ({ path: e.path, message: e.message }))
+    : [{ path: err.path, message: err.message }];
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const raw = await req.json().catch(() => ({}));
+    const body = TransferSchema.parse(raw);
+
+    // 1) 認証（Bearer 必須）
+    const session = await auth();
+    if (!session?.user?.creator_id)
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+    // 2) 送金先アカウント解決
+    const connectedAccount = await prisma.stripe_connect_accounts.findUnique({
+      where: {
+        creator_id: body.creatorId,
+      },
+    });
+
+    if (!connectedAccount) {
+      return NextResponse.json(
+        { error: "creator_has_no_connected_account" },
+        { status: 409 },
+      );
+    }
+
+    const transfer = await prisma.contest_transfers.findUnique({
+      where: {
+        contest_id: body.contestId,
+        application_id: body.applicationId,
+        creator_id: body.creatorId,
+      },
+    });
+
+    if (!transfer) {
+      return NextResponse.json(
+        { error: "transfer_not_found" },
+        { status: 404 },
+      );
+    } else if (transfer.stripe_transfer_id) {
+      return NextResponse.json(
+        { error: "transfer_already_created" },
+        { status: 409 },
+      );
+    }
+
+    // 3) Stripe Transfer を作成（route.ts で直に呼ぶ）
+    const idempotencyKey = `contest:${body.contestId}:app:${body.applicationId}:creator:${body.creatorId}:amt:${transfer.amount}`;
+
+    const tr = await stripe.transfers.create(
+      {
+        amount: Number(transfer.amount),
+        currency: "jpy",
+        destination: connectedAccount.stripe_account_id,
+        transfer_group: body.contestId,
+        description: `Contest ${body.contestId} award`,
+        metadata: {
+          contestId: body.contestId,
+          applicationId: body.applicationId,
+          creatorId: body.creatorId,
+        },
+      },
+      { idempotencyKey },
+    );
+
+    // 4) DBに記録（重複は upsert で防止）
+    await prisma.contest_transfers.update({
+      where: {
+        contest_id: body.contestId,
+        application_id: body.applicationId,
+        creator_id: body.creatorId,
+      },
+      data: {
+        stripe_transfer_id: tr.id,
+        destination_account: connectedAccount.stripe_account_id,
+      },
+    });
+
+    return NextResponse.json({ ok: true }, { status: 200 });
+  } catch (error: unknown) {
+    console.error("error", error);
+
+    if (error instanceof Error && error.name === "ValidationError") {
+      return NextResponse.json(
+        {
+          error: "validation_error",
+          details: formatYupError(error as ValidationError),
+        },
+        { status: 400 },
+      );
+    }
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    const errorCode = (error as { code?: string })?.code;
+    const status = errorCode === "insufficient_funds" ? 409 : 400;
+
+    return NextResponse.json(
+      { error: errorMessage ?? "bad_request" },
+      { status },
+    );
+  }
+}

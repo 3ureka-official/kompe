@@ -1,4 +1,5 @@
 import BottomNavigationBar from "@/components/bottomNavigationBar";
+import QueryProvider from "@/components/QueryProvider";
 
 export default async function CompetitionsLayout({
   children,
@@ -7,7 +8,9 @@ export default async function CompetitionsLayout({
 }>) {
   return (
     <>
-      <main className="grow min-h-0 overflow-auto relative">{children}</main>
+      <main className="grow min-h-0 overflow-auto relative">
+        <QueryProvider>{children}</QueryProvider>
+      </main>
       <BottomNavigationBar currentPage="competitions" />
     </>
   );
