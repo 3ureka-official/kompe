@@ -55,8 +55,8 @@ export async function POST() {
   const link = await stripe.accountLinks.create({
     account: account.id,
     type: "account_onboarding",
-    refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/profile`,
-    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/profile`,
+    refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/mypage`,
+    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/mypage`,
   });
 
   return NextResponse.json({ url: link.url }, { status: 200 });
