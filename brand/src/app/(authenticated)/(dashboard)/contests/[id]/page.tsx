@@ -13,6 +13,7 @@ import { PaymentPollingOverlay } from "@/components/contests/detail/PaymentPolli
 import { AlertCancel } from "@/components/contests/detail/AlertCancel";
 import { AlertSuccess } from "@/components/contests/detail/AlertSuccess";
 import { BrandContext } from "@/contexts/BrandContext";
+import { Loading } from "@/components/ui/Loading";
 
 export default function ContestDetailPage() {
   const params = useParams();
@@ -57,7 +58,9 @@ export default function ContestDetailPage() {
     }
   }, [contestPayment, showCheckoutLoading, isPendingContestPayment]);
 
-  if (isPending || isPendingContestPayment) return <div>読み込み中...</div>;
+  if (isPending || isPendingContestPayment) {
+    return <Loading isPending={isPending} />;
+  }
 
   if (!contest) return <div>コンテストが見つかりません</div>;
 
