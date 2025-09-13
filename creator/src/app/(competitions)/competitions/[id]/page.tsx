@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { applications, contest_transfers, contests } from "@prisma/client";
+import { applications } from "@prisma/client";
 import Image from "next/image";
 import {
   Breadcrumb,
