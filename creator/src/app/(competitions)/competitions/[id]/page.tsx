@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { applications } from "@prisma/client";
+import { applications, contest_transfers, contests } from "@prisma/client";
 import Image from "next/image";
 import {
   Breadcrumb,
@@ -30,7 +30,6 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
-import Markdown from "react-markdown";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import ApplyDialog from "@/components/applyDialog";
@@ -39,11 +38,21 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SessionProvider } from "next-auth/react";
 import SignInButton from "@/components/signInButton";
+import GetPrizeDialog from "@/components/getPrizeDialog";
+import { formatJpy } from "@/utils/format";
 
 const getIsApplied = async (applications: applications[]) => {
   const session = await auth();
   if (!session) return null;
   return applications.find(
+    (app) => app.creator_id === session.user?.creator_id,
+  );
+};
+
+const getRanking = async (applications: applications[]) => {
+  const session = await auth();
+  if (!session) return null;
+  return applications.findIndex(
     (app) => app.creator_id === session.user?.creator_id,
   );
 };
@@ -61,7 +70,7 @@ export default async function CompetitionPage({
   });
   const applications = await prisma.applications.findMany({
     where: { contest_id: id },
-    include: { creators: true },
+    include: { creators: true, contest_transfers: true },
     orderBy: { views: "desc" },
   });
   const assets = await prisma.contests_assets.findMany({
@@ -71,6 +80,7 @@ export default async function CompetitionPage({
     where: { contest_id: id },
   });
   const isApplied = await getIsApplied(applications);
+  const ranking = await getRanking(applications);
 
   if (!competition) {
     return <div>コンペティションが見つかりませんでした。</div>;
@@ -172,9 +182,20 @@ export default async function CompetitionPage({
                   <p className="text-lg font-semibold">{`¥${competition.prize_pool?.toLocaleString()}`}</p>
                 </div>
               </div>
-              <div className="text-sm text-gray-500">
-                <Markdown>{competition.description}</Markdown>
-              </div>
+              <section className="py-6 border-t border-t-foreground/10">
+                <p className="mb-1">コンテスト概要</p>
+                <p className="text-sm">{competition.description}</p>
+              </section>
+
+              <section className="py-6 border-t border-t-foreground/10">
+                <p className="mb-1">試供品について</p>
+                <p className="text-sm">{competition.supply_of_samples}</p>
+              </section>
+
+              <section className="py-6 border-t border-t-foreground/10 border-b border-b-foreground/10">
+                <p className="mb-1">動画の条件</p>
+                <p className="text-sm">{competition.requirements}</p>
+              </section>
             </TabsContent>
             <TabsContent value="assets">
               <div className="*:border-b *:border-b-foreground/10">
@@ -229,6 +250,7 @@ export default async function CompetitionPage({
                     <TableHead>順位</TableHead>
                     <TableHead>クリエイター</TableHead>
                     <TableHead className="text-right">再生数</TableHead>
+                    <TableHead className="text-right">賞金</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -241,6 +263,9 @@ export default async function CompetitionPage({
                       <TableCell className="text-right">
                         {application.views.toLocaleString()}
                       </TableCell>
+                      <TableCell className="text-right">
+                        {formatJpy(competition.prize_distribution[index])}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -251,8 +276,21 @@ export default async function CompetitionPage({
         <div className="bg-card border border-b-0 rounded-t-2xl w-full p-4">
           {session ? (
             isApplied ? (
-              isEnded ? (
-                <></>
+              isEnded && ranking !== null ? (
+                applications[ranking]?.contest_transfers?.stripe_transfer_id ? (
+                  <p className="text-sm text-muted-foreground">
+                    このコンテストは終了しました。
+                    <br />
+                    順位：{ranking + 1}位
+                  </p>
+                ) : (
+                  <GetPrizeDialog
+                    competition={competition}
+                    application={applications[ranking]}
+                    contestTransfers={applications[ranking]?.contest_transfers}
+                    ranking={ranking}
+                  />
+                )
               ) : (
                 <Button className="w-full" asChild>
                   <Link href={`/applications/${competition.id}`}>

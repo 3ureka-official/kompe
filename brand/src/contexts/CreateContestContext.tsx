@@ -58,7 +58,7 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
 
   const { mutate: createContest, isPending: isCreating } = useCreateContest();
   const { mutate: updateContest, isPending: isUpdating } = useUpdateContest();
-  const { getContestQuery } = useGetContest(contestId);
+  const { data: getContestQuery } = useGetContest(contestId, brand?.id || "");
   const { getAssetsQuery } = useGetAssets(contestId);
   const { getInspirationsQuery } = useGetInspirations(contestId);
 
@@ -171,10 +171,10 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (getContestQuery.data) {
-      setData(getContestQuery.data as ContestCreateFormData);
+    if (getContestQuery) {
+      setData(getContestQuery as ContestCreateFormData);
     }
-  }, [getContestQuery.data]);
+  }, [getContestQuery]);
 
   useEffect(() => {
     if (getAssetsQuery.data) {
