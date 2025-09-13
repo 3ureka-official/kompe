@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -12,12 +11,8 @@ import {
 } from "@/components/ui/card";
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 import prisma from "@/lib/prisma";
-import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
-import { ja } from "date-fns/locale";
 import {
   BadgeCheckIcon,
-  BanknoteIcon,
-  CalendarClockIcon,
   ChevronRightIcon,
 } from "lucide-react";
 import Image from "next/image";

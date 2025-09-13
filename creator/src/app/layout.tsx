@@ -6,12 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { auth } from "@/auth";
 import SignInButton from "@/components/signInButton";
 import Link from "next/link";
-import {
-  BellIcon,
-  CircleDollarSignIcon,
-  CrownIcon,
-  UserIcon,
-} from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
