@@ -30,6 +30,10 @@ export async function POST() {
     select: { stripe_account_id: true },
   });
 
+  if (!account) {
+    return NextResponse.json({ error: "account_not_found" }, { status: 404 });
+  }
+
   // 6) Onboarding Link 発行（必要項目のみ収集したいなら collection_options を調整）
   const link = await stripe.accounts.createLoginLink(
     account?.stripe_account_id,
