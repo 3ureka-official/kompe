@@ -1,4 +1,3 @@
-// services/contestTransferRepo.ts
 import { supabase } from "@/lib/supabase";
 
 export async function findStripeAccountIdByCreator(creatorId: string) {

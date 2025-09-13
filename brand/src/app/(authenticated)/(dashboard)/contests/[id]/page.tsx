@@ -7,18 +7,24 @@ import { ContestAssets } from "@/components/contests/detail/ContestAssets";
 import { ContestCreatorSection } from "@/components/contests/detail/ContestCreatorSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { useGetContest } from "@/hooks/contest/useGetContest";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useGetContestPayment } from "@/hooks/contestPayment/useGetPayment";
 import { PaymentPollingOverlay } from "@/components/contests/detail/PaymentPollingOverlay";
 import { AlertCancel } from "@/components/contests/detail/AlertCancel";
 import { AlertSuccess } from "@/components/contests/detail/AlertSuccess";
+import { BrandContext } from "@/contexts/BrandContext";
+import { Loading } from "@/components/ui/Loading";
 
 export default function ContestDetailPage() {
   const params = useParams();
   const contestId = params.id as string;
+  const { brand } = useContext(BrandContext);
 
-  const { getContestQuery } = useGetContest(contestId);
-  const { data: contest, isPending, refetch } = getContestQuery;
+  const {
+    data: contest,
+    isPending,
+    refetch,
+  } = useGetContest(contestId, brand?.id || "");
 
   const {
     data: contestPayment,
@@ -52,7 +58,9 @@ export default function ContestDetailPage() {
     }
   }, [contestPayment, showCheckoutLoading, isPendingContestPayment]);
 
-  if (isPending || isPendingContestPayment) return <div>読み込み中...</div>;
+  if (isPending || isPendingContestPayment) {
+    return <Loading isPending={isPending} />;
+  }
 
   if (!contest) return <div>コンテストが見つかりません</div>;
 
@@ -82,11 +90,11 @@ export default function ContestDetailPage() {
       />
 
       {/* タブ形式のコンテンツ */}
-      <Tabs defaultValue="overview" className="mt-8">
+      <Tabs defaultValue="overview">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="overview">概要</TabsTrigger>
-          <TabsTrigger value="creators">参加者</TabsTrigger>
           <TabsTrigger value="assets">アセット</TabsTrigger>
+          <TabsTrigger value="creators">リーダーボード</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">

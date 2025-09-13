@@ -31,10 +31,10 @@ export const ConfirmDialog = ({
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="gap-2">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
-        <div className="flex justify-end gap-2 mt-4">
+        <div className="flex justify-end gap-2 mt-2">
           <Button variant="outline" onClick={onCancel}>
             {cancel}
           </Button>

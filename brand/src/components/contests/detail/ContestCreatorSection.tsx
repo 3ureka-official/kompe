@@ -2,12 +2,7 @@ import { Contest } from "@/types/Contest";
 import { useGetApplication } from "@/hooks/application/useGetApplication";
 import { formatNumber } from "@/utils/format";
 import { Button } from "@/components/ui/Button";
-import {
-  LinkIcon,
-  CreditCardIcon,
-  CheckIcon,
-  CircleAlertIcon,
-} from "lucide-react";
+import { CreditCardIcon, CheckIcon, CircleAlertIcon } from "lucide-react";
 import Image from "next/image";
 import {
   Table,
@@ -18,10 +13,11 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { useState } from "react";
-import TransactionModal from "./TransactionModal";
-import { Application } from "@/types/Application";
 import { ContestPayment } from "@/types/ContestPayment";
 import { Badge } from "@/components/ui/Badge";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useCreateContestTransfer } from "@/hooks/transfer/useCreateContestTransfer";
+import { Application } from "@/types/Application";
 
 type Props = {
   contest: Contest;
@@ -30,16 +26,17 @@ type Props = {
 
 export function ContestCreatorSection({ contest, contestPayment }: Props) {
   const [showTransactionModal, setShowTransactionModal] = useState<{
-    isOpen: boolean;
     application: Application | null;
-    amount: number;
-  }>({
-    isOpen: false,
-    application: null,
-    amount: 0,
-  });
+    index: number;
+  } | null>(null);
   const { getApplicationQuery } = useGetApplication(contest.id);
-  const { data: applications, isPending } = getApplicationQuery;
+  const {
+    data: applications,
+    isPending,
+    refetch: refetchApplications,
+  } = getApplicationQuery;
+
+  const { mutate: createContestTransfer } = useCreateContestTransfer();
 
   const renderRankColor = (rank: number) => {
     if (rank === 0 && formatNumber(contest.prize_distribution[rank]) != "0")
@@ -53,26 +50,40 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
     return "";
   };
 
+  const handleCreateContestTransfer = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    if (!showTransactionModal?.application) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    createContestTransfer(
+      {
+        contest_id: contest.id,
+        application_id: showTransactionModal.application.id,
+        creator_id: showTransactionModal.application.creator?.id,
+        brand_id: contest.brand_id,
+        stripe_transfer_id: "",
+        destination_account: "",
+        amount: contest.prize_distribution[showTransactionModal.index],
+        currency: "jpy",
+      },
+      {
+        onSuccess: () => {
+          refetchApplications();
+          setShowTransactionModal(null);
+        },
+      },
+    );
+  };
+
   if (isPending) {
     return <div>Loading...</div>;
   }
 
-  const handleOpenTransactionModal = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    application: Application,
-    amount: number,
-  ) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setShowTransactionModal({ isOpen: true, application, amount });
-  };
-
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">
-          参加クリエイター
-        </h2>
+    <div className="bg-white">
+      <div className="flex items-center justify-between my-6">
         <div className="text-sm text-gray-500">
           {applications?.length}名が参加中
         </div>
@@ -187,13 +198,15 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
                             className="relative"
                             variant="outline"
                             size="sm"
-                            onClick={(event) =>
-                              handleOpenTransactionModal(
-                                event,
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              setShowTransactionModal({
                                 application,
-                                contest.prize_distribution[index],
-                              )
-                            }
+                                index,
+                              });
+                            }}
+                            disabled={application.contest_transfer != null}
                           >
                             <CreditCardIcon className="w-4 h-4" />
                             {application.contest_transfer ? (
@@ -213,9 +226,6 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
                             )}
                           </Button>
                         )}
-                      <Button variant="outline" size="sm">
-                        <LinkIcon className="w-4 h-4" />
-                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -225,19 +235,23 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
         </div>
       </div>
 
-      {showTransactionModal.isOpen && (
-        <TransactionModal
-          isOpen={showTransactionModal.isOpen}
-          onClose={() =>
-            setShowTransactionModal({
-              isOpen: false,
-              application: null,
-              amount: 0,
-            })
-          }
-          contest={contest}
-          application={showTransactionModal.application!}
-          amount={showTransactionModal.amount}
+      {showTransactionModal && (
+        <ConfirmDialog
+          title="動画を承認しますか？"
+          description="動画を確認して順位を確定してください"
+          action="承認"
+          onAction={(event) => {
+            handleCreateContestTransfer(event);
+          }}
+          onCancel={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            setShowTransactionModal(null);
+          }}
+          open={showTransactionModal != null}
+          onOpenChange={() => setShowTransactionModal(null)}
+          variant="primary"
+          disabled={false}
         />
       )}
     </div>

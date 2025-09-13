@@ -5,13 +5,18 @@ import { ContestsPageHeader } from "@/components/contests/list/ContestsPageHeade
 import { ContestsPageLayout } from "@/components/contests/list/ContestsPageLayout";
 import { EmptyContestsState } from "@/components/contests/list/EmptyContestsState";
 import { useGetAllContests } from "@/hooks/contest/useGetAllContests";
+import { useContext } from "react";
+import { BrandContext } from "@/contexts/BrandContext";
+import { Loading } from "@/components/ui/Loading";
 
 export default function ContestsPage() {
-  const { allContestsQuery } = useGetAllContests();
-  const { data, isPending, refetch } = allContestsQuery;
+  const { brand } = useContext(BrandContext);
+  const { data, isPending, refetch } = useGetAllContests(brand?.id || "");
+
   if (isPending) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <Loading isPending={isPending} />;
   }
+
   return (
     <ContestsPageLayout>
       <ContestsPageHeader />
