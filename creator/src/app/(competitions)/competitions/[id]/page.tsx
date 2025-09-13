@@ -76,6 +76,8 @@ export default async function CompetitionPage({
     return <div>コンペティションが見つかりませんでした。</div>;
   }
 
+  const isEnded = new Date(competition.contest_end_date) < new Date();
+
   return (
     <SessionProvider>
       <div className="flex flex-col max-h-full">
@@ -142,12 +144,17 @@ export default async function CompetitionPage({
                     <p>終了まで</p>
                   </div>
                   <p className="text-lg font-semibold">
-                    {formatDistanceToNow(
-                      new Date(competition.contest_end_date),
-                      {
-                        locale: ja,
-                      },
-                    )}
+                    {isEnded
+                      ? formatDistanceToNow(
+                          new Date(competition.contest_end_date),
+                          { addSuffix: true, locale: ja },
+                        ) + "終了"
+                      : formatDistanceToNow(
+                          new Date(competition.contest_end_date),
+                          {
+                            locale: ja,
+                          },
+                        )}
                   </p>
                 </div>
                 <div className="flex flex-col items-center gap-1">
@@ -244,15 +251,19 @@ export default async function CompetitionPage({
         <div className="bg-card border border-b-0 rounded-t-2xl w-full p-4">
           {session ? (
             isApplied ? (
-              <Button className="w-full" asChild>
-                <Link href={`/applications/${competition.id}`}>
-                  <Badge variant={"secondary"}>
-                    <CheckIcon />
-                    応募済み
-                  </Badge>
-                  提出を管理
-                </Link>
-              </Button>
+              isEnded ? (
+                <></>
+              ) : (
+                <Button className="w-full" asChild>
+                  <Link href={`/applications/${competition.id}`}>
+                    <Badge variant={"secondary"}>
+                      <CheckIcon />
+                      応募済み
+                    </Badge>
+                    提出を管理
+                  </Link>
+                </Button>
+              )
             ) : (
               <ApplyDialog competitionId={competition.id} />
             )
