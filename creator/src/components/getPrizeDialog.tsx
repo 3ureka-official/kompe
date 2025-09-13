@@ -50,7 +50,7 @@ export default function GetPrizeDialog({
           setError(null);
           setIsOpen(false);
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           console.error("エラー:", error);
           setError(getErrorMessage(error));
         },

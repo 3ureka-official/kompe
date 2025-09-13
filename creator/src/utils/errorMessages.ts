@@ -1,6 +1,6 @@
 import { ERROR_MESSAGES } from "@/constants/errorCode.constant";
 
-export const getErrorMessage = (error: any): string => {
+export const getErrorMessage = (error: Error): string => {
   if (!error?.message) {
     return ERROR_MESSAGES.unknown_error;
   }
