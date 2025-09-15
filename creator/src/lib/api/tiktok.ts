@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
-import { auth } from "@/auth";
 import {
   TikTokUserInfoResponse,
   TikTokUserInfoResponseSchema,
@@ -90,7 +89,7 @@ export class TikTokAPIClient {
           headers: await headers(),
         },
         secret: process.env.AUTH_SECRET,
-        cookieName: "__Secure-authjs.session-token"
+        cookieName: "__Secure-authjs.session-token",
       });
 
       if (!token?.accessToken) {
@@ -151,7 +150,7 @@ export class TikTokAPIClient {
           headers: await headers(),
         },
         secret: process.env.AUTH_SECRET,
-        cookieName: "__Secure-authjs.session-token"
+        cookieName: "__Secure-authjs.session-token",
       });
 
       if (!token?.accessToken) {
@@ -213,7 +212,7 @@ export class TikTokAPIClient {
           headers: await headers(),
         },
         secret: process.env.AUTH_SECRET,
-        cookieName: "__Secure-authjs.session-token"
+        cookieName: "__Secure-authjs.session-token",
       });
 
       if (!token?.accessToken) {

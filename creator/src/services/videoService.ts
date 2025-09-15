@@ -106,9 +106,9 @@ export async function getTikTokMetrics(contestId: string) {
       competition: competition,
       metrics: results,
     };
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("[metrics:update:applications] failed:", e);
-    const msg = typeof e?.message === "string" ? e.message : "unknown_error";
+    const msg = e instanceof Error ? e.message : "unknown_error";
     throw new Error(msg);
   }
 }
