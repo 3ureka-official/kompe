@@ -9,15 +9,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -39,7 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { SessionProvider } from "next-auth/react";
 import SignInButton from "@/components/signInButton";
 import GetPrizeDialog from "@/components/getPrizeDialog";
-import { formatJpy } from "@/utils/format";
+import LeaderBoard from "@/components/leaderBoard";
 
 const getIsApplied = async (applications: applications[]) => {
   const session = await auth();
@@ -64,23 +55,24 @@ export default async function CompetitionPage({
 }) {
   const { id } = await params;
   const session = await auth();
+
   const competition = await prisma.contests.findUnique({
     where: { id },
-    include: { brands: true },
+    include: {
+      applications: {
+        include: {
+          creators: true,
+          contest_transfers: true,
+        },
+      },
+      brands: true,
+      contests_assets: true,
+      contests_inspirations: true,
+    },
   });
-  const applications = await prisma.applications.findMany({
-    where: { contest_id: id },
-    include: { creators: true, contest_transfers: true },
-    orderBy: { views: "desc" },
-  });
-  const assets = await prisma.contests_assets.findMany({
-    where: { contest_id: id },
-  });
-  const inspirations = await prisma.contests_inspirations.findMany({
-    where: { contest_id: id },
-  });
-  const isApplied = await getIsApplied(applications);
-  const ranking = await getRanking(applications);
+
+  const isApplied = await getIsApplied(competition?.applications || []);
+  const ranking = await getRanking(competition?.applications || []);
 
   if (!competition) {
     return <div>コンペティションが見つかりませんでした。</div>;
@@ -204,7 +196,7 @@ export default async function CompetitionPage({
                     インスピレーション
                   </h2>
                   <div className="grid gap-4">
-                    {inspirations.map((item) => (
+                    {competition.contests_inspirations.map((item) => (
                       <Link href={item.url || ""} key={item.id}>
                         <Card>
                           <CardContent>
@@ -223,7 +215,7 @@ export default async function CompetitionPage({
                     アセット
                   </h2>
                   <div className="grid gap-2">
-                    {assets.map((asset) => (
+                    {competition.contests_assets.map((asset) => (
                       <Link href={asset.url || ""} key={asset.id}>
                         <Card>
                           <CardContent>
@@ -241,35 +233,10 @@ export default async function CompetitionPage({
               </div>
             </TabsContent>
             <TabsContent value="leaderboard">
-              <Table>
-                <TableCaption>
-                  リーダーボードは現時点での暫定順位です。情報の更新には遅れがある場合があります。
-                </TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>順位</TableHead>
-                    <TableHead>クリエイター</TableHead>
-                    <TableHead className="text-right">再生数</TableHead>
-                    <TableHead className="text-right">賞金</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {applications.map((application, index) => (
-                    <TableRow key={application.id}>
-                      <TableCell className="font-medium">
-                        #{index + 1}
-                      </TableCell>
-                      <TableCell>{application.creators.display_name}</TableCell>
-                      <TableCell className="text-right">
-                        {application.views.toLocaleString()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatJpy(competition.prize_distribution[index])}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <LeaderBoard
+                competition={competition}
+                applications={competition.applications || []}
+              />
             </TabsContent>
           </Tabs>
         </div>
@@ -277,7 +244,8 @@ export default async function CompetitionPage({
           {session ? (
             isApplied ? (
               isEnded && ranking !== null ? (
-                applications[ranking]?.contest_transfers?.stripe_transfer_id ? (
+                competition.applications[ranking]?.contest_transfers
+                  ?.stripe_transfer_id ? (
                   <p className="text-sm text-muted-foreground">
                     このコンテストは終了しました。
                     <br />
@@ -286,8 +254,10 @@ export default async function CompetitionPage({
                 ) : (
                   <GetPrizeDialog
                     competition={competition}
-                    application={applications[ranking]}
-                    contestTransfers={applications[ranking]?.contest_transfers}
+                    application={competition.applications[ranking]}
+                    contestTransfers={
+                      competition.applications[ranking]?.contest_transfers
+                    }
                     ranking={ranking}
                   />
                 )

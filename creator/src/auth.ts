@@ -1,7 +1,7 @@
 import NextAuth, { Session } from "next-auth";
 import TikTok from "next-auth/providers/tiktok";
-import prisma from "./lib/prisma";
 import type { JWT } from "next-auth/jwt";
+import prisma from "./lib/prisma";
 
 const AUTH_TIKTOK_ID = process.env.AUTH_TIKTOK_ID!;
 const AUTH_TIKTOK_SECRET = process.env.AUTH_TIKTOK_SECRET!;
@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt({ token, user, account }) {
       // TikTokDisplayAPIなどで利用するためにaccessTokenを保存(ログイン直後のみ値が入る)
       if (account) {
-        token.accessToken = account.access_token
+        token.accessToken = account.access_token;
       }
       if (user) {
         token.creator_id = user.creator_id;
@@ -45,13 +45,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       userinfo:
         "https://open.tiktokapis.com/v2/user/info/?fields=union_id,avatar_url,display_name,username",
-      profile: async (profile) => {
+      profile: async (profile, account) => {
         let creator = await prisma.creators.findFirst({
           where: { tiktok_union_id: profile.data.user.union_id! },
         });
         if (!creator) {
           creator = await prisma.creators.create({
             data: {
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at:
+                account.expires_in != null
+                  ? new Date(Date.now() + Number(account.expires_in) * 1000)
+                  : undefined,
               tiktok_union_id: profile.data.user.union_id!,
               display_name: profile.data.user.display_name,
               avatar_url: profile.data.user.avatar_url,
@@ -59,6 +65,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
           });
         }
+
         return {
           creator_id: creator.id,
           display_name: creator.display_name,
