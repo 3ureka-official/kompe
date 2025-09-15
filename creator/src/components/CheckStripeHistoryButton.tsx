@@ -2,7 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 
-export default function CheckStripeHistoryButton() {
+export default function CheckStripeHistoryButton({
+  className,
+}: {
+  className?: string;
+}) {
   const checkStripeHistory = async () => {
     try {
       const res = await fetch("/api/stripe/connect/account/update", {
@@ -17,5 +21,9 @@ export default function CheckStripeHistoryButton() {
     }
   };
 
-  return <Button onClick={checkStripeHistory}>入金履歴を確認</Button>;
+  return (
+    <Button onClick={checkStripeHistory} className={className}>
+      入金履歴を確認
+    </Button>
+  );
 }

@@ -2,7 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 
-export default function ConnectStripeButton() {
+export default function ConnectStripeButton({
+  className,
+}: {
+  className?: string;
+}) {
   const connectToStripe = async () => {
     try {
       const res = await fetch("/api/stripe/connect/account/create", {
@@ -17,5 +21,9 @@ export default function ConnectStripeButton() {
     }
   };
 
-  return <Button onClick={connectToStripe}>入金口座を登録</Button>;
+  return (
+    <Button onClick={connectToStripe} className={className}>
+      入金口座を登録
+    </Button>
+  );
 }

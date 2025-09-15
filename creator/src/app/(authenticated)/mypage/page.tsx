@@ -113,7 +113,11 @@ export default async function MyPage() {
           )}
         </CardHeader>
         <CardContent className="flex flex-row items-center gap-4">
-          {account ? <CheckStripeHistoryButton /> : <ConnectStripeButton />}
+          {account ? (
+            <CheckStripeHistoryButton className="bg-indigo-950" />
+          ) : (
+            <ConnectStripeButton className="bg-cyan-600" />
+          )}
         </CardContent>
       </Card>
       <Card>
