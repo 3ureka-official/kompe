@@ -48,6 +48,7 @@ model contests {
   is_draft              Boolean                 @default(true)
   created_at            DateTime                @default(now()) @db.Timestamptz(6)
   supply_of_samples     String?
+  updated_engagement_at DateTime                @default(now()) @db.Timestamptz(6)
   applications          applications[]
   contest_payments      contest_payments?
   contest_refunds       contest_refunds[]
