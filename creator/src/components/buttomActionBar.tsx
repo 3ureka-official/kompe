@@ -75,7 +75,7 @@ export default async function ButtomActionBar({
                   <CheckIcon />
                   応募済み
                 </Badge>
-                提出を管理
+                参加動画の管理
               </Link>
             </Button>
           )

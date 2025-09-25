@@ -84,8 +84,8 @@ export default async function CompetitionPage({
           <Tabs defaultValue="summary">
             <TabsList className="w-full">
               <TabsTrigger value="summary">概要</TabsTrigger>
-              <TabsTrigger value="assets">アセット</TabsTrigger>
-              <TabsTrigger value="leaderboard">リーダーボード</TabsTrigger>
+              <TabsTrigger value="assets">資料など</TabsTrigger>
+              <TabsTrigger value="leaderboard">ランキング</TabsTrigger>
             </TabsList>
             <TabsContent value="summary" className="grid gap-8 py-8">
               <div className="w-full flex items-center gap-2 flex-wrap justify-around">
@@ -156,7 +156,7 @@ export default async function CompetitionPage({
               <div className="*:border-b *:border-b-foreground/10">
                 <section className="grid gap-2 py-6">
                   <h2 className="text-sm font-bold text-muted-foreground px-2">
-                    インスピレーション
+                    参考動画
                   </h2>
                   <div className="grid gap-4">
                     {competition.contests_inspirations.map((item) => (
@@ -175,7 +175,7 @@ export default async function CompetitionPage({
                 </section>
                 <section className="grid gap-2 py-6">
                   <h2 className="text-sm font-bold text-muted-foreground px-2">
-                    アセット
+                    動画素材
                   </h2>
                   <div className="grid gap-2">
                     {competition.contests_assets.map((asset) => (
