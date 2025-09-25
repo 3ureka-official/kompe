@@ -49,15 +49,7 @@ export default async function CompetitionPage({
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">
-                  Kompeクリエイターダッシュボード
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/competitions">
-                  コンペティション一覧
-                </BreadcrumbLink>
+                <BreadcrumbLink href="/">ホーム</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
