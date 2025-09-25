@@ -285,7 +285,7 @@ function toNumber(v: unknown): number {
   if (typeof v === "bigint") return Number(v);
   if (typeof v === "number") return v;
   if (typeof v === "string") return Number(v);
-  return Number(v as any) || 0;
+  return Number(v as number) || 0;
 }
 
 // NOT NULL に耐性を持たせるサニタイズ

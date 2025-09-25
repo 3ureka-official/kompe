@@ -6,7 +6,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCaption,
 } from "./ui/table";
 import {
   contests,
