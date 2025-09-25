@@ -8,4 +8,7 @@ export type Creator = {
   tiktok_url: string;
   display_name: string;
   created_at: Date | string;
+  access_token: string;
+  refresh_token: string;
+  expires_at: string;
 };
