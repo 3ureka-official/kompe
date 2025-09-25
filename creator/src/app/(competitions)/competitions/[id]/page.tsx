@@ -129,6 +129,18 @@ export default async function CompetitionPage({
               </section>
 
               <section className="py-6 border-t border-t-foreground/10">
+                <p className="mb-1">賞金</p>
+                {competition.prize_distribution.map(
+                  (prize, index) =>
+                    prize !== 0 && (
+                      <div key={index}>
+                        <p>{`${index + 1}位: ¥${prize.toLocaleString()}`}</p>
+                      </div>
+                    ),
+                )}
+              </section>
+
+              <section className="py-6 border-t border-t-foreground/10">
                 <p className="mb-1">試供品について</p>
                 <p className="text-sm">{competition.supply_of_samples}</p>
               </section>
