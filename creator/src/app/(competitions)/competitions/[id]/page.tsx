@@ -1,5 +1,3 @@
-import prisma from "@/lib/prisma";
-import { applications } from "@prisma/client";
 import Image from "next/image";
 import {
   Breadcrumb,
@@ -9,20 +7,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   CalendarClockIcon,
-  CheckIcon,
   CircleDollarSignIcon,
   DownloadCloudIcon,
   ExternalLinkIcon,
@@ -32,30 +20,11 @@ import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import ApplyDialog from "@/components/applyDialog";
-import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { SessionProvider } from "next-auth/react";
-import SignInButton from "@/components/signInButton";
-import GetPrizeDialog from "@/components/getPrizeDialog";
-import { formatJpy } from "@/utils/format";
-
-const getIsApplied = async (applications: applications[]) => {
-  const session = await auth();
-  if (!session) return null;
-  return applications.find(
-    (app) => app.creator_id === session.user?.creator_id,
-  );
-};
-
-const getRanking = async (applications: applications[]) => {
-  const session = await auth();
-  if (!session) return null;
-  return applications.findIndex(
-    (app) => app.creator_id === session.user?.creator_id,
-  );
-};
+import LeaderBoard from "@/components/leaderBoard";
+import ButtomActionBar from "@/components/buttomActionBar";
+import IsAppliedChip from "@/components/isAppliedChip";
+import { getTikTokMetricsAndUpdate } from "@/services/videoService";
 
 export default async function CompetitionPage({
   params,
@@ -63,24 +32,8 @@ export default async function CompetitionPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const session = await auth();
-  const competition = await prisma.contests.findUnique({
-    where: { id },
-    include: { brands: true },
-  });
-  const applications = await prisma.applications.findMany({
-    where: { contest_id: id },
-    include: { creators: true, contest_transfers: true },
-    orderBy: { views: "desc" },
-  });
-  const assets = await prisma.contests_assets.findMany({
-    where: { contest_id: id },
-  });
-  const inspirations = await prisma.contests_inspirations.findMany({
-    where: { contest_id: id },
-  });
-  const isApplied = await getIsApplied(applications);
-  const ranking = await getRanking(applications);
+
+  const { competition } = await getTikTokMetricsAndUpdate(id);
 
   if (!competition) {
     return <div>コンペティションが見つかりませんでした。</div>;
@@ -95,15 +48,7 @@ export default async function CompetitionPage({
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">
-                  Kompeクリエイターダッシュボード
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/competitions">
-                  コンペティション一覧
-                </BreadcrumbLink>
+                <BreadcrumbLink href="/">ホーム</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -118,15 +63,10 @@ export default async function CompetitionPage({
             height={300}
             className="rounded-lg"
           />
-          <h1 className="flex items-center gap-2 text-2xl font-bold">
-            {competition.title}
-            {isApplied && (
-              <Badge>
-                <CheckIcon />
-                応募済み
-              </Badge>
-            )}
-          </h1>
+          <IsAppliedChip
+            title={competition.title || ""}
+            applications={competition.applications || []}
+          />
           <div className="flex items-center gap-4">
             <Avatar>
               <AvatarImage
@@ -143,8 +83,8 @@ export default async function CompetitionPage({
           <Tabs defaultValue="summary">
             <TabsList className="w-full">
               <TabsTrigger value="summary">概要</TabsTrigger>
-              <TabsTrigger value="assets">アセット</TabsTrigger>
-              <TabsTrigger value="leaderboard">リーダーボード</TabsTrigger>
+              <TabsTrigger value="assets">資料など</TabsTrigger>
+              <TabsTrigger value="leaderboard">ランキング</TabsTrigger>
             </TabsList>
             <TabsContent value="summary" className="grid gap-8 py-8">
               <div className="w-full flex items-center gap-2 flex-wrap justify-around">
@@ -172,7 +112,9 @@ export default async function CompetitionPage({
                     <VideoIcon className="size-4 stroke-2" />
                     <p>応募件数</p>
                   </div>
-                  <p className="text-lg font-semibold">{competition.videos}</p>
+                  <p className="text-lg font-semibold">
+                    {competition.applications.length}
+                  </p>
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-1">
@@ -185,6 +127,18 @@ export default async function CompetitionPage({
               <section className="py-6 border-t border-t-foreground/10">
                 <p className="mb-1">コンテスト概要</p>
                 <p className="text-sm">{competition.description}</p>
+              </section>
+
+              <section className="py-6 border-t border-t-foreground/10">
+                <p className="mb-1">賞金</p>
+                {competition.prize_distribution.map(
+                  (prize, index) =>
+                    prize !== 0 && (
+                      <div key={index}>
+                        <p>{`${index + 1}位: ¥${prize.toLocaleString()}`}</p>
+                      </div>
+                    ),
+                )}
               </section>
 
               <section className="py-6 border-t border-t-foreground/10">
@@ -201,10 +155,10 @@ export default async function CompetitionPage({
               <div className="*:border-b *:border-b-foreground/10">
                 <section className="grid gap-2 py-6">
                   <h2 className="text-sm font-bold text-muted-foreground px-2">
-                    インスピレーション
+                    参考動画
                   </h2>
                   <div className="grid gap-4">
-                    {inspirations.map((item) => (
+                    {competition.contests_inspirations.map((item) => (
                       <Link href={item.url || ""} key={item.id}>
                         <Card>
                           <CardContent>
@@ -220,10 +174,10 @@ export default async function CompetitionPage({
                 </section>
                 <section className="grid gap-2 py-6">
                   <h2 className="text-sm font-bold text-muted-foreground px-2">
-                    アセット
+                    動画素材
                   </h2>
                   <div className="grid gap-2">
-                    {assets.map((asset) => (
+                    {competition.contests_assets.map((asset) => (
                       <Link href={asset.url || ""} key={asset.id}>
                         <Card>
                           <CardContent>
@@ -241,77 +195,18 @@ export default async function CompetitionPage({
               </div>
             </TabsContent>
             <TabsContent value="leaderboard">
-              <Table>
-                <TableCaption>
-                  リーダーボードは現時点での暫定順位です。情報の更新には遅れがある場合があります。
-                </TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>順位</TableHead>
-                    <TableHead>クリエイター</TableHead>
-                    <TableHead className="text-right">再生数</TableHead>
-                    <TableHead className="text-right">賞金</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {applications.map((application, index) => (
-                    <TableRow key={application.id}>
-                      <TableCell className="font-medium">
-                        #{index + 1}
-                      </TableCell>
-                      <TableCell>{application.creators.display_name}</TableCell>
-                      <TableCell className="text-right">
-                        {application.views.toLocaleString()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatJpy(competition.prize_distribution[index])}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <LeaderBoard
+                competition={competition}
+                applications={competition.applications || []}
+              />
             </TabsContent>
           </Tabs>
         </div>
-        <div className="bg-card border border-b-0 rounded-t-2xl w-full p-4">
-          {session ? (
-            isApplied ? (
-              isEnded && ranking !== null ? (
-                applications[ranking]?.contest_transfers?.stripe_transfer_id ? (
-                  <p className="text-sm text-muted-foreground">
-                    このコンテストは終了しました。
-                    <br />
-                    順位：{ranking + 1}位
-                  </p>
-                ) : (
-                  <GetPrizeDialog
-                    competition={competition}
-                    application={applications[ranking]}
-                    contestTransfers={applications[ranking]?.contest_transfers}
-                    ranking={ranking}
-                  />
-                )
-              ) : (
-                <Button className="w-full" asChild>
-                  <Link href={`/applications/${competition.id}`}>
-                    <Badge variant={"secondary"}>
-                      <CheckIcon />
-                      応募済み
-                    </Badge>
-                    提出を管理
-                  </Link>
-                </Button>
-              )
-            ) : (
-              <ApplyDialog competitionId={competition.id} />
-            )
-          ) : (
-            <SignInButton
-              className="*:w-full"
-              redirectTo={`/competitions/${competition.id}`}
-            />
-          )}
-        </div>
+        <ButtomActionBar
+          competition={competition}
+          applications={competition.applications || []}
+          isEnded={isEnded}
+        />
       </div>
     </SessionProvider>
   );

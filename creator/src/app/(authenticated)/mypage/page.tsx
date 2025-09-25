@@ -13,18 +13,14 @@ import {
 } from "@/components/ui/card";
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 import prisma from "@/lib/prisma";
-import {
-  BadgeCheckIcon,
-  ChevronRightIcon,
-} from "lucide-react";
+import { BadgeCheckIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default async function MyPage() {
   const session = await auth();
   if (!session) {
-    redirect("/api/auth/signin");
+    return <p>ログインしてください</p>;
   }
   const userInfo = await tikTokAPIClient.getUserInfo([
     "display_name",
@@ -102,7 +98,9 @@ export default async function MyPage() {
         <CardHeader>
           <CardTitle className="text-sm font-bold">Stripe口座情報</CardTitle>
           <CardDescription className="text-indigo-400 font-semibold">
-            {account ? 'Stripeアカウントと連携しています' : 'Stripeアカウントが登録されていません'}
+            {account
+              ? "Stripeアカウントと連携しています"
+              : "Stripeアカウントが登録されていません"}
           </CardDescription>
           {account && (
             <CardAction>

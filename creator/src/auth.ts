@@ -1,7 +1,7 @@
 import NextAuth, { Session } from "next-auth";
 import TikTok from "next-auth/providers/tiktok";
-import prisma from "./lib/prisma";
 import type { JWT } from "next-auth/jwt";
+import prisma from "./lib/prisma";
 
 const AUTH_TIKTOK_ID = process.env.AUTH_TIKTOK_ID!;
 const AUTH_TIKTOK_SECRET = process.env.AUTH_TIKTOK_SECRET!;
@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt({ token, user, account }) {
       // TikTokDisplayAPIなどで利用するためにaccessTokenを保存(ログイン直後のみ値が入る)
       if (account) {
-        token.accessToken = account.access_token
+        token.accessToken = account.access_token;
       }
       if (user) {
         token.creator_id = user.creator_id;
@@ -45,20 +45,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       userinfo:
         "https://open.tiktokapis.com/v2/user/info/?fields=union_id,avatar_url,display_name,username",
-      profile: async (profile) => {
-        let creator = await prisma.creators.findFirst({
+      profile: async (profile, tokens) => {
+        const accessToken = (tokens.access_token || "").toString();
+        const refreshToken = (tokens.refresh_token || "").toString();
+        const expires_at =
+          tokens.expires_in != null
+            ? new Date(Date.now() + Number(tokens.expires_in) * 1000)
+            : undefined;
+        const creator = await prisma.creators.upsert({
           where: { tiktok_union_id: profile.data.user.union_id! },
+          create: {
+            tiktok_union_id: profile.data.user.union_id!,
+            display_name: profile.data.user.display_name,
+            avatar_url: profile.data.user.avatar_url,
+            username: profile.data.user.username,
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            expires_at: expires_at,
+          },
+          update: {
+            display_name: profile.data.user.display_name, // 変更される可能性があるので毎回更新
+            avatar_url: profile.data.user.avatar_url, // 有効期限がある
+            username: profile.data.user.username, // 変更される可能性がある
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            expires_at: expires_at,
+          },
         });
-        if (!creator) {
-          creator = await prisma.creators.create({
-            data: {
-              tiktok_union_id: profile.data.user.union_id!,
-              display_name: profile.data.user.display_name,
-              avatar_url: profile.data.user.avatar_url,
-              username: profile.data.user.username,
-            },
-          });
-        }
+
         return {
           creator_id: creator.id,
           display_name: creator.display_name,

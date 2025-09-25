@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { auth } from "@/auth";
 import SignInButton from "@/components/signInButton";
 import Link from "next/link";
+import HeaderAvatar from "@/components/headerAvatar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,12 +45,7 @@ export default async function RootLayout({
               />
             </Link>
             {session ? (
-              <Avatar>
-                <AvatarImage src={session.user?.avatar_url || undefined} />
-                <AvatarFallback>
-                  {session.user?.display_name?.split("", 2)}
-                </AvatarFallback>
-              </Avatar>
+              <HeaderAvatar session={session} />
             ) : (
               <SignInButton variant="minimal" />
             )}

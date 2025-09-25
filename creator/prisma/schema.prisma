@@ -14,7 +14,7 @@ model brands {
   created_at            DateTime                @default(now()) @db.Timestamptz(6)
   name                  String                  @default("''::text")
   description           String?
-  logo_url              String                  @default("''::text")
+  logo_url              String?                 @default("")
   website               String?
   tiktok_username       String?
   instagram_url         String?
@@ -48,6 +48,7 @@ model contests {
   is_draft              Boolean                 @default(true)
   created_at            DateTime                @default(now()) @db.Timestamptz(6)
   supply_of_samples     String?
+  updated_engagement_at DateTime                @default(now()) @db.Timestamptz(6)
   applications          applications[]
   contest_payments      contest_payments?
   contest_refunds       contest_refunds[]
@@ -112,9 +113,12 @@ model creators {
   username                String
   avatar_url              String
   created_at              DateTime                 @default(now()) @db.Timestamp(6)
-  tiktok_union_id         String                   @db.Uuid
+  tiktok_union_id         String                   @unique @db.Uuid
   display_name            String
   id                      String                   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  access_token            String                   @default("a")
+  refresh_token           String                   @default("a")
+  expires_at              DateTime                 @default(now()) @db.Timestamptz(6)
   applications            applications[]
   contest_transfers       contest_transfers[]
   stripe_connect_accounts stripe_connect_accounts?
