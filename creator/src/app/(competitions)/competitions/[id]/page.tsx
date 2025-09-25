@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { applications } from "@prisma/client";
 import Image from "next/image";
 import {
   Breadcrumb,
@@ -13,7 +12,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   CalendarClockIcon,
-  CheckIcon,
   CircleDollarSignIcon,
   DownloadCloudIcon,
   ExternalLinkIcon,
@@ -23,30 +21,11 @@ import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import ApplyDialog from "@/components/applyDialog";
-import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { SessionProvider } from "next-auth/react";
-import SignInButton from "@/components/signInButton";
-import GetPrizeDialog from "@/components/getPrizeDialog";
 import LeaderBoard from "@/components/leaderBoard";
-
-const getIsApplied = async (applications: applications[]) => {
-  const session = await auth();
-  if (!session) return null;
-  return applications.find(
-    (app) => app.creator_id === session.user?.creator_id,
-  );
-};
-
-const getRanking = async (applications: applications[]) => {
-  const session = await auth();
-  if (!session) return null;
-  return applications.findIndex(
-    (app) => app.creator_id === session.user?.creator_id,
-  );
-};
+import ButtomActionBar from "@/components/buttomActionBar";
+import IsAppliedChip from "@/components/isAppliedChip";
+import { getTikTokMetricsAndUpdate } from "@/services/videoService";
 
 export default async function CompetitionPage({
   params,
@@ -54,25 +33,8 @@ export default async function CompetitionPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const session = await auth();
 
-  const competition = await prisma.contests.findUnique({
-    where: { id },
-    include: {
-      applications: {
-        include: {
-          creators: true,
-          contest_transfers: true,
-        },
-      },
-      brands: true,
-      contests_assets: true,
-      contests_inspirations: true,
-    },
-  });
-
-  const isApplied = await getIsApplied(competition?.applications || []);
-  const ranking = await getRanking(competition?.applications || []);
+  const { competition } = await getTikTokMetricsAndUpdate(id);
 
   if (!competition) {
     return <div>コンペティションが見つかりませんでした。</div>;
@@ -110,15 +72,10 @@ export default async function CompetitionPage({
             height={300}
             className="rounded-lg"
           />
-          <h1 className="flex items-center gap-2 text-2xl font-bold">
-            {competition.title}
-            {isApplied && (
-              <Badge>
-                <CheckIcon />
-                応募済み
-              </Badge>
-            )}
-          </h1>
+          <IsAppliedChip
+            title={competition.title || ""}
+            applications={competition.applications || []}
+          />
           <div className="flex items-center gap-4">
             <Avatar>
               <AvatarImage
@@ -240,48 +197,11 @@ export default async function CompetitionPage({
             </TabsContent>
           </Tabs>
         </div>
-        <div className="bg-card border border-b-0 rounded-t-2xl w-full p-4">
-          {session ? (
-            isApplied ? (
-              isEnded && ranking !== null ? (
-                competition.applications[ranking]?.contest_transfers
-                  ?.stripe_transfer_id ? (
-                  <p className="text-sm text-muted-foreground">
-                    このコンテストは終了しました。
-                    <br />
-                    順位：{ranking + 1}位
-                  </p>
-                ) : (
-                  <GetPrizeDialog
-                    competition={competition}
-                    application={competition.applications[ranking]}
-                    contestTransfers={
-                      competition.applications[ranking]?.contest_transfers
-                    }
-                    ranking={ranking}
-                  />
-                )
-              ) : (
-                <Button className="w-full" asChild>
-                  <Link href={`/applications/${competition.id}`}>
-                    <Badge variant={"secondary"}>
-                      <CheckIcon />
-                      応募済み
-                    </Badge>
-                    提出を管理
-                  </Link>
-                </Button>
-              )
-            ) : (
-              <ApplyDialog competitionId={competition.id} />
-            )
-          ) : (
-            <SignInButton
-              className="*:w-full"
-              redirectTo={`/competitions/${competition.id}`}
-            />
-          )}
-        </div>
+        <ButtomActionBar
+          competition={competition}
+          applications={competition.applications || []}
+          isEnded={isEnded}
+        />
       </div>
     </SessionProvider>
   );

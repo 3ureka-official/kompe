@@ -27,7 +27,7 @@ const CONTEST_INCLUDE = {
       creators: true,
       contest_transfers: true,
     },
-    orderBy: { created_at: "asc" as const },
+    orderBy: { views: "desc" },
   },
   brands: true,
   contests_assets: true,
@@ -40,27 +40,11 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
   const now = new Date();
 
   // まずは存在チェックと updated__engagement_at のみ
-  const competitionHead = await prisma.contests.findFirst({
+  const competition = await prisma.contests.findFirst({
     where: { id: contestId },
-    select: { id: true, updated_engagement_at: true },
-  });
-  if (!competitionHead) throw new Error("contest_not_found");
-
-  // スロットル（前回から15分未満ならそのまま返す）
-  if (
-    competitionHead.updated_engagement_at &&
-    now.getTime() - new Date(competitionHead.updated_engagement_at).getTime() <
-      FIFTEEN_MIN_MS
-  ) {
-    const competition = await fetchContestWithApps(contestId);
-    return { competition };
-  }
-
-  // 更新に必要な最小限のデータ（applications + creators）
-  const target = await prisma.contests.findUnique({
-    where: { id: competitionHead.id },
     select: {
       id: true,
+      updated_engagement_at: true,
       applications: {
         select: {
           id: true,
@@ -74,7 +58,17 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       },
     },
   });
-  if (!target) throw new Error("contest_not_found");
+  if (!competition) throw new Error("contest_not_found");
+
+  // スロットル（前回から15分未満ならそのまま返す）
+  if (
+    competition.updated_engagement_at &&
+    now.getTime() - new Date(competition.updated_engagement_at).getTime() <
+      FIFTEEN_MIN_MS
+  ) {
+    const result = await fetchContestWithApps(contestId);
+    return { competition: result };
+  }
 
   // --- TikTok メトリクス取得（並列制御） ---
   type AppResult = {
@@ -88,8 +82,8 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
   };
   const results: AppResult[] = [];
 
-  for (let i = 0; i < target.applications.length; i += CONCURRENCY) {
-    const chunk = target.applications.slice(i, i + CONCURRENCY);
+  for (let i = 0; i < competition.applications.length; i += CONCURRENCY) {
+    const chunk = competition.applications.slice(i, i + CONCURRENCY);
     const settled = await Promise.allSettled(
       chunk.map(async (application) => {
         const m = await fetchCreatorVideoMetrics(
@@ -129,7 +123,7 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
     shareCount: number;
   }> = [];
 
-  for (const app of target.applications) {
+  for (const app of competition.applications) {
     const m = byId.get(app.id);
     if (!m) continue;
 
@@ -152,11 +146,13 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
   }
 
   // --- 一括更新 + contests 合計更新（同一トランザクション） ---
-  await bulkUpdateEngagement(competitionHead.id, diffs);
+  const updatedContest = await bulkUpdateEngagementOptimized(
+    competition.id,
+    diffs,
+  );
 
-  // --- 更新後の最新値を applications を含んだ contest として返す ---
-  const competition = await fetchContestWithApps(competitionHead.id);
-  return { competition };
+  // --- 更新されたcontestを直接返す（applicationsも含まれている） ---
+  return { competition: updatedContest };
 }
 
 async function fetchContestWithApps(contestId: string) {
@@ -168,7 +164,8 @@ async function fetchContestWithApps(contestId: string) {
   return contest;
 }
 
-async function bulkUpdateEngagement(
+// パフォーマンスを重視する場合の代替実装
+async function bulkUpdateEngagementOptimized(
   contestId: string,
   diffs: Array<{
     id: string;
@@ -180,41 +177,69 @@ async function bulkUpdateEngagement(
 ) {
   return prisma.$transaction(async (tx) => {
     if (diffs.length > 0) {
-      const payload = JSON.stringify(diffs);
-      // COALESCE で NOT NULL カラムにも安全に反映
-      await tx.$executeRawUnsafe(
-        `
-        WITH data AS (
-          SELECT * FROM jsonb_to_recordset($1::jsonb)
-          AS x(id uuid, viewCount bigint, likeCount bigint, commentCount bigint, shareCount bigint)
-        )
-        UPDATE applications a
-        SET
-          views    = COALESCE(d.viewCount,    0),
-          likes    = COALESCE(d.likeCount,    0),
-          comments = COALESCE(d.commentCount, 0),
-          shares   = COALESCE(d.shareCount,   0)
-        FROM data d
-        WHERE a.id = d.id
-        `,
-        payload,
-      );
+      try {
+        // バッチサイズを制限して一括更新
+        const BATCH_SIZE = 10;
+        for (let i = 0; i < diffs.length; i += BATCH_SIZE) {
+          const batch = diffs.slice(i, i + BATCH_SIZE);
+
+          const batchPromises = batch.map(async (diff) => {
+            try {
+              return await tx.applications.update({
+                where: { id: diff.id },
+                data: {
+                  views: BigInt(diff.viewCount),
+                  likes: BigInt(diff.likeCount),
+                  comments: BigInt(diff.commentCount),
+                  shares: BigInt(diff.shareCount),
+                },
+              });
+            } catch (error) {
+              console.error(`Failed to update application ${diff.id}:`, error);
+              throw error;
+            }
+          });
+
+          await Promise.all(batchPromises);
+        }
+      } catch (error) {
+        console.error("Error in optimized bulk update:", error);
+        throw new Error(
+          `Optimized bulk update failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
+      }
     }
 
-    // contests の合計（NULL回避のため COALESCE(SUM(...), 0)）
-    await tx.$executeRawUnsafe(
-      `
-      UPDATE contests c
-      SET
-        views    = COALESCE((SELECT SUM(a.views)    FROM applications a WHERE a.contest_id = $1::uuid), 0)::bigint,
-        likes    = COALESCE((SELECT SUM(a.likes)    FROM applications a WHERE a.contest_id = $1::uuid), 0)::bigint,
-        comments = COALESCE((SELECT SUM(a.comments) FROM applications a WHERE a.contest_id = $1::uuid), 0)::bigint,
-        shares   = COALESCE((SELECT SUM(a.shares)   FROM applications a WHERE a.contest_id = $1::uuid), 0)::bigint,
-        updated_engagement_at = NOW()
-      WHERE c.id = $1::uuid
-      `,
-      contestId,
-    );
+    // contests の合計を更新
+    try {
+      const aggregates = await tx.applications.aggregate({
+        where: { contest_id: contestId },
+        _sum: {
+          views: true,
+          likes: true,
+          comments: true,
+          shares: true,
+        },
+      });
+
+      // contestsテーブルを更新し、同時にapplicationsも含めて取得
+      const updatedContest = await tx.contests.update({
+        where: { id: contestId },
+        data: {
+          views: BigInt(aggregates._sum.views || 0),
+          likes: BigInt(aggregates._sum.likes || 0),
+          comments: BigInt(aggregates._sum.comments || 0),
+          shares: BigInt(aggregates._sum.shares || 0),
+          updated_engagement_at: new Date(),
+        },
+        include: CONTEST_INCLUDE,
+      });
+
+      return updatedContest;
+    } catch (error) {
+      console.error("Error updating contest aggregates:", error);
+      throw error;
+    }
   });
 }
 
