@@ -113,7 +113,9 @@ export default async function CompetitionPage({
                     <VideoIcon className="size-4 stroke-2" />
                     <p>応募件数</p>
                   </div>
-                  <p className="text-lg font-semibold">{competition.videos}</p>
+                  <p className="text-lg font-semibold">
+                    {competition.applications.length}
+                  </p>
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-1">
