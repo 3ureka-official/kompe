@@ -9,8 +9,6 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary:
-          "text-black bg-primary-400 hover:bg-primary-500 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400 transition-colors",
         default:
           "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
         destructive:
@@ -18,12 +16,10 @@ const buttonVariants = cva(
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
-          "border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-colors",
+          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        danger:
-          "bg-red-500 text-white shadow-xs hover:bg-red-600 focus-visible:ring-red-200 dark:focus-visible:ring-red-400 dark:bg-red-600/60",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -44,7 +40,6 @@ function Button({
   variant,
   size,
   asChild = false,
-  disabled = false,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
@@ -55,11 +50,7 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(
-        buttonVariants({ variant, size, className }),
-        disabled && "opacity-50 cursor-not-allowed",
-      )}
-      disabled={disabled}
+      className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
   );

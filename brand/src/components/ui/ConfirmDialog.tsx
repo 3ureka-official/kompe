@@ -26,7 +26,7 @@ export const ConfirmDialog = ({
   onCancel: (event: React.MouseEvent<HTMLButtonElement>) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  variant: "danger" | "outline" | "primary";
+  variant: "destructive" | "outline" | "default";
   disabled: boolean;
 }) => {
   return (

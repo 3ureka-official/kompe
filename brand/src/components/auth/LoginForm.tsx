@@ -75,7 +75,7 @@ export function LoginForm() {
         <Button
           type="submit"
           disabled={isPending}
-          variant="primary"
+          variant="default"
           className="w-full"
         >
           {isPending ? "ログイン中..." : "ログイン"}

@@ -123,7 +123,7 @@ export function SignupForm() {
         <Button
           type="submit"
           disabled={isPending}
-          variant="primary"
+          variant="default"
           className="w-full"
         >
           {isPending ? "アカウント作成中..." : "アカウント作成"}

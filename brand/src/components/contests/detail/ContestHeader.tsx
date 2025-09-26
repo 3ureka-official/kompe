@@ -175,7 +175,7 @@ export function ContestHeader({ contest, refetch, contestPayment }: Props) {
           {!contestPayment && (
             <div className="flex items-center gap-2">
               <Button
-                variant="danger"
+                variant="destructive"
                 size="sm"
                 className="cursor-pointer"
                 onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
@@ -208,7 +208,7 @@ export function ContestHeader({ contest, refetch, contestPayment }: Props) {
           onCancel={() => setShowDeleteDialog(false)}
           open={showDeleteDialog}
           onOpenChange={setShowDeleteDialog}
-          variant="danger"
+          variant="destructive"
           disabled={isPending}
         />
       )}

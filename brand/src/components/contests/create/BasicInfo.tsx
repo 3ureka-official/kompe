@@ -133,7 +133,7 @@ export function BasicInfo() {
               />
               <Button
                 type="button"
-                variant="danger"
+                variant="destructive"
                 onClick={() => handleDeleteThumbnail()}
               >
                 削除
@@ -205,7 +205,7 @@ export function BasicInfo() {
 
         <Button
           type="submit"
-          variant="primary"
+          variant="default"
           onClick={handleSubmit(next)}
           disabled={uploadingThumbnail || isUpdating}
         >

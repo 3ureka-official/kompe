@@ -62,7 +62,7 @@ export function InspirationForm({ addInspiration }: Props) {
       />
 
       <div className="flex justify-end">
-        <Button type="button" variant="primary" onClick={onSubmit}>
+        <Button type="button" variant="default" onClick={onSubmit}>
           このインスピレーションを追加
         </Button>
       </div>

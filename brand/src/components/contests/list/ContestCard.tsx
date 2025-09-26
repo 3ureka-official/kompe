@@ -203,7 +203,7 @@ export const ContestCard = ({ contest, refetch }: Props) => {
               {!contest.contest_payments && (
                 <div className="flex items-center gap-2">
                   <Button
-                    variant="danger"
+                    variant="destructive"
                     size="sm"
                     className="cursor-pointer"
                     onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
@@ -239,7 +239,7 @@ export const ContestCard = ({ contest, refetch }: Props) => {
           onCancel={() => setShowDeleteDialog(false)}
           open={showDeleteDialog}
           onOpenChange={setShowDeleteDialog}
-          variant="danger"
+          variant="destructive"
           disabled={isPending}
         />
       )}

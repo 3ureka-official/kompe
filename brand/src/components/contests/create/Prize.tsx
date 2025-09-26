@@ -246,7 +246,7 @@ export function Prize() {
 
         <Button
           type="button"
-          variant="primary"
+          variant="default"
           disabled={isUpdating || isSubmitting}
           onClick={handleSubmit(publish)}
         >

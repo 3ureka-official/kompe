@@ -115,7 +115,7 @@ export function Brief() {
 
         <Button
           type="submit"
-          variant="primary"
+          variant="default"
           onClick={handleSubmit(next)}
           disabled={isUpdating}
         >

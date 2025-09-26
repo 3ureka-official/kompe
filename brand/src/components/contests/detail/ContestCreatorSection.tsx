@@ -250,7 +250,7 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
           }}
           open={showTransactionModal != null}
           onOpenChange={() => setShowTransactionModal(null)}
-          variant="primary"
+          variant="default"
           disabled={false}
         />
       )}

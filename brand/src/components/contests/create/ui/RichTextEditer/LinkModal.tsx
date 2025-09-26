@@ -103,7 +103,7 @@ export default function LinkModal({
               className="rounded-md px-3 py-2 text-sm"
               onClick={submit}
               type="button"
-              variant="primary"
+              variant="default"
             >
               追加 / 更新
             </Button>

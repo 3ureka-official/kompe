@@ -56,7 +56,7 @@ export function AssetForm({ addAsset }: Props) {
       />
 
       <div className="flex justify-end">
-        <Button type="button" variant="primary" onClick={onSubmit}>
+        <Button type="button" variant="default" onClick={onSubmit}>
           このアセットを追加
         </Button>
       </div>

@@ -149,7 +149,7 @@ export function BrandUpdateForm() {
                 />
                 <Button
                   type="button"
-                  variant="danger"
+                  variant="destructive"
                   onClick={() => {
                     setLogoPreview(null);
                     setLogoFile(null);
@@ -230,7 +230,7 @@ export function BrandUpdateForm() {
             <div className="flex justify-end pt-6">
               <Button
                 type="submit"
-                variant="primary"
+                variant="default"
                 className="px-6 py-2"
                 disabled={isPending || (!isDirty && !isLogoChanged)}
               >
