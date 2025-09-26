@@ -1,7 +1,10 @@
 import * as yup from "yup";
 
 export const loginUserSchema = yup.object().shape({
-  email: yup.string().email().required("メールアドレスを入力してください"),
+  email: yup
+    .string()
+    .email("メールアドレスの形式が正しくありません")
+    .required("メールアドレスを入力してください"),
 
   password: yup
     .string()
