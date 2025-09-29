@@ -30,6 +30,7 @@ export const createContest = async (
     | "likes"
     | "comments"
     | "shares"
+    | "updated_engagement_at"
   >,
 ): Promise<string> => {
   try {
@@ -105,6 +106,7 @@ export const updateContest = async (
     | "likes"
     | "comments"
     | "shares"
+    | "updated_engagement_at"
   >,
   assetsData: Omit<
     AssetItem,

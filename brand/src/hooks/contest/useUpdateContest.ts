@@ -25,6 +25,7 @@ export function useUpdateContest() {
         | "likes"
         | "comments"
         | "shares"
+        | "updated_engagement_at"
       >;
       assetsData: Omit<
         AssetItem,

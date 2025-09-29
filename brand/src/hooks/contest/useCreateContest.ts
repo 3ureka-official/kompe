@@ -23,6 +23,7 @@ export function useCreateContest() {
         | "likes"
         | "comments"
         | "shares"
+        | "updated_engagement_at"
       >;
     }) => createContest(brandId, contestId, contestData),
 
