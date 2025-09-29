@@ -144,7 +144,7 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
                   className="hover:bg-gray-50 cursor-pointer transition-colors mx-6"
                   onClick={() =>
                     window.open(
-                      application.tiktok_url,
+                      `https://www.tiktok.com/@${application.creator.username}`,
                       "_blank",
                       "noopener,noreferrer",
                     )
@@ -161,15 +161,6 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
                   </TableCell>
                   <TableCell className="py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <Image
-                          className="h-10 w-10 rounded-full border border-gray-200"
-                          src={application.creator.avatar_url}
-                          alt={application.creator.display_name}
-                          width={40}
-                          height={40}
-                        />
-                      </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
                           {application.creator.display_name}
