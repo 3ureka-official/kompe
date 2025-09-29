@@ -1,7 +1,6 @@
-import { supabaseAdmin } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { getValidTikTokAccessToken } from "@/services/creatorService";
-import { Contest } from "@/types/Contest";
-import { Application } from "@/types/Application";
+import { ContestWithApplications } from "@/types/Contest";
 import { Creator } from "@/types/Creator";
 
 type VideoMetrics = {
@@ -10,18 +9,6 @@ type VideoMetrics = {
   likes?: number;
   comments?: number;
   shares?: number;
-};
-
-// Supabase用のContest型（関連データ付き）
-type ContestWithApplications = Contest & {
-  applications: (Application & { creators: Creator })[];
-  brands: { id: string; name: string };
-  contests_assets: Array<{ id: string; file_url: string; description: string }>;
-  contests_inspirations: Array<{
-    id: string;
-    file_url: string;
-    description: string;
-  }>;
 };
 
 const FIELDS = [
@@ -38,7 +25,6 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
   competition: ContestWithApplications;
 }> {
   const now = new Date();
-  const supabase = supabaseAdmin();
 
   // まずは存在チェックと updated_engagement_at のみ
   const { data: competition, error: competitionError } = await supabase
@@ -171,8 +157,6 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
 async function fetchContestWithApps(
   contestId: string,
 ): Promise<ContestWithApplications> {
-  const supabase = supabaseAdmin();
-
   const { data: contest, error } = await supabase
     .from("contests")
     .select(
@@ -210,8 +194,6 @@ async function bulkUpdateEngagementOptimized(
     shareCount: number;
   }>,
 ): Promise<ContestWithApplications> {
-  const supabase = supabaseAdmin();
-
   try {
     if (diffs.length > 0) {
       // バッチサイズを制限して一括更新
@@ -290,7 +272,6 @@ async function bulkUpdateEngagementOptimized(
     throw error;
   }
 }
-
 /** TikTok メトリクス取得 */
 export async function fetchCreatorVideoMetrics(
   creator: Creator,
