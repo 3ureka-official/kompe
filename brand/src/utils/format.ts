@@ -61,6 +61,18 @@ export function formatDate(
   });
 }
 
+export function formatDateTime(date: Date | undefined) {
+  if (!date) return "";
+
+  return date.toLocaleString("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export function formatNumber(num: number): string {
   if (num == null) {
     return "0";
