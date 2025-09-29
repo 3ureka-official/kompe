@@ -93,13 +93,18 @@ export default function ContestDetailPage() {
       <Tabs defaultValue="overview">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="overview">概要</TabsTrigger>
-          <TabsTrigger value="assets">アセット</TabsTrigger>
-          <TabsTrigger value="creators">リーダーボード</TabsTrigger>
+          <TabsTrigger value="assets">資料など</TabsTrigger>
+          <TabsTrigger value="creators">ランキング</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
           {/* コンテスト概要 */}
           <ContestOverview contest={contest} />
+        </TabsContent>
+
+        <TabsContent value="assets" className="space-y-6">
+          {/* イメージ動画 */}
+          <ContestAssets contest={contest} />
         </TabsContent>
 
         <TabsContent value="creators" className="space-y-6">
@@ -108,11 +113,6 @@ export default function ContestDetailPage() {
             contest={contest}
             contestPayment={contestPayment || null}
           />
-        </TabsContent>
-
-        <TabsContent value="assets" className="space-y-6">
-          {/* イメージ動画 */}
-          <ContestAssets contest={contest} />
         </TabsContent>
       </Tabs>
 
