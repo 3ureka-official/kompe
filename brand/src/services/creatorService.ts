@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { Creator } from "@/types/Creator";
 
 async function refreshAccessToken(refresh_token: string) {
@@ -6,8 +6,8 @@ async function refreshAccessToken(refresh_token: string) {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
-      client_key: process.env.AUTH_TIKTOK_ID!,
-      client_secret: process.env.AUTH_TIKTOK_SECRET!,
+      client_key: process.env.NEXT_PUBLIC_AUTH_TIKTOK_ID!,
+      client_secret: process.env.NEXT_PUBLIC_AUTH_TIKTOK_SECRET!,
       grant_type: "refresh_token",
       refresh_token,
     }),
@@ -36,18 +36,25 @@ export async function getValidTikTokAccessToken(
   const refreshed = await refreshAccessToken(creator.refresh_token);
   const newExpires = new Date(Date.now() + refreshed.expires_in * 1000);
 
-  const supabase = supabaseAdmin();
-  const { error } = await supabase
-    .from("creators")
-    .update({
-      access_token: refreshed.access_token,
-      refresh_token: refreshed.refresh_token ?? creator.refresh_token,
-      expires_at: newExpires.toISOString(),
-    })
-    .eq("id", creator.id);
+  console.log("refreshed", refreshed);
+  console.log("newExpires", newExpires);
 
-  if (error)
-    throw new Error(`Failed to update creator tokens: ${error.message}`);
+  try {
+    const { error } = await supabase
+      .from("creators")
+      .update({
+        access_token: refreshed.access_token,
+        refresh_token: refreshed.refresh_token ?? creator.refresh_token,
+        expires_at: newExpires.toISOString(),
+      })
+      .eq("id", creator.id);
+
+    if (error) {
+      throw new Error(`Failed to update creator tokens: ${error.message}`);
+    }
+  } catch (error) {
+    console.log("error", error);
+  }
 
   return refreshed.access_token;
 }
