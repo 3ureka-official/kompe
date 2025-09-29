@@ -6,7 +6,6 @@ import { ContestOverview } from "@/components/contests/detail/ContestOverview";
 import { ContestAssets } from "@/components/contests/detail/ContestAssets";
 import { ContestCreatorSection } from "@/components/contests/detail/ContestCreatorSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { useGetContest } from "@/hooks/contest/useGetContest";
 import { useContext, useEffect, useState } from "react";
 import { useGetContestPayment } from "@/hooks/contestPayment/useGetPayment";
 import { PaymentPollingOverlay } from "@/components/contests/detail/PaymentPollingOverlay";
@@ -14,17 +13,17 @@ import { AlertCancel } from "@/components/contests/detail/AlertCancel";
 import { AlertSuccess } from "@/components/contests/detail/AlertSuccess";
 import { BrandContext } from "@/contexts/BrandContext";
 import { Loading } from "@/components/ui/Loading";
+import { useGetContestEngage } from "@/hooks/contest/useGetContestEngage";
 
 export default function ContestDetailPage() {
   const params = useParams();
   const contestId = params.id as string;
   const { brand } = useContext(BrandContext);
 
-  const {
-    data: contest,
-    isPending,
-    refetch,
-  } = useGetContest(contestId, brand?.id || "");
+  const { data, isPending, refetch } = useGetContestEngage(
+    contestId,
+    brand?.id || "",
+  );
 
   const {
     data: contestPayment,
@@ -62,7 +61,7 @@ export default function ContestDetailPage() {
     return <Loading isPending={isPending} />;
   }
 
-  if (!contest) return <div>コンテストが見つかりません</div>;
+  if (!data?.competition) return <div>コンテストが見つかりません</div>;
 
   return (
     <div className="container mx-auto px-4 py-8 relative">
@@ -84,7 +83,7 @@ export default function ContestDetailPage() {
 
       {/* ヘッダー */}
       <ContestHeader
-        contest={contest}
+        contest={data.competition}
         refetch={refetch}
         contestPayment={contestPayment || null}
       />
@@ -99,18 +98,18 @@ export default function ContestDetailPage() {
 
         <TabsContent value="overview" className="space-y-6">
           {/* コンテスト概要 */}
-          <ContestOverview contest={contest} />
+          <ContestOverview contest={data.competition} />
         </TabsContent>
 
         <TabsContent value="assets" className="space-y-6">
           {/* イメージ動画 */}
-          <ContestAssets contest={contest} />
+          <ContestAssets contest={data.competition} />
         </TabsContent>
 
         <TabsContent value="creators" className="space-y-6">
           {/* 参加クリエイター */}
           <ContestCreatorSection
-            contest={contest}
+            contest={data.competition}
             contestPayment={contestPayment || null}
           />
         </TabsContent>
