@@ -1,4 +1,7 @@
+import { Application } from "./Application";
 import { ContestPayment } from "./ContestPayment";
+import { Creator } from "./Creator";
+import { Brand } from "./Brand";
 
 /**
  * コンテスト関連の型定義
@@ -27,6 +30,7 @@ export type Contest = {
 
   created_at: string | Date;
   contest_payments?: ContestPayment;
+  updated_engagement_at: string | Date;
 };
 
 export interface AssetItem {
@@ -46,3 +50,10 @@ export interface InspirationItem {
   description: string;
   created_at: string | Date;
 }
+
+export type ContestWithApplications = Contest & {
+  applications: (Application & { creators: Creator })[];
+  brands: Brand;
+  contests_assets: Array<AssetItem>;
+  contests_inspirations: Array<InspirationItem>;
+};
