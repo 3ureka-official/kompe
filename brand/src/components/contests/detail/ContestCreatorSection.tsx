@@ -1,6 +1,6 @@
 import { Contest } from "@/types/Contest";
 import { useGetApplication } from "@/hooks/application/useGetApplication";
-import { formatNumber } from "@/utils/format";
+import { formatDateTime, formatNumber } from "@/utils/format";
 import { Button } from "@/components/ui/Button";
 import { CreditCardIcon, CheckIcon, CircleAlertIcon } from "lucide-react";
 import Image from "next/image";
@@ -86,6 +86,9 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
       <div className="flex items-center justify-between my-6">
         <div className="text-sm text-gray-500">
           {applications?.length}名が参加中
+        </div>
+        <div className="text-sm text-gray-500">
+          更新時間：{formatDateTime(new Date(contest.updated_engagement_at))}
         </div>
       </div>
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
