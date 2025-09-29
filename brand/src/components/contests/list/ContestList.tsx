@@ -2,9 +2,10 @@
 
 import { Contest } from "@/types/Contest";
 import { ContestCard } from "@/components/contests/list/ContestCard";
+import { Application } from "@/types/Application";
 
 interface ContestListProps {
-  contests: Contest[];
+  contests: (Contest & { applications: Application[] })[];
   isLoading?: boolean;
   refetch: () => void;
 }
@@ -69,7 +70,12 @@ export function ContestList({
     <div className="grid gap-6 mt-2">
       {contests &&
         contests.map((contest, index) => (
-          <ContestCard key={index} contest={contest} refetch={refetch} />
+          <ContestCard
+            key={index}
+            contest={contest}
+            applications={contest.applications}
+            refetch={refetch}
+          />
         ))}
     </div>
   );

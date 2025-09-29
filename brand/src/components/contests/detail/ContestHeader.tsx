@@ -7,14 +7,21 @@ import { useDeleteContest } from "@/hooks/contest/useDeleteContest";
 import { ContestPayment } from "@/types/ContestPayment";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useState } from "react";
+import { Application } from "@/types/Application";
 
 type Props = {
   contest: Contest;
   refetch: () => void;
   contestPayment: ContestPayment | null;
+  applications: Application[];
 };
 
-export function ContestHeader({ contest, refetch, contestPayment }: Props) {
+export function ContestHeader({
+  contest,
+  refetch,
+  contestPayment,
+  applications,
+}: Props) {
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { mutate: deleteContest, isPending } = useDeleteContest();
@@ -88,7 +95,7 @@ export function ContestHeader({ contest, refetch, contestPayment }: Props) {
                     />
                   </svg>
                   <span className="text-sm text-gray-600">
-                    {formatNumber(contest.videos)}
+                    {formatNumber(applications.length)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

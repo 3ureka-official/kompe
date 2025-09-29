@@ -3,6 +3,7 @@ import { Contest, InspirationItem, AssetItem } from "@/types/Contest";
 import { updateAssets } from "./assetService";
 import { updateInspiration } from "./inspirationService";
 import { deleteFiles } from "@/lib/storage";
+import { Application } from "@/types/Application";
 
 /**
  * コンテストを作成
@@ -55,18 +56,20 @@ export const createContest = async (
   }
 };
 
-export const getAllContests = async (brandId: string): Promise<Contest[]> => {
+export const getAllContests = async (
+  brandId: string,
+): Promise<(Contest & { applications: Application[] })[]> => {
   try {
     const { data, error } = await supabase
       .from("contests")
-      .select("*, contest_payments(*)")
+      .select("*, contest_payments(*), applications(*)")
       .eq("brand_id", brandId);
 
     if (error) {
       throw new Error(error.message);
     }
 
-    return data as Contest[];
+    return data as (Contest & { applications: Application[] })[];
   } catch (error) {
     console.error("コンテスト取得エラー:", error);
     throw error;

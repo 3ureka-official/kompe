@@ -61,7 +61,12 @@ export default function ContestDetailPage() {
     return <Loading isPending={isPending} />;
   }
 
-  if (!data?.competition) return <div>コンテストが見つかりません</div>;
+  if (!data?.competition)
+    return (
+      <div className="container mx-auto px-4 py-8 relative">
+        コンテストが見つかりません
+      </div>
+    );
 
   return (
     <div className="container mx-auto px-4 py-8 relative">
@@ -86,6 +91,7 @@ export default function ContestDetailPage() {
         contest={data.competition}
         refetch={refetch}
         contestPayment={contestPayment || null}
+        applications={data.competition.applications}
       />
 
       {/* タブ形式のコンテンツ */}
