@@ -3,7 +3,6 @@ import { useGetApplication } from "@/hooks/application/useGetApplication";
 import { formatDateTime, formatNumber } from "@/utils/format";
 import { Button } from "@/components/ui/Button";
 import { CreditCardIcon, CheckIcon, CircleAlertIcon } from "lucide-react";
-import Image from "next/image";
 import {
   Table,
   TableBody,

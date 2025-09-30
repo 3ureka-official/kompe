@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { getValidTikTokAccessToken } from "@/services/creatorService";
+import { Application } from "@/types/Application";
 import { ContestWithApplications } from "@/types/Contest";
 import { Creator } from "@/types/Creator";
 
@@ -34,20 +35,9 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       id,
       updated_engagement_at,
       applications (
-        id,
-        views,
-        likes,
-        comments,
-        shares,
-        tiktok_url,
+        *,
         creators (
-          id,
-          username,
-          avatar_url,
-          display_name,
-          access_token,
-          refresh_token,
-          expires_at
+          *
         )
       )
     `,
@@ -84,7 +74,7 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
   for (let i = 0; i < competition.applications.length; i += CONCURRENCY) {
     const chunk = competition.applications.slice(i, i + CONCURRENCY);
     const settled = await Promise.allSettled(
-      chunk.map(async (application: any) => {
+      chunk.map(async (application: Application & { creators: Creator }) => {
         const m = await fetchCreatorVideoMetrics(
           application.creators,
           application.tiktok_url!,
@@ -93,7 +83,7 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       }),
     );
 
-    settled.forEach((s: any, idx: number) => {
+    settled.forEach((s, idx) => {
       const app = chunk[idx];
       if (s.status === "fulfilled") {
         results.push({
