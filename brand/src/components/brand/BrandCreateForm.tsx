@@ -15,6 +15,7 @@ import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { brandCreateSchema } from "@/schema/createBrandSchema";
 import { useCreateBrand } from "@/hooks/brand/useCreateBrand";
 import Image from "next/image";
+import { Loading } from "../ui/Loading";
 
 export function BrandCreateForm() {
   const { profile } = useContext(AuthContext);
@@ -22,7 +23,11 @@ export function BrandCreateForm() {
 
   const [isPending, setIsPending] = useState(false);
 
-  const { mutate: createBrand, error } = useCreateBrand();
+  const {
+    mutate: createBrand,
+    error,
+    isPending: isCreatingBrand,
+  } = useCreateBrand();
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -48,29 +53,22 @@ export function BrandCreateForm() {
 
     setIsPending(true);
 
-    createBrand(
-      {
-        userId: profile.id,
-        brandData: {
-          name: data.name,
-          logo_url: logoPreview || null,
-          description: data.description || "",
-          website: data.website || null,
-          tiktok_username: data.tiktok_username || null,
-          instagram_url: data.instagram_url || null,
-        },
-        logoFile: logoFile,
+    createBrand({
+      userId: profile.id,
+      brandData: {
+        name: data.name,
+        logo_url: logoPreview || null,
+        description: data.description || "",
+        website: data.website || null,
+        tiktok_username: data.tiktok_username || null,
+        instagram_url: data.instagram_url || null,
       },
-      {
-        onSuccess: () => {
-          router.push("/contests");
-        },
-      },
-    );
+      logoFile: logoFile,
+    });
   };
 
-  if (isPending) {
-    return <div>ブランド作成中...</div>;
+  if (isPending || isCreatingBrand) {
+    return <Loading isPending={isPending || isCreatingBrand} />;
   }
 
   return (
@@ -211,9 +209,9 @@ export function BrandCreateForm() {
                 type="submit"
                 variant="default"
                 className="px-6 py-2"
-                disabled={isPending}
+                disabled={isCreatingBrand || isPending}
               >
-                {isPending ? "作成中..." : "続ける"}
+                {isCreatingBrand || isPending ? "作成中..." : "続ける"}
               </Button>
             </div>
 
