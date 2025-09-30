@@ -29,31 +29,38 @@
 
 ## 環境構築
 
-1. .envファイルの作成
-   - .env.exampleを参照して`/brand`,`/creator`で.envファイルを作成してください
+### 1. .envファイルの作成
 
-2. フロントエンドでのパッケージのインストール
+- .env.exampleを参照して`/brand`,`/creator`で.envファイルを作成してください
+
+### 2. フロントエンドでのパッケージのインストール
+
+   <br>
    `/brand`,`/creator`,`/`でインストールしてください
    <br>
    `pnpm i`
 
-3. Stripe
-   - stripeにログイン
-     `stripe login`
+### 3. Stripe
 
-   - Webhook エンドポイントの設定
-     `/brand`と`/creator`で実行してください
-     <br>
-     `pnpm stripe`
+- stripeにログイン
+  <br>
+  `stripe login`
 
-   - STRIPE*WEBHOOK_SECRETの設定
-     `pnpm stripe`を実行した際に表示されたシークレットキー（`whsec*...`）を.envファイルの`STRIPE_WEBHOOK_SECRET`に設定してください
+- Webhook エンドポイントの設定
+  `/brand`と`/creator`で実行してください
+  <br>
+  `pnpm stripe`
 
-4. prisma
-   `/creator`で実行してください
-   - スキーマの作成
-     `pnpx prisma db pull`
-     <br>
-     `pnpx prisma generate`
-   - Code Editorの再起動
-     Code Editorを開き直してください
+- STRIPE*WEBHOOK_SECRETの設定
+  `pnpm stripe`を実行した際に表示されたシークレットキー（`whsec*...`）を.envファイルの`STRIPE_WEBHOOK_SECRET`に設定してください
+
+### 4. prisma
+
+`/creator`で実行してください
+
+- スキーマの作成
+  `pnpx prisma db pull`
+  <br>
+  `pnpx prisma generate`
+- Code Editorの再起動
+  Code Editorを開き直してください
