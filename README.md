@@ -1,9 +1,9 @@
 # Kompe
 
 広告コンペを通したブランドとクリエイターのマッチングプラットフォーム。
-<br>
+
 ブランドが開催したPRコンペに対してクリエイターがショート動画を作成して参加。
-<br>
+
 再生数に基づいたランキングに沿って報酬が分配される。
 
 ## 使用技術
@@ -31,41 +31,48 @@
 
 ### 1. .envファイルの作成
 
-1.1. .env.exampleを参照して`/brand`,`/creator`で.envファイルを作成してください
+- .env.exampleを参照して`/brand`,`/creator`で.envファイルを作成してください
 
 ### 2. フロントエンドでのパッケージのインストール
 
-2.1. `/brand`,`/creator`,`/`でインストールしてください
-<br>
-`pnpm i`
+- `/brand`,`/creator`,`/`でインストールしてください
+
+  ```
+  pnpm i
+  ```
 
 ### 3. Stripe
 
-3.1. stripeにログイン
-<br>
-`stripe login`
+- stripeにログイン
 
-3.2. Webhook エンドポイントの設定
-<br>
-`/brand`と`/creator`で実行してください
-<br>
-`pnpm stripe`
+  ```
+  stripe login
+  ```
 
-3.3. STRIPE*WEBHOOK_SECRETの設定
-`pnpm stripe`を実行した際に表示されたシークレットキー（`whsec*...`）を.envファイルの`STRIPE_WEBHOOK_SECRET`に設定してください
+- Webhook エンドポイントの設定
+  - `/brand`と`/creator`で実行してください
+
+    ```
+    pnpm stripe
+    ```
+
+- STRIPE\*WEBHOOK_SECRETの設定
+  - `pnpm stripe`を実行した際に表示されたシークレットキー（`whsec*...`）を.envファイルの`STRIPE_WEBHOOK_SECRET`に設定してください
 
 ### 4. prisma
 
-`/creator`で実行してください
+- `/creator`で以下のコマンドを実行してください
+  - schema.prismaファイルの作成
 
-4.1. スキーマの作成
-<br>
-`pnpx prisma db pull`
-<br>
-`pnpx prisma generate`
-<br>
-<br>
+    ```
+    pnpx prisma db pull
+    ```
 
-4.2 Code Editorの再起動
-<br>
-Code Editorを開き直してください
+  - Prismaクライアントの生成
+
+    ```
+    pnpx prisma generate
+    ```
+
+- Code Editorの再起動
+  - Code Editorを開き直してください
