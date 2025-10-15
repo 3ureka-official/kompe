@@ -1,5 +1,3 @@
-"use client";
-
 import CreatorsPage from "@/components/creators/CreatorPage";
 
 export default function Home() {
