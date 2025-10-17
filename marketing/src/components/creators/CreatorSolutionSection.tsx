@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function CreatorSolutionSection() {
   return (
-    <section className="pt-30 pb-15 bg-white  mx-auto gap-30 flex flex-col justify-center items-center">
+    <section className="pt-30 pb-15 bg-white  mx-auto gap-10 flex flex-col justify-center items-center">
       <h2 className="text-4xl md:text-6xl font-bold text-black flex items-center gap-3">
         そのお悩み
         <Image
@@ -17,8 +17,8 @@ export function CreatorSolutionSection() {
       </h2>
 
       <div className="flex flex-col gap-20 container">
-        <div className="bg-white/10 flex h-[50vh] backdrop-blur-sm gap-20">
-          <div className="w-full  p-8 flex items-center justify-center">
+        <div className="bg-white/10 flex h-[450px] backdrop-blur-sm gap-10">
+          <div className="w-full flex items-center justify-center">
             <Image
               src="/images/contest-cards.png"
               alt="Contest Cards"
@@ -57,8 +57,8 @@ export function CreatorSolutionSection() {
           </div>
         </div>
 
-        <div className="bg-white/10 flex flex-row-reverse h-[50vh] backdrop-blur-sm gap-20">
-          <div className="w-full  p-8 flex items-center justify-center">
+        <div className="bg-white/10 flex flex-row-reverse h-[450px] backdrop-blur-sm gap-10">
+          <div className="w-full flex items-center justify-center">
             <Image
               src="/images/ranking.png"
               alt="Contest Cards"
@@ -97,8 +97,8 @@ export function CreatorSolutionSection() {
           </div>
         </div>
 
-        <div className="bg-white/10 flex h-[50vh] backdrop-blur-sm gap-20">
-          <div className="w-full  p-8 flex items-center justify-center">
+        <div className="bg-white/10 flex h-[450px] backdrop-blur-sm gap-10">
+          <div className="w-full flex items-center justify-center">
             <Image
               src="/images/contract.png"
               alt="Contract"

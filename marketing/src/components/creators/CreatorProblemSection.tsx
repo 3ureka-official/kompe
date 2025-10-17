@@ -2,8 +2,8 @@ import Image from "next/image";
 
 export function CreatorProblemSection() {
   return (
-    <section className="px-40 pt-30 pb-20 relative z-100 ">
-      <div className="bg-white border-2 border-black/90 rounded-2xl px-20 mx-auto gap-10 h-[80vh] flex flex-col justify-center">
+    <section className="px-40 py-20 relative z-100">
+      <div className="bg-white border-2 border-black/90 rounded-2xl px-20 mx-auto gap-10 h-[570px] flex flex-col justify-center">
         <div>
           <div className="flex items-center mb-4 gap-2">
             <Image
