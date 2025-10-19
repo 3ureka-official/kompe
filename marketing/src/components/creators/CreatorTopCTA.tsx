@@ -5,7 +5,7 @@ export function CreatorTopCTA() {
     <>
       <div
         className="absolute z-10 
-        top-[80vw] md:top-[65vw] xl:top-[455px] 
+        top-[80vw] md:top-[65vw] xl:top-[70vh] 
         right-[-50%] translate-x-[-50%] xl:right-[-178px] xl:translate-x-0
         w-[100vw] xl:w-[850px] 
         h-[25vw] xl:h-[800px] 
@@ -21,7 +21,7 @@ export function CreatorTopCTA() {
         </a>
       </div>
       <div
-        className="absolute z-10 top-[91vw] md:top-[78vw] xl:top-[680px] left-0 w-[100vw] h-[65vw] xl:h-[680px] bg-[#222]"
+        className="absolute z-10 top-[91vw] md:top-[78vw] xl:top-[100vh] left-0 w-[100vw] h-[65vw] xl:h-[700px] bg-[#222]"
         style={{ zIndex: 0 }}
       />
     </>
