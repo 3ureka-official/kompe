@@ -41,11 +41,11 @@ export function CreatorFAQ() {
   };
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-[10vw] xl:py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+          <div className="text-center mb-[6vw] xl:mb-16">
+            <h2 className="text-[5.5vw] xl:text-4xl md:text-5xl font-bold mb-6 text-gray-900">
               よくあるご質問
             </h2>
           </div>
@@ -57,26 +57,26 @@ export function CreatorFAQ() {
                 className="bg-white rounded-xl shadow-sm border border-gray-500 overflow-hidden hover:shadow-md transition-shadow"
               >
                 <button
-                  className="w-full p-6 text-left hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="w-full p-[4vw] xl:p-6 text-left hover:bg-gray-50 transition-colors cursor-pointer"
                   onClick={() => toggleFAQ(index)}
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                      <span className="font-bold text-[#FE2C55] text-3xl">
+                      <span className="font-bold text-[#FE2C55] text-[4vw] xl:text-3xl">
                         Q
                       </span>
-                      <h4 className="font-bold text-gray-900 pr-4 text-lg">
+                      <h4 className="font-bold text-gray-900 pr-4 text-[3.5vw] xl:text-lg">
                         {faq.question}
                       </h4>
                     </div>
-                    <span className="text-[#FE2C55] font-bold text-4xl flex-shrink-0">
+                    <span className="text-[#FE2C55] font-bold text-[4vw] xl:text-4xl flex-shrink-0">
                       {openIndex === index ? "−" : "+"}
                     </span>
                   </div>
                 </button>
                 {openIndex === index && (
-                  <div className="px-6 pb-6">
-                    <p className="text-gray-600 leading-relaxed text-lg">
+                  <div className="px-[4vw] xl:px-6 pb-[4vw] xl:pb-6">
+                    <p className="text-gray-600 leading-relaxed text-[3vw] xl:text-lg">
                       {faq.answer}
                     </p>
                   </div>
