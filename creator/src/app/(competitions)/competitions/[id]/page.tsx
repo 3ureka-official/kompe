@@ -17,6 +17,7 @@ import LeaderBoard from "@/components/leaderBoard";
 import ButtomActionBar from "@/components/buttomActionBar";
 import IsAppliedChip from "@/components/isAppliedChip";
 import { getTikTokMetricsAndUpdate } from "@/services/videoService";
+import PrizeTable from "@/components/prizeTable";
 
 export default async function CompetitionPage({
   params,
@@ -116,14 +117,9 @@ export default async function CompetitionPage({
                 <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
                   賞金
                 </h2>
-                {competition.prize_distribution.map(
-                  (prize, index) =>
-                    prize !== 0 && (
-                      <div key={index}>
-                        <p>{`${index + 1}位: ¥${prize.toLocaleString()}`}</p>
-                      </div>
-                    ),
-                )}
+                <PrizeTable
+                  prizeDistribution={competition.prize_distribution}
+                />
               </section>
 
               <section className="py-6 border-t border-t-foreground/10">
