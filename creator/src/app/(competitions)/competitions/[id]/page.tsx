@@ -106,12 +106,16 @@ export default async function CompetitionPage({
                 </div>
               </div>
               <section className="py-6 border-t border-t-foreground/10">
-                <p className="mb-1">コンテスト概要</p>
+                <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
+                  コンテストの概要
+                </h2>
                 <p className="text-sm">{competition.description}</p>
               </section>
 
               <section className="py-6 border-t border-t-foreground/10">
-                <p className="mb-1">賞金</p>
+                <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
+                  賞金
+                </h2>
                 {competition.prize_distribution.map(
                   (prize, index) =>
                     prize !== 0 && (
@@ -123,12 +127,16 @@ export default async function CompetitionPage({
               </section>
 
               <section className="py-6 border-t border-t-foreground/10">
-                <p className="mb-1">試供品について</p>
+                <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
+                  試供品について
+                </h2>
                 <p className="text-sm">{competition.supply_of_samples}</p>
               </section>
 
               <section className="py-6 border-t border-t-foreground/10 border-b border-b-foreground/10">
-                <p className="mb-1">動画の条件</p>
+                <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
+                  動画の条件
+                </h2>
                 <p className="text-sm">{competition.requirements}</p>
               </section>
             </TabsContent>
