@@ -50,7 +50,7 @@ export default async function ButtomActionBar({
   const ranking = await getRanking(applications || []);
 
   return (
-    <div className="bg-card border border-b-0 rounded-t-2xl w-full p-4">
+    <div className="absolute bottom-0 left-0 right-0 bg-card border border-b-0 rounded-t-2xl w-full p-4">
       {session ? (
         isApplied ? (
           applications && isEnded && ranking !== null ? (
