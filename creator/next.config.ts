@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.tiktokcdn.com",
       },
+      {
+        protocol: "https",
+        hostname: "scdn.line-apps.com",
+      },
     ],
   },
 };
