@@ -12,15 +12,12 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
-import {
-  CalendarClockIcon,
-  CrownIcon,
-} from "lucide-react";
+import { CalendarClockIcon, CrownIcon } from "lucide-react";
 
 export default async function Competitions() {
   const data = await prisma.contests.findMany({ include: { brands: true } });
   return (
-    <div className="p-4">
+    <div className="p-4 bg-gray-50">
       <h1 className="text-sm font-bold text-muted-foreground px-2 py-4">
         {data.length}件のコンペティションが開催中
       </h1>
