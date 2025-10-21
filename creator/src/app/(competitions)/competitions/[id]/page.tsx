@@ -1,12 +1,4 @@
 import Image from "next/image";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -45,17 +37,6 @@ export default async function CompetitionPage({
     <SessionProvider>
       <div className="flex flex-col max-h-full">
         <div className="grow min-h-0 overflow-auto grid gap-8 p-4 pb-20">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">ホーム</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{competition.title}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
           <Image
             src={competition.thumbnail_url || "" /* todo: add fallback image */}
             alt={competition.title || "タイトル未設定のコンペティション"}
