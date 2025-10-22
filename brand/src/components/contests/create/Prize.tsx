@@ -41,7 +41,7 @@ export function Prize() {
         watchedDistribution.reduce((sum, amount) => sum + amount, 0),
       );
     }
-  }, [data, reset]);
+  }, [data, reset, watchedDistribution]);
 
   const addWinner = () => {
     setValue("prize_distribution", [...watchedDistribution, 0]);
