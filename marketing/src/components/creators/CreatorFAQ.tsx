@@ -62,10 +62,10 @@ export function CreatorFAQ() {
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
-                      <span className="font-bold text-[#FE2C55] text-[4vw] xl:text-3xl">
+                      <span className="font-bold text-[#FE2C55] text-[3vw] xl:text-3xl">
                         Q
                       </span>
-                      <h4 className="font-bold text-gray-900 pr-4 text-[3.5vw] xl:text-lg">
+                      <h4 className="font-bold text-gray-900 pr-4 text-[2.6vw] xl:text-lg">
                         {faq.question}
                       </h4>
                     </div>
@@ -76,7 +76,7 @@ export function CreatorFAQ() {
                 </button>
                 {openIndex === index && (
                   <div className="px-[4vw] xl:px-6 pb-[4vw] xl:pb-6">
-                    <p className="text-gray-600 leading-relaxed text-[3vw] xl:text-lg">
+                    <p className="text-gray-600 leading-relaxed text-[2.6vw] xl:text-lg">
                       {faq.answer}
                     </p>
                   </div>
