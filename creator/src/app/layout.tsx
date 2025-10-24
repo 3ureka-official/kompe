@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Image from "next/image";
-import { auth } from "@/auth";
-import SignInButton from "@/components/signInButton";
-import Link from "next/link";
-import HeaderAvatar from "@/components/headerAvatar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,31 +22,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex flex-col h-screen">
-          <nav className="w-full flex items-center justify-between gap-4 px-6 pt-4 pb-2 border-b">
-            <Link href="/">
-              <Image
-                src="/logo-colored.svg"
-                alt="Kompe logo"
-                width={120}
-                height={38}
-                priority
-              />
-            </Link>
-            {session ? (
-              <HeaderAvatar session={session} />
-            ) : (
-              <SignInButton variant="minimal" />
-            )}
-          </nav>
-          {children}
-        </div>
+        <div className="flex flex-col h-screen">{children}</div>
       </body>
     </html>
   );

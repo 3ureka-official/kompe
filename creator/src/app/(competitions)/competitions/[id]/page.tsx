@@ -1,12 +1,4 @@
 import Image from "next/image";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -25,6 +17,7 @@ import LeaderBoard from "@/components/leaderBoard";
 import ButtomActionBar from "@/components/buttomActionBar";
 import IsAppliedChip from "@/components/isAppliedChip";
 import { getTikTokMetricsAndUpdate } from "@/services/videoService";
+import PrizeTable from "@/components/prizeTable";
 
 export default async function CompetitionPage({
   params,
@@ -45,17 +38,6 @@ export default async function CompetitionPage({
     <SessionProvider>
       <div className="flex flex-col max-h-full">
         <div className="grow min-h-0 overflow-auto grid gap-8 p-4 pb-20">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">ホーム</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{competition.title}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
           <Image
             src={competition.thumbnail_url || "" /* todo: add fallback image */}
             alt={competition.title || "タイトル未設定のコンペティション"}
@@ -125,29 +107,32 @@ export default async function CompetitionPage({
                 </div>
               </div>
               <section className="py-6 border-t border-t-foreground/10">
-                <p className="mb-1">コンテスト概要</p>
+                <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
+                  コンテストの概要
+                </h2>
                 <p className="text-sm">{competition.description}</p>
               </section>
 
               <section className="py-6 border-t border-t-foreground/10">
-                <p className="mb-1">賞金</p>
-                {competition.prize_distribution.map(
-                  (prize, index) =>
-                    prize !== 0 && (
-                      <div key={index}>
-                        <p>{`${index + 1}位: ¥${prize.toLocaleString()}`}</p>
-                      </div>
-                    ),
-                )}
+                <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
+                  賞金
+                </h2>
+                <PrizeTable
+                  prizeDistribution={competition.prize_distribution}
+                />
               </section>
 
               <section className="py-6 border-t border-t-foreground/10">
-                <p className="mb-1">試供品について</p>
+                <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
+                  試供品について
+                </h2>
                 <p className="text-sm">{competition.supply_of_samples}</p>
               </section>
 
               <section className="py-6 border-t border-t-foreground/10 border-b border-b-foreground/10">
-                <p className="mb-1">動画の条件</p>
+                <h2 className="text-sm font-bold text-muted-foreground px-2 mb-2">
+                  動画の条件
+                </h2>
                 <p className="text-sm">{competition.requirements}</p>
               </section>
             </TabsContent>

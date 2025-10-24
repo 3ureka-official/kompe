@@ -43,18 +43,26 @@ export default async function LeaderBoard({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {applications?.map((application, index) => (
-            <TableRow key={application.id}>
-              <TableCell className="font-medium">#{index + 1}</TableCell>
-              <TableCell>{application.creators.display_name}</TableCell>
-              <TableCell className="text-right">
-                {application.views.toLocaleString()}
-              </TableCell>
-              <TableCell className="text-right">
-                {formatJpy(competition.prize_distribution[index])}
+          {applications && applications.length > 0 ? (
+            applications?.map((application, index) => (
+              <TableRow key={application.id}>
+                <TableCell className="font-medium">#{index + 1}</TableCell>
+                <TableCell>{application.creators.display_name}</TableCell>
+                <TableCell className="text-right">
+                  {application.views.toLocaleString()}
+                </TableCell>
+                <TableCell className="text-right">
+                  {formatJpy(competition.prize_distribution[index])}
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                参加者がいません
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </div>
