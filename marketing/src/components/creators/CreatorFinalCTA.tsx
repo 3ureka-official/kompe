@@ -18,7 +18,7 @@ export function CreatorFinalCTA() {
 
           <div className="flex flex-col gap-4 justify-center w-[50vw] xl:max-w-md mx-auto">
             <a
-              href="/pre-register/creator"
+              href={process.env.NEXT_PUBLIC_CREATOR_APP_URL}
               className="cursor-pointer bg-white text-[#FE2C55] px-[2vw] py-[2vw] xl:px-10 xl:py-5 rounded-full font-bold text-[2vw] xl:text-2xl hover:bg-gray-100 transition-colors shadow-2xl text-center"
             >
               今すぐ始める

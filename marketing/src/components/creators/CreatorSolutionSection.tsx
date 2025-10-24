@@ -48,7 +48,7 @@ export function CreatorSolutionSection() {
                 がもらえます。
               </p>
               <a
-                href="/pre-register/creator"
+                href={process.env.NEXT_PUBLIC_CREATOR_APP_URL}
                 className="cursor-pointer bg-[#FF0050] text-white px-5 py-3 text-[2vw] xl:text-md rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
               >
                 今すぐ始める
@@ -89,7 +89,7 @@ export function CreatorSolutionSection() {
                 を利用して、フォロワー数関係なく誰でも報酬を得るチャンスがあります。
               </p>
               <a
-                href="/pre-register/creator"
+                href={process.env.NEXT_PUBLIC_CREATOR_APP_URL}
                 className="cursor-pointer bg-[#FF0050] text-white px-5 py-3 text-[2vw] xl:text-md rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
               >
                 今すぐ始める
@@ -129,7 +129,7 @@ export function CreatorSolutionSection() {
                 に繋がります。
               </p>
               <a
-                href="/pre-register/creator"
+                href={process.env.NEXT_PUBLIC_CREATOR_APP_URL}
                 className="cursor-pointer text-[2vw] xl:text-md bg-[#FF0050] text-white px-5 py-3 rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
               >
                 今すぐ始める
