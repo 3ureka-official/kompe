@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,7 +18,6 @@ import { Loading } from "../ui/Loading";
 
 export function BrandCreateForm() {
   const { profile } = useContext(AuthContext);
-  const router = useRouter();
 
   const [isPending, setIsPending] = useState(false);
 
