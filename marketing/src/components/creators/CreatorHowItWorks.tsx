@@ -19,7 +19,7 @@ export function CreatorHowItWorks() {
     <section className="py-[7vw] xl:py-25 bg-black/85">
       <div className="container mx-auto px-4 flex flex-col items-center justify-center">
         <div className="text-center mb-[6vw] xl:mb-15">
-          <h2 className="text-[5.5vw] xl:text-5xl font-bold text-white">
+          <h2 className="text-[6vw] md:text-[5.5vw] xl:text-5xl font-bold text-white">
             コンテストの参加の流れ
           </h2>
         </div>
@@ -28,7 +28,7 @@ export function CreatorHowItWorks() {
           <div className="flex items-center gap-[2vw] xl:gap-5 w-full">
             <NumberBadge number="01" />
             <div className="bg-white text-black p-[2vw] xl:p-8 rounded-2xl space-y-[2vw] xl:space-y-4 w-full">
-              <h3 className="text-[3vw] xl:text-2xl font-bold text-gray-900 text-center">
+              <h3 className="text-[3.5vw] md:text-[3vw] xl:text-2xl font-bold text-gray-900 text-center">
                 TikTokアカウントでKompeに登録
               </h3>
             </div>
@@ -40,7 +40,7 @@ export function CreatorHowItWorks() {
           <div className="flex items-center gap-[2vw] xl:gap-5 w-full">
             <NumberBadge number="02" />
             <div className="bg-white text-black p-[2vw] xl:p-8 rounded-2xl space-y-[2vw] xl:space-y-4 w-full">
-              <h3 className="text-[3vw] xl:text-2xl font-bold text-gray-900 text-center">
+              <h3 className="text-[3.5vw] md:text-[3vw] xl:text-2xl font-bold text-gray-900 text-center">
                 好きなコンテストを選択
               </h3>
             </div>
@@ -51,7 +51,7 @@ export function CreatorHowItWorks() {
           <div className="flex items-center gap-[2vw] xl:gap-5 w-full">
             <NumberBadge number="03" />
             <div className="bg-white text-black p-[2vw] xl:p-8 rounded-2xl space-y-[2vw] xl:space-y-4 w-full">
-              <h3 className="text-[3vw] xl:text-2xl font-bold text-gray-900 text-center">
+              <h3 className="text-[3.5vw] md:text-[3vw] xl:text-2xl font-bold text-gray-900 text-center">
                 TikTokに動画を投稿してコンテストに参加
               </h3>
             </div>
@@ -62,7 +62,7 @@ export function CreatorHowItWorks() {
           <div className="flex items-center gap-[2vw] xl:gap-5 w-full">
             <NumberBadge number="04" />
             <div className="bg-white text-black p-[2vw] xl:p-8 rounded-2xl space-y-[2vw] xl:space-y-4 w-full">
-              <h3 className="text-[3vw] xl:text-2xl font-bold text-gray-900 text-center">
+              <h3 className="text-[3.5vw] md:text-[3vw] xl:text-2xl font-bold text-gray-900 text-center">
                 再生数ランキングで入賞して報酬をゲット
               </h3>
             </div>
