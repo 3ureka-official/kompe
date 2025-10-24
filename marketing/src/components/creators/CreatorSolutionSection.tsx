@@ -3,19 +3,19 @@ import Image from "next/image";
 export function CreatorSolutionSection() {
   return (
     <section className="pt-[10vw] xl:pt-30 pb-15 bg-white mx-auto gap-[5vw] xl:gap-10 flex flex-col justify-center items-center">
-      <h2 className="text-[5.2vw] xl:text-6xl font-bold text-black flex items-center gap-3 xl:gap-5">
+      <h2 className="text-[5.5vw] md:text-[5.2vw] xl:text-6xl font-bold text-black flex items-center gap-1 md:gap-3 xl:gap-5">
         そのお悩み
         <Image
           src="/images/logo/logo-characters.svg"
           alt="Kompe Logo Characters"
           width={0}
           height={0}
-          className="w-[23vw] xl:w-[270px] m-auto"
+          className="w-[25vw] md:w-[23vw] xl:w-[270px] m-auto"
         />
         が解決します!
       </h2>
 
-      <div className="flex flex-col gap-[12vw] xl:gap-20 px-10 xl:px-0 xl:container">
+      <div className="flex flex-col gap-[12vw] xl:gap-20 px-4 md:px-10 xl:px-0 xl:container">
         <div className="bg-white/10 flex flex-col xl:flex-row xl:h-[450px] px-[10px] xl:px-0 backdrop-blur-sm gap-0 xl:gap-10">
           <div className="w-full flex items-center justify-center">
             <Image
@@ -24,6 +24,7 @@ export function CreatorSolutionSection() {
               width={0}
               height={0}
               sizes="100%"
+              quality={100}
               style={{ width: "100%" }}
             />
           </div>
@@ -49,7 +50,7 @@ export function CreatorSolutionSection() {
               </p>
               <a
                 href={process.env.NEXT_PUBLIC_CREATOR_APP_URL}
-                className="cursor-pointer bg-[#FF0050] text-white px-5 py-3 text-[2vw] xl:text-md rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
+                className="cursor-pointer bg-[#FF0050] text-white px-5 py-3 text-[2.8vw] md:text-[2vw] xl:text-md rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
               >
                 今すぐ始める
               </a>
@@ -65,6 +66,7 @@ export function CreatorSolutionSection() {
               width={0}
               height={0}
               sizes="100%"
+              quality={100}
               style={{ width: "80%", marginBottom: "20px" }}
             />
           </div>
@@ -90,7 +92,7 @@ export function CreatorSolutionSection() {
               </p>
               <a
                 href={process.env.NEXT_PUBLIC_CREATOR_APP_URL}
-                className="cursor-pointer bg-[#FF0050] text-white px-5 py-3 text-[2vw] xl:text-md rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
+                className="cursor-pointer bg-[#FF0050] text-white px-5 py-3 text-[2.8vw] md:text-[2vw] xl:text-md rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
               >
                 今すぐ始める
               </a>
@@ -106,6 +108,7 @@ export function CreatorSolutionSection() {
               width={0}
               height={0}
               sizes="100%"
+              quality={100}
               style={{ width: "100%" }}
             />
           </div>
@@ -130,7 +133,7 @@ export function CreatorSolutionSection() {
               </p>
               <a
                 href={process.env.NEXT_PUBLIC_CREATOR_APP_URL}
-                className="cursor-pointer text-[2vw] xl:text-md bg-[#FF0050] text-white px-5 py-3 rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
+                className="cursor-pointer text-[2.8vw] md:text-[2vw] xl:text-md bg-[#FF0050] text-white px-5 py-3 rounded-md font-bold hover:bg-[#FE2C55] shadow-2xl text-center"
               >
                 今すぐ始める
               </a>

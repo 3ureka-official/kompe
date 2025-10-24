@@ -5,7 +5,7 @@ export const Footer = () => {
 
   return (
     <footer className="bg-black/90 border-t py-10 xl:p-20 px-[4vw]">
-      <div className="container mx-auto px-0 sm:px-6 lg:px-8 flex justify-between  items-end">
+      <div className="container mx-auto px-0 sm:px-6 lg:px-8 flex flex-col-reverse md:flex-row justify-between md:items-end">
         {/* メインフッターコンテンツ */}
         <div className="py-6 float-left">
           <Link href="/" className="flex items-center space-x-2 mb-4">
@@ -14,6 +14,7 @@ export const Footer = () => {
               alt="Kompe"
               width={300}
               height={300}
+              quality={100}
               className="w-[100px] xl:w-[300px]"
             />
           </Link>
@@ -23,7 +24,7 @@ export const Footer = () => {
         </div>
 
         {/* ボトムセクション */}
-        <div className="flex xl:flex-row flex-col gap-2 xl:gap-10 pb-5">
+        <div className="flex xl:flex-row md:flex-col gap-6 md:gap-2 xl:gap-10 pb-5">
           <div className="flex flex-col gap-2 xl:gap-4">
             {/* <Link
                 href="/contact"
@@ -33,13 +34,13 @@ export const Footer = () => {
             </Link> */}
             <Link
               href="/terms"
-              className="font-bold text-[3vw] xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               利用規約
             </Link>
             <Link
               href="/privacy"
-              className="font-bold text-[3vw] xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               プライバシーポリシー
             </Link>
@@ -47,13 +48,13 @@ export const Footer = () => {
           <div className="flex flex-col gap-2 xl:gap-4">
             <Link
               href="https://tiktok.com/@kompe"
-              className="font-bold text-[3vw] xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               TikTok
             </Link>
             <Link
               href="https://instagram.com/3ureka_official"
-              className="font-bold text-[3vw] xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               Instagram
             </Link>
