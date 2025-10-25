@@ -19,6 +19,13 @@ export const TikTokVideoSchema = z.object({
   view_count: z.number().int().optional(),
 });
 
+export const RequiredVideoSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  cover_image_url: z.string().url(),
+  view_count: z.number().int(),
+});
+
 // Error object schema (reused from user model)
 export const TikTokErrorSchema = z.object({
   code: z.string(),
@@ -131,6 +138,7 @@ export const VideoListParamsSchema = z.object({
 
 // TypeScript types for video list
 export type VideoListRequest = z.infer<typeof VideoListRequestSchema>;
+export type RequiredVideo = z.infer<typeof RequiredVideoSchema>;
 export type VideoListResponseData = z.infer<typeof VideoListResponseDataSchema>;
 export type TikTokVideoListResponse = z.infer<
   typeof TikTokVideoListResponseSchema

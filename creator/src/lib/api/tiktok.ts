@@ -17,6 +17,7 @@ import {
   createVideoQueryRequest,
   createVideoListRequest,
   VideoFieldsSchema,
+  TikTokVideo,
 } from "@/models/tiktok/video";
 import { getToken } from "next-auth/jwt";
 import { headers } from "next/headers";
@@ -246,10 +247,23 @@ export class TikTokAPIClient {
         },
       );
 
-      // Validate and parse response
-      const validatedResponse = TikTokVideoListResponseSchema.parse(
-        response.data,
+      const validatedVideos = response.data.data.videos.filter(
+        (video: TikTokVideo) =>
+          video.id !== undefined &&
+          video.title !== undefined &&
+          video.cover_image_url !== undefined &&
+          video.view_count !== undefined,
       );
+
+      // Validate and parse response
+      const validatedResponse = TikTokVideoListResponseSchema.parse({
+        data: {
+          videos: validatedVideos,
+          cursor: response.data.data.cursor,
+          has_more: response.data.data.has_more,
+        },
+        error: response.data.error,
+      });
 
       return validatedResponse;
     } catch (error) {

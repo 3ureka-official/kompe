@@ -74,8 +74,11 @@ export default function ApplyDialog({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>キャンセル</AlertDialogCancel>
-          <AlertDialogAction disabled={!isTermsAccepted} asChild>
-            <ApplyCompetitionButton contestId={competitionId}>
+          <AlertDialogAction asChild>
+            <ApplyCompetitionButton
+              disabled={!isTermsAccepted}
+              contestId={competitionId}
+            >
               参加する
             </ApplyCompetitionButton>
           </AlertDialogAction>
