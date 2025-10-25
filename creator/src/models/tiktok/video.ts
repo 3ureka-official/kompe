@@ -138,6 +138,7 @@ export const VideoListParamsSchema = z.object({
 
 // TypeScript types for video list
 export type VideoListRequest = z.infer<typeof VideoListRequestSchema>;
+export type RequiredVideo = z.infer<typeof RequiredVideoSchema>;
 export type VideoListResponseData = z.infer<typeof VideoListResponseDataSchema>;
 export type TikTokVideoListResponse = z.infer<
   typeof TikTokVideoListResponseSchema
