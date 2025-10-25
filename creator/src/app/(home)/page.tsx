@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
-import { ClockIcon, CrownIcon, VideoIcon } from "lucide-react";
+import { ClockIcon, VideoIcon } from "lucide-react";
 
 export default async function Competitions() {
   const data = await prisma.contests.findMany({
@@ -80,7 +80,6 @@ export default async function Competitions() {
                     </div>
                   </div>
                   <CardAction className="h-full flex items-center gap-2 font-bold text-xl text-primary">
-                    <CrownIcon className="size-5 stroke-2 text-muted-foreground" />
                     ¥{competition.prize_pool?.toLocaleString()}
                   </CardAction>
                 </CardFooter>
