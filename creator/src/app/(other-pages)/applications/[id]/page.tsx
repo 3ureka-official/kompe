@@ -1,13 +1,5 @@
 import prisma from "@/lib/prisma";
 import Image from "next/image";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   CalendarClockIcon,
@@ -69,25 +61,6 @@ export default async function ApplicationPage({
   return (
     <div className="flex flex-col max-h-full">
       <div className="grow min-h-0 overflow-auto p-4 pb-16">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">
-                Kompeクリエイターダッシュボード
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/competitions">
-                参加中コンペティション
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{competition.title}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
         <h1 className="text-2xl font-bold pt-8">{competition.title}</h1>
         <div className="*:border-b *:border-b-foreground/10">
           <section className="grid gap-2 py-6">
