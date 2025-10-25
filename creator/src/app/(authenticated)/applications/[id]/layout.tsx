@@ -1,6 +1,6 @@
 import BottomNavigationBar from "@/components/bottomNavigationBar";
 import QueryProvider from "@/components/QueryProvider";
-import { CompetitionHeader } from "@/components/competitionHeader";
+import { ApplicationHeader } from "@/components/applicationHeader";
 
 export default async function CompetitionsLayout({
   children,
@@ -9,11 +9,11 @@ export default async function CompetitionsLayout({
 }>) {
   return (
     <>
-      <CompetitionHeader />
+      <ApplicationHeader />
       <main className="grow min-h-0 overflow-auto relative">
         <QueryProvider>{children}</QueryProvider>
       </main>
-      <BottomNavigationBar currentPage="competitions" />
+      <BottomNavigationBar currentPage="other" />
     </>
   );
 }
