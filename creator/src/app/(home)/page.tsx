@@ -20,7 +20,7 @@ export default async function Competitions() {
   });
   return (
     <div className="p-4 bg-gray-50">
-      <h1 className="text-lg font-bold px-2 pb-4">開催中のコンテスト</h1>
+      <h1 className="text-lg font-bold pb-4">開催中のコンテスト</h1>
       <div className="grid gap-4">
         {data.map((competition) => (
           <Link href={`/competitions/${competition.id}`} key={competition.id}>
