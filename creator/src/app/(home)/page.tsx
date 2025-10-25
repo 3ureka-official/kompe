@@ -18,7 +18,7 @@ export default async function Competitions() {
   const data = await prisma.contests.findMany({
     include: { brands: true, applications: true },
     orderBy: {
-      contest_end_date: "desc",
+      contest_start_date: "desc",
     },
     where: {
       contest_end_date: {
