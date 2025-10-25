@@ -44,7 +44,7 @@ function CreateContestContent() {
       initContest(brand.id);
       setHasInitialized(true);
     }
-  }, [brand?.id, hasInitialized]);
+  }, [brand?.id, initContest, hasInitialized]);
 
   return (
     <div className="max-w-4xl mx-auto py-8">
