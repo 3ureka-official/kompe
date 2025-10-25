@@ -46,6 +46,7 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       id: true,
       updated_engagement_at: true,
       applications: {
+        where: { tiktok_url: { not: null } },
         select: {
           id: true,
           views: true,
@@ -58,7 +59,13 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       },
     },
   });
+
   if (!competition) throw new Error("contest_not_found");
+
+  if (competition.applications.length === 0) {
+    const result = await fetchContestWithApps(contestId);
+    return { competition: result };
+  }
 
   // スロットル（前回から15分未満ならそのまま返す）
   if (
