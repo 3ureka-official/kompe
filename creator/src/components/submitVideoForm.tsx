@@ -43,7 +43,7 @@ export default function SubmitVideoDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full py-5 font-bold">
           {previousValue ? (
             <>
               <EditIcon />
@@ -108,7 +108,7 @@ export default function SubmitVideoDialog({
             ))}
           </RadioGroup>
           <Button
-            className="w-full"
+            className="w-full py-5 font-bold"
             onClick={() => onSubmitButtonClick()}
             disabled={!selectedVideoId || isPending}
           >
