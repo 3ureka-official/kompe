@@ -69,7 +69,7 @@ export default async function ButtomActionBar({
               />
             )
           ) : (
-            <Button className="w-full" asChild>
+            <Button className="w-full py-5" asChild>
               <Link href={`/applications/${competition.id}`}>
                 <Badge variant={"secondary"}>
                   <CheckIcon />
@@ -84,7 +84,7 @@ export default async function ButtomActionBar({
         )
       ) : (
         <SignInButton
-          className="*:w-full"
+          className="*:w-full py-5"
           redirectTo={`/competitions/${competition.id}`}
         />
       )}
