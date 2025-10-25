@@ -17,6 +17,7 @@ import { auth } from "@/auth";
 import SubmitVideoForm from "@/components/submitVideoForm";
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 import { redirect } from "next/navigation";
+import { RequiredVideo } from "@/models/tiktok/video";
 
 export default async function ApplicationPage({
   params,
@@ -165,23 +166,7 @@ export default async function ApplicationPage({
         <SubmitVideoForm
           competitionId={competition.id}
           previousValue={application.tiktok_url}
-          videos={
-            // TODO: tiktokAPIClientでここらへんの型の絞り込みをする
-            videoList.data.videos.filter(
-              (
-                video,
-              ): video is {
-                id: string;
-                title: string;
-                cover_image_url: string;
-                view_count: number;
-              } =>
-                video.id !== undefined &&
-                video.title !== undefined &&
-                video.cover_image_url !== undefined &&
-                video.view_count !== undefined,
-            )
-          }
+          videos={videoList.data.videos as RequiredVideo[]}
           initialSelectedVideoId={appliedVideo?.id}
         />
       </div>

@@ -14,6 +14,7 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { RequiredVideo } from "@/models/tiktok/video";
 
 export default function SubmitVideoDialog({
   competitionId,
@@ -23,12 +24,7 @@ export default function SubmitVideoDialog({
 }: {
   competitionId: string;
   previousValue: string | null;
-  videos: {
-    id: string;
-    title: string;
-    cover_image_url: string;
-    view_count: number;
-  }[];
+  videos: RequiredVideo[];
   initialSelectedVideoId?: string;
 }) {
   const [open, setOpen] = useState(false);
