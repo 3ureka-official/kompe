@@ -14,7 +14,7 @@ export default async function BottomNavigationBar({ currentPage }: Props) {
             <CrownIcon
               className={`size-4 stroke-2 ${currentPage === "competitions" && "fill-primary"}`}
             />
-            <p className="text-xs font-semibold">コンペ</p>
+            <p className="text-xs font-semibold">コンテスト</p>
           </div>
         </Link>
         <Link href="/mypage">
