@@ -26,11 +26,12 @@ export default async function SignInButton({
       }}
       className={className}
     >
-      <Button className="bg-black">
+      <Button className="bg-black cursor-pointer">
         <Image
           className="dark:invert"
-          src="/external/TikTok_Icon_Black_Square.png"
+          src="/images/logo/TikTok_Icon_Black_Square.png"
           alt="TikTok logomark"
+          quality={100}
           width={28}
           height={28}
         />
