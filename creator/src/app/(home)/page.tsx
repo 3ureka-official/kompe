@@ -17,7 +17,16 @@ import { ClockIcon, CrownIcon, VideoIcon } from "lucide-react";
 export default async function Competitions() {
   const data = await prisma.contests.findMany({
     include: { brands: true, applications: true },
+    orderBy: {
+      contest_end_date: "desc",
+    },
+    where: {
+      contest_end_date: {
+        gte: new Date(),
+      },
+    },
   });
+
   return (
     <div className="p-4 bg-gray-50">
       <h1 className="text-lg font-bold pb-4">開催中のコンテスト</h1>
