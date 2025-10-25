@@ -16,7 +16,16 @@ import { ClockIcon, VideoIcon } from "lucide-react";
 
 export default async function Competitions() {
   const data = await prisma.contests.findMany({
-    include: { brands: true, applications: true },
+    include: {
+      brands: true,
+      applications: {
+        where: {
+          tiktok_url: {
+            not: null,
+          },
+        },
+      },
+    },
     orderBy: {
       contest_start_date: "desc",
     },
