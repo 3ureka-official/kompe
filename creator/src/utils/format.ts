@@ -17,3 +17,11 @@ export function formatDateTime(date: Date | undefined) {
     minute: "2-digit",
   });
 }
+
+export function formatDate(date: Date | undefined) {
+  if (!date) return "";
+
+  return format(date, "yyyy-MM-dd", {
+    locale: ja,
+  });
+}
