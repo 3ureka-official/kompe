@@ -7,7 +7,7 @@ export function CreatorProblemSection() {
         <div>
           <div className="flex items-center mb-0 xl:mb-4 gap-2">
             <Image
-              src="/images/logo/mv-tiktok.svg"
+              src="/images/logo/mv-tiktok.png"
               alt="TikTok Logo"
               width={0}
               height={0}
@@ -24,29 +24,29 @@ export function CreatorProblemSection() {
         </div>
 
         <div className="pt-3 border-t-2 border-black space-y-[2vw] xl:space-y-8">
-          <p className="font-medium text-[5vw] md:text-[2.5vw] xl:text-xl text-black">
+          <p className="font-medium text-[4.5vw] md:text-[2.5vw] xl:text-xl text-black">
             <span className="inline font-bold text-[#FF0050] text-[5vw] md:text-[2.5vw] xl:text-3xl leading-none mr-1 md:mr-2">
               ・
             </span>
-            <span className="inline font-bold text-[5vw] md:text-[2.5vw] xl:text-3xl">
+            <span className="inline font-bold text-[4.5vw] md:text-[2.5vw] xl:text-3xl">
               企業案件
             </span>
             に応募したいけど、募集が見つからない...
           </p>
-          <p className="font-medium text-[5vw] md:text-[2.5vw] xl:text-xl text-black">
+          <p className="font-medium text-[4.5vw] md:text-[2.5vw] xl:text-xl text-black">
             <span className="inline font-bold text-[#FF0050] text-[5vw] md:text-[2.5vw] xl:text-3xl leading-none mr-1 md:mr-2">
               ・
             </span>
-            <span className="inline font-bold text-[5vw] md:text-[2.5vw] xl:text-3xl">
+            <span className="inline font-bold text-[4.5vw] md:text-[2.5vw] xl:text-3xl">
               動画制作
             </span>
             で稼ぎたいけど何から始めればいいかわからない...
           </p>
-          <p className="font-medium text-[5vw] md:text-[2.5vw] xl:text-xl text-black">
+          <p className="font-medium text-[4.5vw] md:text-[2.5vw] xl:text-xl text-black">
             <span className="inline font-bold text-[#FF0050] text-[5vw] md:text-[2.5vw] xl:text-3xl leading-none mr-1 md:mr-2">
               ・
             </span>
-            <span className="inline font-bold text-[5vw] md:text-[2.5vw] xl:text-3xl">
+            <span className="inline font-bold text-[4.5vw] md:text-[2.5vw] xl:text-3xl">
               フォロワー
             </span>
             が少ないので収益化を諦めている...

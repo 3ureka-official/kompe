@@ -14,7 +14,7 @@ export function CreatorHero() {
         <h1 className="flex items-end">
           <span>
             <Image
-              src="/images/logo/mv-tiktok.svg"
+              src="/images/logo/mv-tiktok.png"
               alt="TikTok Logo"
               width={0}
               height={0}
