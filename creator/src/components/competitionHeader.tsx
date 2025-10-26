@@ -1,14 +1,21 @@
 "use client";
 
 import { ChevronLeftIcon } from "lucide-react";
-import Link from "next/link";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 export const CompetitionHeader = () => {
+  const router = useRouter();
+
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
     <nav className="w-full flex items-center justify-between gap-4 px-4 pt-4 pb-2 border-b">
-      <Link href="/">
+      <Button onClick={handleGoBack} variant="ghost" size="icon">
         <ChevronLeftIcon className="size-6 stroke-2" />
-      </Link>
+      </Button>
       <h1 className="font-bold py-2">コンテストの詳細</h1>
       <span className="w-6" />
     </nav>
