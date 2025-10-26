@@ -12,6 +12,7 @@ export function CreatorProblemSection() {
               width={0}
               height={0}
               quality={100}
+              sizes="100%"
               className="w-[15vw] md:w-[13vw] xl:w-[140px]"
             />
             <p className="text-black text-[4vw] md:text-[3.5vw] xl:text-3xl font-bold">
