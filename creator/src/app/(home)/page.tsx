@@ -42,7 +42,7 @@ export default async function Competitions() {
   });
 
   return (
-    <div className="p-4 bg-gray-50">
+    <div className="p-4 bg-gray-50 min-h-full">
       <h1 className="text-lg font-bold pb-4">開催中のコンテスト</h1>
       <div className="grid gap-4">
         {data.length > 0 ? (
