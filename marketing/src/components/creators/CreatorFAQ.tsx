@@ -76,7 +76,7 @@ export function CreatorFAQ() {
                 </button>
                 {openIndex === index && (
                   <div className="px-[4vw] xl:px-6 pb-[4vw] xl:pb-6">
-                    <p className="text-gray-600 leading-relaxed text-[2.6vw] xl:text-lg">
+                    <p className="text-gray-600 leading-relaxed text-[3.5vw] md:text-[3vw] xl:text-lg">
                       {faq.answer}
                     </p>
                   </div>
