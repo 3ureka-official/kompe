@@ -7,7 +7,7 @@ import {
   creators,
   contest_transfers,
 } from "@prisma/client";
-import { formatDate } from "@/utils/format";
+import { formatDateTime } from "@/utils/format";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { auth } from "@/auth";
@@ -30,7 +30,7 @@ export default async function LeaderBoard({
   return (
     <div>
       <div className="text-sm text-muted-foreground mb-2 px-4">
-        前回の更新: {formatDate(competition.updated_engagement_at)}
+        前回の更新: {formatDateTime(competition.updated_engagement_at)}
       </div>
       <Table>
         <TableBody className="border-y border-y-gray">

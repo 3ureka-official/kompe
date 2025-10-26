@@ -1,9 +1,12 @@
+import { ja } from "date-fns/locale";
+import { format } from "date-fns";
+
 export const formatJpy = (amountJpy: number | undefined) => {
   if (!amountJpy) return "¥0";
   return `¥${amountJpy.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
 
-export function formatDate(date: Date | undefined) {
+export function formatDateTime(date: Date | undefined) {
   if (!date) return "";
 
   return date.toLocaleString("ja-JP", {
