@@ -19,6 +19,7 @@ export function CreatorHero() {
               width={0}
               height={0}
               quality={100}
+              sizes="100%"
               className="w-[35vw] xl:w-[25vw]"
             />
             <span className="text-[8.5vw] md:text-[7.5vw] xl:text-[5vw] font-bold w-fit">

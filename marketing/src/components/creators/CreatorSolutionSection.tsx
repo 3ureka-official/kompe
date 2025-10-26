@@ -6,10 +6,11 @@ export function CreatorSolutionSection() {
       <h2 className="text-[5.5vw] md:text-[5.2vw] xl:text-6xl font-bold text-black flex items-center gap-1 md:gap-3 xl:gap-5">
         そのお悩み
         <Image
-          src="/images/logo/logo-characters.svg"
-          alt="Kompe Logo Characters"
+          src="/images/logo/logo-black.png"
+          alt="Kompe Logo"
           width={0}
           height={0}
+          sizes="100%"
           quality={100}
           className="w-[25vw] md:w-[23vw] xl:w-[270px] m-auto"
         />
