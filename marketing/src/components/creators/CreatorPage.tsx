@@ -19,7 +19,8 @@ export default function CreatorsPage() {
           width={0}
           height={0}
           sizes="100%"
-          className="w-[25vw] xl:w-[160px]"
+          quality={100}
+          className="w-[30vw] md:w-[25vw] xl:w-[160px]"
         />
       </span>
       <CreatorHero />

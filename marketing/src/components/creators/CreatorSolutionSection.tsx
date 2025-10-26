@@ -10,6 +10,7 @@ export function CreatorSolutionSection() {
           alt="Kompe Logo Characters"
           width={0}
           height={0}
+          quality={100}
           className="w-[25vw] md:w-[23vw] xl:w-[270px] m-auto"
         />
         が解決します!
@@ -37,7 +38,7 @@ export function CreatorSolutionSection() {
               </h3>
             </div>
             <div>
-              <p className="text-[3vw] xl:text-xl opacity-90 mb-[5vw] xl:mb-10 leading-[160%] xl:leading-10">
+              <p className="text-[3.5vw] md:text-[3vw] xl:text-xl opacity-90 mb-[5vw] xl:mb-10 leading-[160%] xl:leading-10">
                 Kompeは、ブランドのお題で
                 <span className="text-[#FF0050] font-bold">
                   &quot;PR動画&quot;
@@ -79,7 +80,7 @@ export function CreatorSolutionSection() {
               </h3>
             </div>
             <div>
-              <p className="text-[3vw] xl:text-xl opacity-90 mb-[5vw] xl:mb-10 leading-[160%] xl:leading-10">
+              <p className="text-[3.5vw] md:text-[3vw] xl:text-xl opacity-90 mb-[5vw] xl:mb-10 leading-[160%] xl:leading-10">
                 Kompeでは
                 <span className="text-[#FF0050] font-bold">再生数</span>
                 で評価されるPRコンテストに参加できます。
@@ -121,7 +122,7 @@ export function CreatorSolutionSection() {
               </h3>
             </div>
             <div>
-              <p className="text-[3vw] xl:text-xl opacity-90 mb-[5vw] xl:mb-10 leading-[160%] xl:leading-10">
+              <p className="text-[3.5vw] md:text-[3vw] xl:text-xl opacity-90 mb-[5vw] xl:mb-10 leading-[160%] xl:leading-10">
                 コンテストでの入賞はあなたの
                 <span className="text-[#FF0050] font-bold">実績</span>
                 になります。

@@ -65,7 +65,7 @@ export function CreatorFAQ() {
                       <span className="font-bold text-[#FE2C55] text-[3vw] xl:text-3xl">
                         Q
                       </span>
-                      <h4 className="font-bold text-gray-900 pr-4 text-[2.6vw] xl:text-lg">
+                      <h4 className="font-bold text-gray-900 pr-4 text-[3.5vw] md:text-[3vw] xl:text-lg">
                         {faq.question}
                       </h4>
                     </div>

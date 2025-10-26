@@ -10,7 +10,7 @@ export const Footer = () => {
         <div className="py-6 float-left">
           <Link href="/" className="flex items-center space-x-2 mb-4">
             <Image
-              src="/images/logo/logo-white.svg"
+              src="/images/logo/logo-white.png"
               alt="Kompe"
               width={300}
               height={300}
