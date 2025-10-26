@@ -34,6 +34,7 @@ export default async function Competitions() {
       contest_start_date: "desc",
     },
     where: {
+      contest_start_date: { lte: boundary },
       contest_end_date: {
         gte: boundary,
       },
