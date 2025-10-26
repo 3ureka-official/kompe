@@ -22,7 +22,16 @@ export default async function MyPage() {
   if (!session) {
     return <p>ログインしてください</p>;
   }
-  const userInfo = await tikTokAPIClient.getUserInfo([
+  const creator = await prisma.creators.findUnique({
+    where: {
+      id: session.user.creator_id,
+    },
+  });
+  if (!creator) {
+    return <p>ユーザー情報の取得に失敗しました。</p>;
+  }
+  const tikTokAPIClientInstance = tikTokAPIClient(creator);
+  const userInfo = await tikTokAPIClientInstance.getUserInfo([
     "display_name",
     "username",
     "avatar_url_100",
@@ -34,10 +43,7 @@ export default async function MyPage() {
   if (!userInfo) {
     return <div>ユーザー情報の取得に失敗しました。</div>;
   }
-  const applications = await prisma.applications.findMany({
-    where: { creator_id: session.user.creator_id },
-    include: { contests: { include: { brands: true } } },
-  });
+
   const tiktokUser = userInfo.data.user;
 
   const creatorId = session?.user?.creator_id;
@@ -48,7 +54,7 @@ export default async function MyPage() {
   });
 
   return (
-    <div className="w-full grid gap-4 p-4">
+    <div className="w-full flex flex-col gap-4 p-4 bg-gray-50 min-h-full">
       <Card className="bg-black text-white">
         <CardHeader>
           <CardTitle className="text-sm font-bold">
@@ -113,58 +119,6 @@ export default async function MyPage() {
         </CardHeader>
         <CardContent className="flex flex-row items-center gap-4">
           {account ? <CheckStripeHistoryButton /> : <ConnectStripeButton />}
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>コンテスト</CardTitle>
-          <CardDescription>Kompeで参加したコンテスト</CardDescription>
-          <CardAction className="text-3xl font-bold">
-            {applications.length}
-          </CardAction>
-        </CardHeader>
-        <CardContent className="px-4">
-          {applications.length === 0 && (
-            <p className="text-center text-muted-foreground text-sm">
-              まだコンテストに参加していません。
-            </p>
-          )}
-          {applications.length > 0 && (
-            <div className="grid gap-4">
-              {applications.map((app) => {
-                const competition = app.contests;
-                return (
-                  <Link href={`/competitions/${competition.id}`} key={app.id}>
-                    <Card className="h-[100px] py-4 bg-secondary shadow-none">
-                      <CardContent className="h-full px-4">
-                        <div className="h-full flex items-center gap-4">
-                          <Image
-                            src={
-                              competition.thumbnail_url ||
-                              "" /* todo: add fallback image */
-                            }
-                            alt={
-                              competition.title || "タイトル未設定のコンテスト"
-                            }
-                            width={500}
-                            height={300}
-                            className="h-full w-auto rounded-lg"
-                          />
-                          <div>
-                            <p>{competition.title}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {competition.brands.name}
-                            </p>
-                          </div>
-                          <ChevronRightIcon className="size-4 stroke-2 ml-auto" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

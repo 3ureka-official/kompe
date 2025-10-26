@@ -31,7 +31,18 @@ export default async function ApplicationPage({
     redirect("/api/auth/signin");
   }
 
-  const videoList = await tikTokAPIClient.listVideos([
+  const creator = await prisma.creators.findUnique({
+    where: {
+      id: session.user.creator_id,
+    },
+  });
+  if (!creator) {
+    return <p>ユーザー情報の取得に失敗しました。</p>;
+  }
+
+  const tikTokAPIClientInstance = tikTokAPIClient(creator);
+
+  const videoList = await tikTokAPIClientInstance.listVideos([
     "id",
     "title",
     "cover_image_url",
@@ -45,7 +56,7 @@ export default async function ApplicationPage({
 
   const appliedVideo = application?.tiktok_url
     ? (
-        await tikTokAPIClient.queryVideos(
+        await tikTokAPIClientInstance.queryVideos(
           [application.tiktok_url],
           ["id", "title", "cover_image_url", "view_count", "share_url"],
         )
