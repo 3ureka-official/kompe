@@ -21,6 +21,8 @@ import {
 } from "@/models/tiktok/video";
 import { getToken } from "next-auth/jwt";
 import { headers } from "next/headers";
+import { getValidTikTokAccessToken } from "@/services/creatorService";
+import { creators } from "@prisma/client";
 
 // TikTok API configuration
 const TIKTOK_API_BASE_URL =
@@ -43,14 +45,24 @@ export class TikTokAPIError extends Error {
 // TikTok API Client class
 export class TikTokAPIClient {
   private axiosInstance: AxiosInstance;
+  private accessToken: string | null = null;
 
-  constructor() {
+  constructor(creator: creators) {
     this.axiosInstance = axios.create({
       baseURL: `${TIKTOK_API_BASE_URL}/${TIKTOK_API_VERSION}`,
       timeout: API_TIMEOUT,
       headers: {
         "Content-Type": "application/json",
       },
+    });
+
+    // Add request interceptor for access token
+    this.axiosInstance.interceptors.request.use(async (config) => {
+      this.accessToken = await getValidTikTokAccessToken(creator);
+      if (this.accessToken) {
+        config.headers.Authorization = `Bearer ${this.accessToken}`;
+      }
+      return config;
     });
 
     // Add response interceptor for error handling
@@ -285,4 +297,5 @@ export class TikTokAPIClient {
 }
 
 // Singleton instance for easy usage
-export const tikTokAPIClient = new TikTokAPIClient();
+export const tikTokAPIClient = (creator: creators) =>
+  new TikTokAPIClient(creator);

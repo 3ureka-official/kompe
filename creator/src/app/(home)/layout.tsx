@@ -11,7 +11,7 @@ export default async function CompetitionsLayout({
   const session = await auth();
   return (
     <>
-      <MainHeader session={session} />
+      <MainHeader session={session} className="border-b-2" />
       <main className="grow min-h-0 overflow-auto relative">
         <QueryProvider>{children}</QueryProvider>
       </main>

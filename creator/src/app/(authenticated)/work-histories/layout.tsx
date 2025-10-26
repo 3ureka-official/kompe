@@ -10,9 +10,9 @@ export default async function MyPageLayout({
   const session = await auth();
   return (
     <>
-      <MainHeader session={session} className="border-b-2" />
+      <MainHeader session={session} />
       <main className="grow min-h-0 overflow-auto relative">{children}</main>
-      <BottomNavigationBar currentPage="mypage" />
+      <BottomNavigationBar currentPage="work-histories" />
     </>
   );
 }

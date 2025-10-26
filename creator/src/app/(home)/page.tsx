@@ -34,6 +34,7 @@ export default async function Competitions() {
       contest_start_date: "desc",
     },
     where: {
+      contest_start_date: { lte: boundary },
       contest_end_date: {
         gte: boundary,
       },
@@ -41,7 +42,7 @@ export default async function Competitions() {
   });
 
   return (
-    <div className="p-4 bg-gray-50">
+    <div className="p-4 bg-gray-50 min-h-full">
       <h1 className="text-lg font-bold pb-4">開催中のコンテスト</h1>
       <div className="grid gap-4">
         {data.length > 0 ? (

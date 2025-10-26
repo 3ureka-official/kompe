@@ -29,7 +29,7 @@ export default async function CompetitionPage({
   const { competition } = await getTikTokMetricsAndUpdate(id);
 
   if (!competition) {
-    return <div>コンペティションが見つかりませんでした。</div>;
+    return <div>コンテストが見つかりませんでした。</div>;
   }
 
   const isEnded = new Date(competition.contest_end_date) < new Date();
@@ -43,13 +43,13 @@ export default async function CompetitionPage({
               src={
                 competition.thumbnail_url || "" /* todo: add fallback image */
               }
-              alt={competition.title || "タイトル未設定のコンペティション"}
+              alt={competition.title || "タイトル未設定のコンテスト"}
               width={500}
               height={300}
               className="rounded-lg"
             />
             <IsAppliedChip
-              title={competition.title || ""}
+              title={competition.title || "タイトルなしのコンテスト"}
               applications={competition.applications || []}
             />
             <div className="flex items-center gap-2">

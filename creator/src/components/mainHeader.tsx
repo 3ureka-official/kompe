@@ -3,10 +3,22 @@ import Image from "next/image";
 import { Session } from "next-auth";
 import HeaderAvatar from "./headerAvatar";
 import SignInButton from "./signInButton";
+import { cn } from "@/lib/utils";
 
-export const MainHeader = ({ session }: { session: Session | null }) => {
+export const MainHeader = ({
+  session,
+  className,
+}: {
+  session: Session | null;
+  className?: string;
+}) => {
   return (
-    <nav className="w-full flex items-center justify-between gap-4 px-6 pt-4 pb-2 border-b">
+    <nav
+      className={cn(
+        "w-full flex items-center justify-between gap-4 px-6 pt-4 pb-2",
+        className,
+      )}
+    >
       <Link href="/">
         <Image
           src="/logo-colored.svg"
