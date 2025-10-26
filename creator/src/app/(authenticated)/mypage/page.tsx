@@ -117,8 +117,8 @@ export default async function MyPage() {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>コンペティション</CardTitle>
-          <CardDescription>Kompeで参加したコンペティション</CardDescription>
+          <CardTitle>コンテスト</CardTitle>
+          <CardDescription>Kompeで参加したコンテスト</CardDescription>
           <CardAction className="text-3xl font-bold">
             {applications.length}
           </CardAction>
@@ -126,7 +126,7 @@ export default async function MyPage() {
         <CardContent className="px-4">
           {applications.length === 0 && (
             <p className="text-center text-muted-foreground text-sm">
-              まだコンペティションに参加していません。
+              まだコンテストに参加していません。
             </p>
           )}
           {applications.length > 0 && (
@@ -144,8 +144,7 @@ export default async function MyPage() {
                               "" /* todo: add fallback image */
                             }
                             alt={
-                              competition.title ||
-                              "タイトル未設定のコンペティション"
+                              competition.title || "タイトル未設定のコンテスト"
                             }
                             width={500}
                             height={300}
