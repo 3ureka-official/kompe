@@ -1,15 +1,6 @@
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
   CalendarClockIcon,
   ChevronRightIcon,
   CircleDollarSignIcon,
@@ -26,6 +17,7 @@ import { auth } from "@/auth";
 import SubmitVideoForm from "@/components/submitVideoForm";
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 import { redirect } from "next/navigation";
+import { RequiredVideo } from "@/models/tiktok/video";
 
 export default async function ApplicationPage({
   params,
@@ -68,34 +60,16 @@ export default async function ApplicationPage({
 
   return (
     <div className="flex flex-col max-h-full">
-      <div className="grow min-h-0 overflow-auto p-4 pb-16">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">
-                Kompeクリエイターダッシュボード
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/competitions">
-                参加中コンペティション
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{competition.title}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <h1 className="text-2xl font-bold pt-8">{competition.title}</h1>
+      <div className="grow min-h-0 overflow-auto py-4">
+        <h1 className="text-xl font-bold px-4">{competition.title}</h1>
         <div className="*:border-b *:border-b-foreground/10">
           <section className="grid gap-2 py-6">
-            <h2 className="text-sm font-bold text-muted-foreground px-2">
+            <h2 className="text-sm font-bold text-muted-foreground px-4">
               自分の動画
             </h2>
             {application.tiktok_url && appliedVideo ? (
               <Link
+                className="px-4"
                 href={appliedVideo.share_url || ""}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -133,10 +107,10 @@ export default async function ApplicationPage({
             )}
           </section>
           <section className="grid gap-2 py-6">
-            <h2 className="text-sm font-bold text-muted-foreground px-2">
+            <h2 className="text-sm font-bold text-muted-foreground px-4">
               コンペティション情報
             </h2>
-            <Link href={`/competitions/${competition.id}`}>
+            <Link href={`/competitions/${competition.id}`} className="px-4">
               <Card className="h-[100px] py-4">
                 <CardContent className="h-full px-4">
                   <div className="h-full flex items-center gap-4">
@@ -186,53 +160,13 @@ export default async function ApplicationPage({
               </div>
             </div>
           </section>
-          <section className="grid gap-2 py-6">
-            <h2 className="text-sm font-bold text-muted-foreground px-2">
-              主催者情報
-            </h2>
-            <Card>
-              <CardContent>
-                <div className="flex items-center gap-4">
-                  <Avatar>
-                    <AvatarImage
-                      src={
-                        competition.brands.logo_url ||
-                        "" /* todo: fallback image */
-                      }
-                    />
-                    <AvatarFallback className="uppercase">
-                      {competition.brands.name.split("", 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <p>{competition.brands.name}</p>
-                  <ChevronRightIcon className="size-4 stroke-2 ml-auto" />
-                </div>
-              </CardContent>
-            </Card>
-          </section>
         </div>
       </div>
-      <div className="bg-card border border-b-0 rounded-t-2xl w-full p-4">
+      <div className="absolute bottom-0 left-0 right-0 bg-card border border-b-0 rounded-t-2xl w-full p-4">
         <SubmitVideoForm
           competitionId={competition.id}
           previousValue={application.tiktok_url}
-          videos={
-            // TODO: tiktokAPIClientでここらへんの型の絞り込みをする
-            videoList.data.videos.filter(
-              (
-                video,
-              ): video is {
-                id: string;
-                title: string;
-                cover_image_url: string;
-                view_count: number;
-              } =>
-                video.id !== undefined &&
-                video.title !== undefined &&
-                video.cover_image_url !== undefined &&
-                video.view_count !== undefined,
-            )
-          }
+          videos={videoList.data.videos as RequiredVideo[]}
           initialSelectedVideoId={appliedVideo?.id}
         />
       </div>

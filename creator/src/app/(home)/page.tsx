@@ -13,16 +13,29 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { ClockIcon, VideoIcon } from "lucide-react";
+import { formatDate } from "@/utils/format";
 
 export default async function Competitions() {
+  const today = formatDate(new Date());
+  const boundary = new Date(`${today}T00:00:00Z`);
+
   const data = await prisma.contests.findMany({
-    include: { brands: true, applications: true },
+    include: {
+      brands: true,
+      applications: {
+        where: {
+          tiktok_url: {
+            not: null,
+          },
+        },
+      },
+    },
     orderBy: {
       contest_start_date: "desc",
     },
     where: {
       contest_end_date: {
-        gte: new Date(),
+        gte: boundary,
       },
     },
   });
