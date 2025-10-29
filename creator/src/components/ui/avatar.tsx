@@ -28,7 +28,10 @@ function AvatarImage({
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
-      className={cn("aspect-square size-full cursor-pointer", className)}
+      className={cn(
+        "aspect-square size-full cursor-pointer border border-foreground/20 rounded-full",
+        className,
+      )}
       {...props}
     />
   );
