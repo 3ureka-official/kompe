@@ -3,14 +3,6 @@ import { Badge } from "./ui/badge";
 import { auth } from "@/auth";
 import { applications } from "@prisma/client";
 
-const getIsConcent = async (applications: applications[]) => {
-  const session = await auth();
-  if (!session) return null;
-  return applications.find(
-    (app) => app.creator_id === session.user?.creator_id,
-  );
-};
-
 const getIsApplied = async (applications: applications[]) => {
   const session = await auth();
   if (!session) return null;
@@ -28,26 +20,15 @@ export default async function IsAppliedChip({
   applications: applications[];
 }) {
   const isApplied = await getIsApplied(applications || []);
-  const isConcent = await getIsConcent(applications || []);
 
   return (
     <h1 className="flex items-center gap-4 text-2xl font-bold">
       {title}
-      {isApplied ? (
+      {isApplied && (
         <Badge variant={"default"} className="font-bold py-1">
           <CheckIcon />
           応募済み
         </Badge>
-      ) : (
-        isConcent && (
-          <Badge
-            variant={"secondary"}
-            className="bg-white text-destructive font-bold border-destructive py-1"
-          >
-            <CircleAlertIcon />
-            動画未選択
-          </Badge>
-        )
       )}
     </h1>
   );
