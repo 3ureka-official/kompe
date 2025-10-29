@@ -73,7 +73,7 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
   });
 
   return (
-    <div className="grid gap-4 pb-20">
+    <div className="grid gap-4 pb-40">
       {data.length > 0 ? (
         data.map((competition) => {
           const my_contest_transfer =
