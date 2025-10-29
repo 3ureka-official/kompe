@@ -7,7 +7,7 @@ type Props = {
 
 export default async function BottomNavigationBar({ currentPage }: Props) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border rounded-t-2xl w-full py-4">
+    <nav className="bg-card border rounded-t-2xl w-full py-4">
       <div className="grid grid-cols-3 text-center mx-auto max-w-md w-full">
         <Link href="/">
           <div className="flex flex-col items-center text-primary">

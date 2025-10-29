@@ -67,7 +67,7 @@ export default function AppliedContestTabs({
   const rankingApplications = getRankingApplications(endedApplications);
 
   return (
-    <Tabs defaultValue="ongoing" className="relative min-h-full bg-gray-50">
+    <Tabs defaultValue="ongoing" className="relative min-h-full">
       <TabsList className="w-full sticky top-[-0.5px] z-10">
         <TabsTrigger value="ongoing" className="py-2">
           開催中

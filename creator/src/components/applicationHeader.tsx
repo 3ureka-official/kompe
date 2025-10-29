@@ -12,7 +12,7 @@ export const ApplicationHeader = () => {
   };
 
   return (
-    <nav className="w-full flex items-center justify-between gap-4 px-4 pt-4 pb-2 border-b">
+    <nav className="w-full bg-white flex items-center justify-between gap-4 px-4 pt-4 pb-2 border-b">
       <Button onClick={handleGoBack} variant="ghost" size="icon">
         <ChevronLeftIcon className="size-6 stroke-2" />
       </Button>
