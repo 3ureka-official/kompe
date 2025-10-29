@@ -15,21 +15,42 @@ import { tikTokAPIClient } from "@/lib/api/tiktok";
 import prisma from "@/lib/prisma";
 import { BadgeCheckIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { SessionProvider } from "next-auth/react";
+import { Suspense } from "react";
+import Loading from "@/components/loading";
+import { Session } from "next-auth";
 
 export default async function MyPage() {
   const session = await auth();
   if (!session) {
-    return <p>ログインしてください</p>;
+    return (
+      <p className="text-sm text-muted-foreground">ログインしてください</p>
+    );
   }
+
+  return (
+    <SessionProvider>
+      <Suspense fallback={<Loading />}>
+        <MyPageContent session={session} />
+      </Suspense>
+    </SessionProvider>
+  );
+}
+
+export async function MyPageContent({ session }: { session: Session }) {
   const creator = await prisma.creators.findUnique({
     where: {
       id: session.user.creator_id,
     },
   });
   if (!creator) {
-    return <p>ユーザー情報の取得に失敗しました。</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        ユーザー情報の取得に失敗しました。
+      </p>
+    );
   }
+
   const tikTokAPIClientInstance = tikTokAPIClient(creator);
   const userInfo = await tikTokAPIClientInstance.getUserInfo([
     "display_name",
@@ -41,7 +62,11 @@ export default async function MyPage() {
     "likes_count",
   ]);
   if (!userInfo) {
-    return <div>ユーザー情報の取得に失敗しました。</div>;
+    return (
+      <div className="text-sm text-muted-foreground">
+        ユーザー情報の取得に失敗しました。
+      </div>
+    );
   }
 
   const tiktokUser = userInfo.data.user;
@@ -76,6 +101,7 @@ export default async function MyPage() {
             alt="Avatar"
             width={96}
             height={96}
+            quality={100}
             className="rounded-full m-4 size-24"
           />
           <p className="text-center text-lg font-bold">

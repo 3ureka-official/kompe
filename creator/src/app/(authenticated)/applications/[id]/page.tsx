@@ -18,6 +18,11 @@ import SubmitVideoForm from "@/components/submitVideoForm";
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 import { redirect } from "next/navigation";
 import { RequiredVideo } from "@/models/tiktok/video";
+import { Suspense } from "react";
+import Loading from "@/components/loading";
+import { SessionProvider } from "next-auth/react";
+import { creators } from "@prisma/client";
+import { Session } from "next-auth";
 
 export default async function ApplicationPage({
   params,
@@ -36,10 +41,33 @@ export default async function ApplicationPage({
       id: session.user.creator_id,
     },
   });
+
   if (!creator) {
-    return <p>ユーザー情報の取得に失敗しました。</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        ユーザー情報の取得に失敗しました。
+      </p>
+    );
   }
 
+  return (
+    <SessionProvider>
+      <Suspense fallback={<Loading />}>
+        <ApplicationPageContent id={id} session={session} creator={creator} />
+      </Suspense>
+    </SessionProvider>
+  );
+}
+
+export async function ApplicationPageContent({
+  id,
+  session,
+  creator,
+}: {
+  id: string;
+  session: Session;
+  creator: creators;
+}) {
   const tikTokAPIClientInstance = tikTokAPIClient(creator);
 
   const videoList = await tikTokAPIClientInstance.listVideos([
@@ -64,14 +92,18 @@ export default async function ApplicationPage({
     : null;
 
   if (!application) {
-    return <div>応募が見つかりませんでした。</div>;
+    return (
+      <div className="text-sm text-muted-foreground">
+        応募が見つかりませんでした。
+      </div>
+    );
   }
 
   const competition = application.contests;
 
   return (
     <div className="flex flex-col max-h-full">
-      <div className="grow min-h-0 overflow-auto py-4">
+      <div className="grow min-h-0 overflow-auto pt-4 pb-50">
         <h1 className="text-xl font-bold px-4">{competition.title}</h1>
         <div className="*:border-b *:border-b-foreground/10">
           <section className="grid gap-2 py-6">
@@ -99,7 +131,9 @@ export default async function ApplicationPage({
                         className="h-full w-auto rounded-lg"
                       />
                       <div>
-                        <p className="text-md">{appliedVideo.title}</p>
+                        <p className="text-md line-clamp-2">
+                          {appliedVideo.title}
+                        </p>
                         <div className="flex items-center gap-1 text-muted-foreground">
                           <PlayIcon className="size-4" />
                           <p className="text-sm">{`${appliedVideo.view_count}回再生`}</p>
@@ -111,9 +145,11 @@ export default async function ApplicationPage({
                 </Card>
               </Link>
             ) : (
-              <div className="h-[200px] w-full rounded-lg border border-dashed border-foreground/10 flex flex-col items-center justify-center gap-2 text-sm text-foreground/50">
-                <FileVideoCameraIcon className="size-8 stroke-1" />
-                <p>まだ動画が提出されていません。</p>
+              <div className="px-4">
+                <div className="h-[200px] w-full rounded-lg border border-dashed border-foreground/10 flex flex-col items-center justify-center gap-2 text-sm text-foreground/50">
+                  <FileVideoCameraIcon className="size-8 stroke-1" />
+                  <p>まだ動画が提出されていません。</p>
+                </div>
               </div>
             )}
           </section>
@@ -173,7 +209,7 @@ export default async function ApplicationPage({
           </section>
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 bg-card border border-b-0 rounded-t-2xl w-full p-4">
+      <div className="fixed bottom-[66px] left-0 right-0 bg-card border border-b-0 rounded-t-2xl w-full p-4">
         <SubmitVideoForm
           competitionId={competition.id}
           previousValue={application.tiktok_url}
