@@ -15,7 +15,7 @@ export const MainHeader = ({
   return (
     <nav
       className={cn(
-        "w-full flex items-center justify-between gap-4 px-6 py-3",
+        "fixed top-0 z-10 bg-white w-full flex items-center justify-between gap-4 px-6 py-3",
         className,
       )}
     >
