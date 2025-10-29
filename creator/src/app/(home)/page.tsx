@@ -12,8 +12,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const period = (await searchParams)?.period ?? "all";
 
   return (
-    <div className="p-4 min-h-full pb-15">
-      <div className="flex items-center justify-between pb-16">
+    <div className="p-4 min-h-full pb-20">
+      <div className="flex items-center justify-between pb-4">
         <h1 className="text-lg font-bold ">コンテスト一覧</h1>
         <ContestFilterSelect />
       </div>
