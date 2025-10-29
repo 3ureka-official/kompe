@@ -6,10 +6,10 @@ import { SkeletonCardContent } from "@/components/skeletonCardContent";
 import ContestFilterSelect from "@/components/contestFilterSelect";
 import { auth } from "@/auth";
 
-type HomePageProps = { searchParams?: { period?: string } };
+type HomePageProps = { searchParams?: Promise<{ period?: string }> };
 
-export default function HomePage({ searchParams }: HomePageProps) {
-  const period = searchParams?.period ?? "all";
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const period = (await searchParams)?.period ?? "all";
 
   return (
     <div className="p-4 bg-gray-50 min-h-full">
@@ -24,7 +24,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
   );
 }
 
-export const filterPrismaContests = (period: string) => {
+const filterPrismaContests = (period: string) => {
   const today = formatDate(new Date());
   const boundary = new Date(`${today}T00:00:00Z`);
 
