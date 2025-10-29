@@ -26,7 +26,7 @@ export default async function SignInButton({
       }}
       className={className}
     >
-      <Button className="bg-black cursor-pointer">
+      <Button className="bg-black cursor-pointer py-5">
         <Image
           className="dark:invert"
           src="/images/logo/TikTok_Icon_Black_Square.png"

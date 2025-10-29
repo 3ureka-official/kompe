@@ -61,7 +61,7 @@ export default function GetPrizeDialog({
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button className="w-full">
+        <Button className="w-full py-5 font-bold">
           <ArrowRightIcon />
           賞金を受け取る
         </Button>
