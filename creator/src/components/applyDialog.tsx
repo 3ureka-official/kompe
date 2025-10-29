@@ -26,7 +26,7 @@ export default function ApplyDialog({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="w-full">
+        <Button className="w-full py-5 font-bold">
           <ArrowRightIcon />
           今すぐ参加
         </Button>
