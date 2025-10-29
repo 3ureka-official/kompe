@@ -1,4 +1,4 @@
-import { CheckIcon, CircleAlertIcon } from "lucide-react";
+import { CheckIcon, ArrowRightIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
@@ -42,7 +42,7 @@ const getIsConcent = async (applications: applications[]) => {
 
 const getRanking = async (applications: applications[]) => {
   const session = await auth();
-  if (!session) return null;
+  if (!session) return -1;
   return applications.findIndex(
     (app) => app.creator_id === session.user?.creator_id,
   );
@@ -60,22 +60,28 @@ export default async function ButtomActionBar({
   const ranking = await getRanking(applications || []);
 
   return (
-    <div className="absolute bottom-[66px] left-0 right-0 bg-card border border-b-0 rounded-t-2xl w-full p-4">
+    <div className="fixed bottom-[66px] left-0 right-0 bg-card border border-b-0 rounded-t-2xl w-full p-4">
       {session ? (
-        applications && isEnded && ranking !== null ? (
-          applications?.[ranking]?.contest_transfers?.stripe_transfer_id ? (
+        isEnded ? (
+          applications && ranking >= 0 ? (
+            applications?.[ranking]?.contest_transfers?.stripe_transfer_id ? (
+              <p className="text-sm text-muted-foreground">
+                このコンテストは終了しました。
+                <br />
+                順位：{ranking + 1}位
+              </p>
+            ) : (
+              <GetPrizeDialog
+                competition={competition}
+                application={applications[ranking]}
+                contestTransfers={applications[ranking]?.contest_transfers}
+                ranking={ranking}
+              />
+            )
+          ) : (
             <p className="text-sm text-muted-foreground">
               このコンテストは終了しました。
-              <br />
-              順位：{ranking + 1}位
             </p>
-          ) : (
-            <GetPrizeDialog
-              competition={competition}
-              application={applications[ranking]}
-              contestTransfers={applications[ranking]?.contest_transfers}
-              ranking={ranking}
-            />
           )
         ) : isApplied ? (
           <Button className="w-full py-5 font-bold" asChild>
@@ -84,20 +90,14 @@ export default async function ButtomActionBar({
                 <CheckIcon />
                 応募済み
               </Badge>
-              参加動画の管理
+              参加動画の確認
             </Link>
           </Button>
         ) : isConcent ? (
           <Button className="w-full py-5 font-bold" asChild>
             <Link href={`/applications/${competition.id}`}>
-              <Badge
-                variant={"secondary"}
-                className="bg-white text-destructive font-bold"
-              >
-                <CircleAlertIcon />
-                動画未選択
-              </Badge>
-              参加動画の管理
+              <ArrowRightIcon />
+              今すぐ参加
             </Link>
           </Button>
         ) : (
