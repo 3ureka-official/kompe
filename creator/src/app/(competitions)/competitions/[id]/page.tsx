@@ -84,7 +84,7 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
         </section>
 
         <Tabs defaultValue="summary">
-          <TabsList className="w-full #f9fafb sticky top-0 z-10">
+          <TabsList className="w-full bg-[#f9fafb] sticky top-0 z-10">
             <TabsTrigger value="summary">概要</TabsTrigger>
             <TabsTrigger value="assets">資料など</TabsTrigger>
             <TabsTrigger value="leaderboard">ランキング</TabsTrigger>
