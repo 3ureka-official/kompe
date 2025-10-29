@@ -1,111 +1,109 @@
 import prisma from "@/lib/prisma";
-import { formatDistanceToNow } from "date-fns";
-import { ja } from "date-fns/locale";
-import Link from "next/link";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Image from "next/image";
-import { ClockIcon, VideoIcon } from "lucide-react";
 import { formatDate } from "@/utils/format";
+import { Suspense } from "react";
+import ContestCard from "@/components/contestCard";
+import { SkeletonCardContent } from "@/components/skeletonCardContent";
+import ContestFilterSelect from "@/components/contestFilterSelect";
+import { auth } from "@/auth";
 
-export default async function Competitions() {
+type HomePageProps = { searchParams?: { period?: string } };
+
+export default function HomePage({ searchParams }: HomePageProps) {
+  const period = searchParams?.period ?? "all";
+
+  return (
+    <div className="p-4 bg-gray-50 min-h-full">
+      <div className="flex items-center justify-between pb-4">
+        <h1 className="text-lg font-bold ">コンテスト一覧</h1>
+        <ContestFilterSelect />
+      </div>
+      <Suspense fallback={<SkeletonCardContent />}>
+        <ContestsList periodOptions={period} />
+      </Suspense>
+    </div>
+  );
+}
+
+export const filterPrismaContests = (period: string) => {
   const today = formatDate(new Date());
   const boundary = new Date(`${today}T00:00:00Z`);
+
+  switch (period) {
+    case "ongoing":
+      return {
+        contest_start_date: { lte: boundary },
+        contest_end_date: { gte: boundary },
+      };
+
+    case "ended":
+      return {
+        contest_end_date: { lt: boundary },
+      };
+
+    case "all":
+    default:
+      return {};
+  }
+};
+
+async function ContestsList({ periodOptions }: { periodOptions: string }) {
+  const session = await auth();
+
+  const filter = await filterPrismaContests(periodOptions);
 
   const data = await prisma.contests.findMany({
     include: {
       brands: true,
+      contest_transfers: true,
       applications: {
         where: {
           tiktok_url: {
             not: null,
           },
         },
+        orderBy: {
+          views: "asc",
+        },
       },
     },
     orderBy: {
-      contest_start_date: "desc",
+      contest_start_date: "asc",
     },
-    where: {
-      contest_start_date: { lte: boundary },
-      contest_end_date: {
-        gte: boundary,
-      },
-    },
+    where: filter,
   });
 
   return (
-    <div className="p-4 bg-gray-50 min-h-full">
-      <h1 className="text-lg font-bold pb-4">開催中のコンテスト</h1>
-      <div className="grid gap-4">
-        {data.length > 0 ? (
-          data.map((competition) => (
-            <Link href={`/competitions/${competition.id}`} key={competition.id}>
-              <Card className="py-3 gap-2">
-                <CardHeader className="px-3">
-                  <div className="flex items-center gap-4">
-                    <Avatar>
-                      <AvatarImage
-                        src={
-                          competition.brands.logo_url ||
-                          "" /* todo: fallback image */
-                        }
-                      />
-                      <AvatarFallback className="uppercase">
-                        {competition.brands.name.split("", 2)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <p>{competition.brands.name}</p>
-                  </div>
-                </CardHeader>
-                <CardContent className="grid gap-2 px-3">
-                  <Image
-                    src={
-                      competition.thumbnail_url ||
-                      "" /* todo: add fallback image */
-                    }
-                    alt={
-                      competition.title || "タイトル未設定のコンペティション"
-                    }
-                    width={500}
-                    height={300}
-                    className="rounded-lg"
-                  />
-                  <CardTitle className="text-lg font-bold my-2 h-[3em] overflow-hidden text-ellipsis line-clamp-2">
-                    {competition.title}
-                  </CardTitle>
-                </CardContent>
-                <CardFooter className="justify-between px-3 py-2">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-1 text-muted-foreground font-bold">
-                      <VideoIcon className="size-5 stroke-2" />
-                      <p>{competition.applications.length}</p>
-                    </div>
-                    <div className="flex items-center gap-1 text-muted-foreground font-bold">
-                      <ClockIcon className="size-5 stroke-2" />
-                      <p>{`残り${formatDistanceToNow(new Date(competition.contest_end_date), { locale: ja })}`}</p>
-                    </div>
-                  </div>
-                  <CardAction className="h-full flex items-center gap-2 font-bold text-xl text-primary">
-                    ¥{competition.prize_pool?.toLocaleString()}
-                  </CardAction>
-                </CardFooter>
-              </Card>
-            </Link>
-          ))
-        ) : (
-          <div className="text-sm text-muted-foreground">
-            開催中のコンテストがありません
-          </div>
-        )}
-      </div>
+    <div className="grid gap-4 pb-20">
+      {data.length > 0 ? (
+        data.map((competition) => {
+          const my_contest_transfer =
+            competition.contest_transfers.find(
+              (contest_transfer) =>
+                contest_transfer.creator_id === session?.user?.creator_id,
+            ) || null;
+
+          const my_application =
+            competition.applications.find(
+              (application) =>
+                application.creator_id === session?.user?.creator_id,
+            ) || null;
+
+          return (
+            <ContestCard
+              key={competition.id}
+              contest={competition}
+              applications={competition.applications}
+              brands={competition.brands}
+              contest_transfer={my_contest_transfer}
+              my_application={my_application}
+            />
+          );
+        })
+      ) : (
+        <div className="text-sm text-muted-foreground">
+          開催中のコンテストがありません
+        </div>
+      )}
     </div>
   );
 }
