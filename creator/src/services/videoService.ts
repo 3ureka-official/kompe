@@ -1,4 +1,3 @@
-import { creators } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { getValidTikTokAccessToken } from "./creatorService";
 

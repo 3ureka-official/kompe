@@ -59,7 +59,7 @@ export default async function ApplicationPage({
   );
 }
 
-export async function ApplicationPageContent({
+async function ApplicationPageContent({
   id,
   session,
   creator,

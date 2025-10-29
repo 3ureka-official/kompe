@@ -1,4 +1,4 @@
-import { CheckIcon, CircleAlertIcon } from "lucide-react";
+import { CheckIcon } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { auth } from "@/auth";
 import { applications } from "@prisma/client";

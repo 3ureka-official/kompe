@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 import prisma from "@/lib/prisma";
-import { BadgeCheckIcon, ChevronRightIcon } from "lucide-react";
+import { BadgeCheckIcon } from "lucide-react";
 import Image from "next/image";
 import { SessionProvider } from "next-auth/react";
 import { Suspense } from "react";
@@ -37,7 +37,7 @@ export default async function MyPage() {
   );
 }
 
-export async function MyPageContent({ session }: { session: Session }) {
+async function MyPageContent({ session }: { session: Session }) {
   const creator = await prisma.creators.findUnique({
     where: {
       id: session.user.creator_id,

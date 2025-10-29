@@ -36,11 +36,7 @@ export default async function CompetitionPage({
   );
 }
 
-export async function CompetitionPageContent({
-  contestId,
-}: {
-  contestId: string;
-}) {
+async function CompetitionPageContent({ contestId }: { contestId: string }) {
   const { competition } = await getTikTokMetricsAndUpdate(contestId);
 
   if (!competition) {

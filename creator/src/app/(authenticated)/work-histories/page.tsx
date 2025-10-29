@@ -23,11 +23,7 @@ export default async function WorkHistoriesPage() {
   );
 }
 
-export async function WorkHistoriesPageContent({
-  session,
-}: {
-  session: Session;
-}) {
+async function WorkHistoriesPageContent({ session }: { session: Session }) {
   const applications = await prisma.applications.findMany({
     where: {
       creator_id: session.user.creator_id,
