@@ -12,7 +12,7 @@ export default async function CompetitionsLayout({
   return (
     <>
       <MainHeader session={session} className="border-b-2" />
-      <main className="grow min-h-0 overflow-auto relative">
+      <main className="grow min-h-0 overflow-auto relative pb-[66px]">
         <QueryProvider>{children}</QueryProvider>
       </main>
       <BottomNavigationBar currentPage="competitions" />

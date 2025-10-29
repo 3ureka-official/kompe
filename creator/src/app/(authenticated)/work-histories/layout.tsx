@@ -11,7 +11,9 @@ export default async function MyPageLayout({
   return (
     <>
       <MainHeader session={session} />
-      <main className="grow min-h-0 overflow-auto relative">{children}</main>
+      <main className="grow min-h-0 overflow-auto relative pb-[66px]">
+        {children}
+      </main>
       <BottomNavigationBar currentPage="work-histories" />
     </>
   );
