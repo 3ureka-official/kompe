@@ -49,24 +49,38 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const transfer = await prisma.contest_transfers.findUnique({
+    // 3) コンテスト取得
+    const contest = await prisma.contests.findUnique({
       where: {
-        contest_id: body.contestId,
-        application_id: body.applicationId,
-        creator_id: body.creatorId,
+        id: body.contestId,
+      },
+      include: {
+        applications: {
+          where: {
+            tiktok_url: { not: null },
+          },
+          orderBy: {
+            views: "desc",
+          },
+        },
       },
     });
 
-    if (!transfer) {
-      return NextResponse.json(
-        { error: "transfer_not_found" },
-        { status: 404 },
-      );
-    } else if (transfer.stripe_transfer_id) {
-      return NextResponse.json(
-        { error: "transfer_already_created" },
-        { status: 409 },
-      );
+    if (!contest) {
+      return NextResponse.json({ error: "contest_not_found" }, { status: 404 });
+    }
+
+    // 4) 応募者のランク取得
+    const rank = contest.applications.findIndex(
+      (application) => application.creator_id === session?.user?.creator_id,
+    );
+    if (rank === -1) {
+      return NextResponse.json({ error: "rank_not_found" }, { status: 404 });
+    }
+
+    const amount = contest.prize_distribution[rank];
+    if (!amount) {
+      return NextResponse.json({ error: "amount_not_found" }, { status: 404 });
     }
 
     // 3) Stripe Transfer を作成（route.ts で直に呼ぶ）
