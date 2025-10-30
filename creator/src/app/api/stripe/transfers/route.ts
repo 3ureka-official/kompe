@@ -84,11 +84,11 @@ export async function POST(req: NextRequest) {
     }
 
     // 3) Stripe Transfer を作成（route.ts で直に呼ぶ）
-    const idempotencyKey = `contest:${body.contestId}:app:${body.applicationId}:creator:${body.creatorId}:amt:${transfer.amount}`;
+    const idempotencyKey = `contest:${body.contestId}:app:${body.applicationId}:creator:${session?.user?.creator_id}:amt:${amount}`;
 
     const tr = await stripe.transfers.create(
       {
-        amount: Number(transfer.amount),
+        amount: Number(amount),
         currency: "jpy",
         destination: connectedAccount.stripe_account_id,
         transfer_group: body.contestId,
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
         metadata: {
           contestId: body.contestId,
           applicationId: body.applicationId,
-          creatorId: body.creatorId,
+          creatorId: session?.user?.creator_id,
         },
       },
       { idempotencyKey },
