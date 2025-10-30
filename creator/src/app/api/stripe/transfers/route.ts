@@ -25,10 +25,7 @@ function formatYupError(err: ValidationError) {
 export async function POST(req: NextRequest) {
   try {
     const raw = await req.json().catch(() => ({}));
-    const body = TransferSchema.parse(raw) as {
-      contestId: string;
-      applicationId: string;
-    };
+    const body = TransferSchema.parse(raw);
 
     // 1) 認証（Bearer 必須）
     const session = await auth();
