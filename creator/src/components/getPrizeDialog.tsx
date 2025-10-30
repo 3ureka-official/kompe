@@ -17,6 +17,7 @@ import { contests, applications } from "@prisma/client";
 import { formatJpy } from "@/utils/format";
 import { useCreateContestTransfer } from "@/hooks/useCreateContestTransfer";
 import { getErrorMessage } from "@/utils/errorMessages";
+import { useRouter } from "next/navigation";
 
 export default function GetPrizeDialog({
   competition,
@@ -27,6 +28,8 @@ export default function GetPrizeDialog({
   application: applications;
   ranking: number;
 }) {
+  const router = useRouter();
+
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,6 +48,7 @@ export default function GetPrizeDialog({
         onSuccess: () => {
           setError(null);
           setIsOpen(false);
+          router.refresh();
         },
         onError: (error: Error) => {
           console.error("エラー:", error);
