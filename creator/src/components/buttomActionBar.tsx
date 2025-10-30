@@ -74,7 +74,6 @@ export default async function ButtomActionBar({
               <GetPrizeDialog
                 competition={competition}
                 application={applications[ranking]}
-                contestTransfers={applications[ranking]?.contest_transfers}
                 ranking={ranking}
               />
             )

@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
-import { contests, applications, contest_transfers } from "@prisma/client";
+import { contests, applications } from "@prisma/client";
 import { formatJpy } from "@/utils/format";
 import { useCreateContestTransfer } from "@/hooks/useCreateContestTransfer";
 import { getErrorMessage } from "@/utils/errorMessages";
@@ -21,15 +21,12 @@ import { getErrorMessage } from "@/utils/errorMessages";
 export default function GetPrizeDialog({
   competition,
   application,
-  contestTransfers,
   ranking,
 }: {
   competition: contests;
   application: applications;
-  contestTransfers: contest_transfers | null;
   ranking: number;
 }) {
-  const isTransferCompleted = contestTransfers;
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -43,7 +40,6 @@ export default function GetPrizeDialog({
       {
         contestId: competition.id,
         applicationId: application.id,
-        creatorId: application.creator_id,
       },
       {
         onSuccess: () => {
@@ -74,18 +70,18 @@ export default function GetPrizeDialog({
           <p>順位：{ranking + 1}位</p>
           <p>賞金：{formatJpy(competition.prize_distribution[ranking])}</p>
         </div>
-        {!isTransferCompleted && (
-          <div className="space-y-1">
-            <p>ブランドの承認が完了していません</p>
-            <p>ブランドの承認が完了すると、賞金を受け取ることができます。</p>
-          </div>
-        )}
+        <div className="space-y-1">
+          <p>受け取った賞金はマイページの口座情報から確認できます。</p>
+        </div>
         <AlertDialogFooter>
-          <AlertDialogCancel>キャンセル</AlertDialogCancel>
+          <AlertDialogCancel className="py-5 font-bold">
+            キャンセル
+          </AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button
-              disabled={isPending || !isTransferCompleted}
+              disabled={isPending}
               onClick={handleCreateContestTransfer}
+              className="py-5 font-bold"
             >
               {isPending ? "賞金を受け取っています..." : "賞金を受け取る"}
             </Button>
