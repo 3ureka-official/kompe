@@ -1,8 +1,6 @@
 import { Contest } from "@/types/Contest";
 import { useGetApplication } from "@/hooks/application/useGetApplication";
 import { formatDateTime, formatNumber } from "@/utils/format";
-import { Button } from "@/components/ui/Button";
-import { CreditCardIcon, CheckIcon, CircleAlertIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,31 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import { useState } from "react";
-import { ContestPayment } from "@/types/ContestPayment";
-import { Badge } from "@/components/ui/Badge";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { useCreateContestTransfer } from "@/hooks/transfer/useCreateContestTransfer";
-import { Application } from "@/types/Application";
 
 type Props = {
   contest: Contest;
-  contestPayment: ContestPayment | null;
 };
 
-export function ContestCreatorSection({ contest, contestPayment }: Props) {
-  const [showTransactionModal, setShowTransactionModal] = useState<{
-    application: Application | null;
-    index: number;
-  } | null>(null);
+export function ContestCreatorSection({ contest }: Props) {
   const { getApplicationQuery } = useGetApplication(contest.id);
-  const {
-    data: applications,
-    isPending,
-    refetch: refetchApplications,
-  } = getApplicationQuery;
-
-  const { mutate: createContestTransfer } = useCreateContestTransfer();
+  const { data: applications, isPending } = getApplicationQuery;
 
   const renderRankColor = (rank: number) => {
     if (rank === 0 && formatNumber(contest.prize_distribution[rank]) != "0")
@@ -47,33 +28,6 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
     if (formatNumber(contest.prize_distribution[rank]) != "0")
       return "bg-blue-500 text-white";
     return "";
-  };
-
-  const handleCreateContestTransfer = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    if (!showTransactionModal?.application) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    createContestTransfer(
-      {
-        contest_id: contest.id,
-        application_id: showTransactionModal.application.id,
-        creator_id: showTransactionModal.application.creator?.id,
-        brand_id: contest.brand_id,
-        stripe_transfer_id: "",
-        destination_account: "",
-        amount: contest.prize_distribution[showTransactionModal.index],
-        currency: "jpy",
-      },
-      {
-        onSuccess: () => {
-          refetchApplications();
-          setShowTransactionModal(null);
-        },
-      },
-    );
   };
 
   if (isPending) {
@@ -133,7 +87,6 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
                 >
                   賞金
                 </TableHead>
-                <TableHead scope="col" className="relative py-3"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="bg-white divide-y divide-gray-200">
@@ -182,71 +135,12 @@ export function ContestCreatorSection({ contest, contestPayment }: Props) {
                   <TableCell className="py-4 whitespace-nowrap text-sm text-gray-900">
                     {formatNumber(contest.prize_distribution[index])}円
                   </TableCell>
-                  <TableCell className="py-4 whitespace-nowrap text-sm font-medium text-center">
-                    <div className="flex items-center justify-end gap-2 pr-4">
-                      {new Date(contest.contest_end_date) < new Date() &&
-                        contestPayment?.status === "succeeded" &&
-                        Number(contest.prize_distribution[index]) > 0 && (
-                          <Button
-                            className="relative"
-                            variant="outline"
-                            size="sm"
-                            onClick={(event) => {
-                              event.preventDefault();
-                              event.stopPropagation();
-                              setShowTransactionModal({
-                                application,
-                                index,
-                              });
-                            }}
-                            disabled={application.contest_transfer != null}
-                          >
-                            <CreditCardIcon className="w-4 h-4" />
-                            {application.contest_transfer ? (
-                              <Badge
-                                variant="outline"
-                                className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-5 h-5 text-xs"
-                              >
-                                <CheckIcon className="w-4 h-4" />
-                              </Badge>
-                            ) : (
-                              <Badge
-                                variant="outline"
-                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs"
-                              >
-                                <CircleAlertIcon className="w-4 h-4" />
-                              </Badge>
-                            )}
-                          </Button>
-                        )}
-                    </div>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
       </div>
-
-      {showTransactionModal && (
-        <ConfirmDialog
-          title="動画を承認しますか？"
-          description="動画を確認して順位を確定してください"
-          action="承認"
-          onAction={(event) => {
-            handleCreateContestTransfer(event);
-          }}
-          onCancel={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            setShowTransactionModal(null);
-          }}
-          open={showTransactionModal != null}
-          onOpenChange={() => setShowTransactionModal(null)}
-          variant="default"
-          disabled={false}
-        />
-      )}
     </div>
   );
 }
