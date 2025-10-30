@@ -103,15 +103,16 @@ export async function POST(req: NextRequest) {
     );
 
     // 4) DBに記録（重複は upsert で防止）
-    await prisma.contest_transfers.update({
-      where: {
+    await prisma.contest_transfers.create({
+      data: {
+        brand_id: contest.brand_id,
+        creator_id: session?.user?.creator_id,
         contest_id: body.contestId,
         application_id: body.applicationId,
-        creator_id: body.creatorId,
-      },
-      data: {
         stripe_transfer_id: tr.id,
         destination_account: connectedAccount.stripe_account_id,
+        currency: "jpy" as const,
+        amount: Number(amount),
       },
     });
 
