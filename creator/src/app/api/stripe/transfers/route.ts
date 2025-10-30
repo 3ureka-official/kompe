@@ -25,7 +25,10 @@ function formatYupError(err: ValidationError) {
 export async function POST(req: NextRequest) {
   try {
     const raw = await req.json().catch(() => ({}));
-    const body = TransferSchema.parse(raw);
+    const body = TransferSchema.parse(raw) as {
+      contestId: string;
+      applicationId: string;
+    };
 
     // 1) 認証（Bearer 必須）
     const session = await auth();
@@ -35,7 +38,7 @@ export async function POST(req: NextRequest) {
     // 2) 送金先アカウント解決
     const connectedAccount = await prisma.stripe_connect_accounts.findUnique({
       where: {
-        creator_id: body.creatorId,
+        creator_id: session?.user?.creator_id,
       },
     });
 
