@@ -93,6 +93,7 @@ export default function ContestCard({
                 src={contest.thumbnail_url}
                 alt={contest.title || "タイトル未設定のコンテスト"}
                 fill
+                quality={80}
                 className="rounded-lg object-cover w-full h-full"
               />
             ) : (
