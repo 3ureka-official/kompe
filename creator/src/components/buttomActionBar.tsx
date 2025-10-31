@@ -44,7 +44,8 @@ const getRanking = async (applications: applications[]) => {
   const session = await auth();
   if (!session) return -1;
   return applications.findIndex(
-    (app) => app.creator_id === session.user?.creator_id,
+    (app) =>
+      app.creator_id === session.user?.creator_id && app.tiktok_url !== null,
   );
 };
 
