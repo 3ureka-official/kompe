@@ -20,6 +20,7 @@ import { getTikTokMetricsAndUpdate } from "@/services/videoService";
 import PrizeTable from "@/components/prizeTable";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
+import { formatDate } from "@/utils/format";
 
 export default async function CompetitionPage({
   params,
@@ -51,7 +52,10 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
     (app) => app.tiktok_url !== null,
   ).length;
 
-  const isEnded = new Date(competition.contest_end_date) < new Date();
+  const today = formatDate(new Date());
+  const boundary = new Date(`${today}T00:00:00Z`);
+
+  const isEnded = competition.contest_end_date < boundary;
 
   return (
     <div className="relative flex flex-col min-h-full max-h-full">
