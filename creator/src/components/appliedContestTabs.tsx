@@ -1,6 +1,6 @@
 "use client";
 
-import { formatDate } from "date-fns";
+import { formatDate } from "@/utils/format";
 import {
   applications,
   contests,
@@ -20,7 +20,7 @@ const getRankingApplications = (
 ) => {
   return applications.filter(
     (application) =>
-      application.contest_transfers?.stripe_transfer_id !== null &&
+      !application.contest_transfers &&
       application.contests.applications.findIndex(
         (app) => app.id === application.id,
       ) < application.contests.prize_distribution.length,
@@ -53,15 +53,15 @@ export default function AppliedContestTabs({
     };
   })[];
 }) {
-  const today = formatDate(new Date(), "yyyy-MM-dd");
-  const todayDate = new Date(today);
+  const today = formatDate(new Date());
+  const boundary = new Date(`${today}T00:00:00Z`);
 
   const ongoingApplications = applications.filter((application) => {
-    return application.contests.contest_end_date > todayDate;
+    return application.contests.contest_end_date >= boundary;
   });
 
   const endedApplications = applications.filter((application) => {
-    return application.contests.contest_end_date < todayDate;
+    return application.contests.contest_end_date < boundary;
   });
 
   const rankingApplications = getRankingApplications(endedApplications);
