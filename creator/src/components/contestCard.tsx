@@ -15,7 +15,7 @@ import {
   Loader2Icon,
   VideoIcon,
 } from "lucide-react";
-import { formatDate, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
 import Image from "next/image";
 import {
@@ -24,6 +24,7 @@ import {
   applications,
   contest_transfers,
 } from "@prisma/client";
+import { formatDate } from "@/utils/format";
 
 type ContestCardProps = {
   contest: contests;
@@ -64,10 +65,10 @@ export default function ContestCard({
     contest,
   );
 
-  const today = formatDate(new Date(), "yyyy-MM-dd");
-  const todayDate = new Date(today);
+  const today = formatDate(new Date());
+  const boundary = new Date(`${today}T00:00:00Z`);
 
-  const isOngoing = contest.contest_end_date > todayDate;
+  const isEnded = contest.contest_end_date < boundary;
 
   return (
     <Link href={`/competitions/${contest.id}`}>
@@ -102,7 +103,7 @@ export default function ContestCard({
               </div>
             )}
           </div>
-          {!isOngoing && isNotReceivedPrize && (
+          {isEnded && isNotReceivedPrize && (
             <Badge
               variant="secondary"
               className="bg-white text-destructive font-bold border-destructive py-1"
@@ -123,13 +124,13 @@ export default function ContestCard({
             </div>
             <div className="flex items-center gap-1 text-muted-foreground font-bold">
               <ClockIcon className="size-5 stroke-2" />
-              {isOngoing ? (
+              {isEnded ? (
                 <p>
-                  {`残り${formatDistanceToNow(new Date(contest.contest_end_date), { locale: ja })}`}
+                  {`${formatDistanceToNow(new Date(contest.contest_end_date), { locale: ja })}前に終了`}
                 </p>
               ) : (
                 <p>
-                  {`${formatDistanceToNow(new Date(contest.contest_end_date), { locale: ja })}前に終了`}
+                  {`残り${formatDistanceToNow(new Date(contest.contest_end_date), { locale: ja })}`}
                 </p>
               )}
             </div>
