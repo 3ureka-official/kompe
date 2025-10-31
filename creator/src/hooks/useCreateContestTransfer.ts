@@ -6,10 +6,8 @@ export const useCreateContestTransfer = () =>
     mutationFn: ({
       contestId,
       applicationId,
-      creatorId,
     }: {
       contestId: string;
       applicationId: string;
-      creatorId: string;
-    }) => createContestTransfer(contestId, applicationId, creatorId),
+    }) => createContestTransfer(contestId, applicationId),
   });

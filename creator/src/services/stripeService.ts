@@ -3,7 +3,6 @@ import { contest_transfers } from "@prisma/client";
 export const createContestTransfer = async (
   contestId: string,
   applicationId: string,
-  creatorId: string,
 ) => {
   const res = await fetch(`/api/stripe/transfers`, {
     method: "POST",
@@ -13,7 +12,6 @@ export const createContestTransfer = async (
     body: JSON.stringify({
       contestId: contestId,
       applicationId: applicationId,
-      creatorId: creatorId,
     }),
   });
 
