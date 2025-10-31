@@ -76,17 +76,21 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
     <div className="grid gap-4">
       {data.length > 0 ? (
         data.map((competition) => {
-          const my_contest_transfer =
-            competition.contest_transfers.find(
-              (contest_transfer) =>
-                contest_transfer.creator_id === session?.user?.creator_id,
-            ) || null;
+          let my_contest_transfer = null;
+          let my_application = null;
 
-          const my_application =
-            competition.applications.find(
-              (application) =>
-                application.creator_id === session?.user?.creator_id,
-            ) || null;
+          if (session?.user?.creator_id) {
+            my_contest_transfer =
+              competition.contest_transfers.find(
+                (contest_transfer) =>
+                  contest_transfer.creator_id === session?.user?.creator_id,
+              ) || null;
+            my_application =
+              competition.applications.find(
+                (application) =>
+                  application.creator_id === session?.user?.creator_id,
+              ) || null;
+          }
 
           return (
             <ContestCard
