@@ -9,7 +9,12 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { CircleDollarSignIcon, ClockIcon, VideoIcon } from "lucide-react";
+import {
+  CircleDollarSignIcon,
+  ClockIcon,
+  Loader2Icon,
+  VideoIcon,
+} from "lucide-react";
 import { formatDate, formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
 import Image from "next/image";
@@ -81,13 +86,20 @@ export default function ContestCard({
           </div>
         </CardHeader>
         <CardContent className="grid gap-2 px-3">
-          <Image
-            src={contest.thumbnail_url || "" /* todo: add fallback image */}
-            alt={contest.title || "タイトル未設定のコンテスト"}
-            width={500}
-            height={300}
-            className="rounded-lg"
-          />
+          <div className="relative w-full aspect-[16/9] rounded-lg border border-gray-200">
+            {contest.thumbnail_url ? (
+              <Image
+                src={contest.thumbnail_url}
+                alt={contest.title || "タイトル未設定のコンテスト"}
+                fill
+                className="rounded-lg object-cover w-full h-full"
+              />
+            ) : (
+              <div className="rounded-lg object-cover w-full h-full bg-gray-200 flex items-center justify-center">
+                <Loader2Icon className="size-4 stroke-2" />
+              </div>
+            )}
+          </div>
           {!isOngoing && isNotReceivedPrize && (
             <Badge
               variant="secondary"
