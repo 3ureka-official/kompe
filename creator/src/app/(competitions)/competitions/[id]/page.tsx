@@ -118,11 +118,11 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
                 <p className="text-lg font-semibold">{applicationLength}</p>
               </div>
               <div className="flex flex-col items-center gap-1">
-                <p className="text-lg font-semibold">{`¥${competition.prize_pool?.toLocaleString()}`}</p>
                 <div className="flex items-center gap-1">
                   <CircleDollarSignIcon className="size-4 stroke-2" />
                   <p>賞金プール</p>
                 </div>
+                <p className="text-lg font-semibold">{`¥${competition.prize_pool?.toLocaleString()}`}</p>
               </div>
             </div>
             <section className="py-6 border-t border-t-foreground/10">
