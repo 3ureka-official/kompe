@@ -77,6 +77,7 @@ export default function ContestCard({
             <Avatar>
               <AvatarImage
                 src={brands.logo_url || "" /* todo: fallback image */}
+                alt={brands.name}
               />
               <AvatarFallback className="uppercase">
                 {brands.name.split("", 2)}
