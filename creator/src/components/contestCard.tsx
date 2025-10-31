@@ -87,7 +87,7 @@ export default function ContestCard({
           </div>
         </CardHeader>
         <CardContent className="grid gap-2 px-3">
-          <div className="relative w-full aspect-[16/9] rounded-lg border border-gray-200">
+          <div className="relative w-full aspect-[16/9] rounded-lg border border-foreground/20">
             {contest.thumbnail_url ? (
               <Image
                 src={contest.thumbnail_url}
