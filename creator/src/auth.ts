@@ -2,6 +2,7 @@ import NextAuth, { Session } from "next-auth";
 import TikTok from "next-auth/providers/tiktok";
 import type { JWT } from "next-auth/jwt";
 import prisma from "./lib/prisma";
+import { refreshAccessToken } from "./services/creatorService";
 
 const AUTH_TIKTOK_ID = process.env.AUTH_TIKTOK_ID!;
 const AUTH_TIKTOK_SECRET = process.env.AUTH_TIKTOK_SECRET!;
@@ -11,10 +12,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    jwt({ token, user, account }) {
+    async jwt({ token, user, account }) {
       // TikTokDisplayAPIなどで利用するためにaccessTokenを保存(ログイン直後のみ値が入る)
       if (account) {
         token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        if (account.expires_at) {
+          token.accessTokenExpires = account.expires_at * 1000;
+        }
       }
       if (user) {
         token.creator_id = user.creator_id;
@@ -22,6 +27,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.avatar_url = user.avatar_url;
         token.username = user.username;
       }
+
+      if (!token.accessTokenExpires) {
+        const newToken = await refreshAccessToken(token.refreshToken as string);
+        token.accessToken = newToken.access_token;
+        token.refreshToken = newToken.refresh_token;
+        token.accessTokenExpires =
+          Date.now() + Number(newToken.expires_in) * 1000;
+
+        return token;
+      }
+
+      // 期限切れチェック
+      const shouldRefresh =
+        Date.now() > (token.accessTokenExpires as number) - 60_000;
+      if (shouldRefresh) {
+        const newToken = await refreshAccessToken(token.refreshToken as string);
+        token.accessToken = newToken.access_token;
+        token.refreshToken = newToken.refresh_token;
+        token.accessTokenExpires =
+          Date.now() + Number(newToken.expires_in) * 1000;
+
+        return token;
+      }
+
       return token;
     },
     session({ session, token }: { session: Session; token: JWT }) {
