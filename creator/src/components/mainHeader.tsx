@@ -12,6 +12,8 @@ export const MainHeader = ({
   session: Session | null;
   className?: string;
 }) => {
+  const isDev = process.env.NODE_ENV === "development";
+
   return (
     <nav
       className={cn(
@@ -28,11 +30,12 @@ export const MainHeader = ({
           priority
         />
       </Link>
-      {session ? (
-        <HeaderAvatar session={session} />
-      ) : (
-        <SignInButton variant="minimal" />
-      )}
+      {!isDev &&
+        (session ? (
+          <HeaderAvatar session={session} />
+        ) : (
+          <SignInButton variant="minimal" />
+        ))}
     </nav>
   );
 };
