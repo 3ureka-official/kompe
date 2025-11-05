@@ -35,8 +35,15 @@ const filterPrismaContests = (period: string) => {
         contest_end_date: { gte: boundary },
       };
 
+    case "scheduled":
+      return {
+        contest_start_date: { gt: boundary },
+        contest_end_date: { gt: boundary },
+      };
+
     case "ended":
       return {
+        contest_start_date: { lt: boundary },
         contest_end_date: { lt: boundary },
       };
 
@@ -67,7 +74,7 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
       },
     },
     orderBy: {
-      contest_start_date: "asc",
+      contest_start_date: "desc",
     },
     where: filter,
   });
@@ -105,7 +112,7 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
         })
       ) : (
         <div className="text-sm text-muted-foreground">
-          開催中のコンテストがありません
+          コンテストがありません
         </div>
       )}
     </div>
