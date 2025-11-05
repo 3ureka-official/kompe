@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { creators } from "@prisma/client";
 
-async function refreshAccessToken(refresh_token: string) {
+export async function refreshAccessToken(refresh_token: string) {
   const result = await fetch("https://open.tiktokapis.com/v2/oauth/token/", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
