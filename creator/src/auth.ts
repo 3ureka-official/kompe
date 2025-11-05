@@ -9,6 +9,7 @@ const AUTH_TIKTOK_SECRET = process.env.AUTH_TIKTOK_SECRET!;
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   callbacks: {
     jwt({ token, user, account }) {
