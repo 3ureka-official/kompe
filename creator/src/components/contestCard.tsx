@@ -15,7 +15,7 @@ import {
   Loader2Icon,
   VideoIcon,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, isSameYear } from "date-fns";
 import { ja } from "date-fns/locale";
 import Image from "next/image";
 import {
@@ -68,7 +68,12 @@ export default function ContestCard({
   const today = formatDate(new Date());
   const boundary = new Date(`${today}T00:00:00Z`);
 
-  const isEnded = contest.contest_end_date < boundary;
+  const isEnded =
+    contest.contest_end_date < boundary &&
+    contest.contest_start_date < boundary;
+  const isScheduled =
+    contest.contest_start_date > boundary &&
+    contest.contest_end_date > boundary;
 
   return (
     <Link href={`/competitions/${contest.id}`}>
@@ -125,12 +130,14 @@ export default function ContestCard({
             <div className="flex items-center gap-1 text-muted-foreground font-bold">
               <ClockIcon className="size-5 stroke-2" />
               {isEnded ? (
+                <p>{`終了しました`}</p>
+              ) : isScheduled ? (
                 <p>
-                  {`${formatDistanceToNow(new Date(contest.contest_end_date), { locale: ja })}前に終了`}
+                  {`${formatDate(contest.contest_start_date, isSameYear(contest.contest_start_date, contest.contest_end_date) ? "MM/dd" : "yyyy/MM/dd")}~${formatDate(contest.contest_end_date, isSameYear(contest.contest_start_date, contest.contest_end_date) ? "MM/dd" : "yyyy/MM/dd")}`}
                 </p>
               ) : (
                 <p>
-                  {`残り${formatDistanceToNow(new Date(contest.contest_end_date), { locale: ja })}`}
+                  {`${formatDistanceToNow(contest.contest_end_date, { addSuffix: true, locale: ja })}終了`}
                 </p>
               )}
             </div>

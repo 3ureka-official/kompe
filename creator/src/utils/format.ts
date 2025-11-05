@@ -18,10 +18,10 @@ export function formatDateTime(date: Date | undefined) {
   });
 }
 
-export function formatDate(date: Date | undefined) {
+export function formatDate(date: Date | undefined, formatStr = "yyyy-MM-dd") {
   if (!date) return "";
 
-  return format(date, "yyyy-MM-dd", {
+  return format(date, formatStr, {
     locale: ja,
   });
 }

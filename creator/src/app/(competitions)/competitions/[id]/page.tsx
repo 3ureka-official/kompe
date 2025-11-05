@@ -55,7 +55,12 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
   const today = formatDate(new Date());
   const boundary = new Date(`${today}T00:00:00Z`);
 
-  const isEnded = competition.contest_end_date < boundary;
+  const isEnded =
+    competition.contest_end_date < boundary &&
+    competition.contest_start_date < boundary;
+  const isScheduled =
+    competition.contest_start_date > boundary &&
+    competition.contest_end_date > boundary;
 
   return (
     <div className="relative flex flex-col min-h-full max-h-full">
@@ -98,20 +103,26 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center gap-1">
                   <CalendarClockIcon className="size-4 stroke-2" />
-                  <p>終了まで</p>
+                  <p>
+                    {isEnded
+                      ? "終了しました"
+                      : isScheduled
+                        ? "開催まで"
+                        : "終了まで"}
+                  </p>
                 </div>
                 <p className="text-lg font-semibold">
                   {isEnded
-                    ? formatDistanceToNow(
-                        new Date(competition.contest_end_date),
-                        { addSuffix: true, locale: ja },
-                      ) + "終了"
-                    : formatDistanceToNow(
-                        new Date(competition.contest_end_date),
-                        {
-                          locale: ja,
-                        },
-                      )}
+                    ? "終了しました"
+                    : isScheduled
+                      ? formatDistanceToNow(
+                          new Date(competition.contest_start_date),
+                          { addSuffix: true, locale: ja },
+                        )
+                      : formatDistanceToNow(
+                          new Date(competition.contest_end_date),
+                          { addSuffix: true, locale: ja },
+                        )}
                 </p>
               </div>
               <div className="flex flex-col items-center gap-1">

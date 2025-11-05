@@ -4,6 +4,10 @@ export const CONTEST_FILTER_OPTIONS = [
     value: "all",
   },
   {
+    label: "予定",
+    value: "scheduled",
+  },
+  {
     label: "開催中",
     value: "ongoing",
   },
