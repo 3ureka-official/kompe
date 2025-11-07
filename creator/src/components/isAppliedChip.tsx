@@ -7,7 +7,8 @@ const getIsApplied = async (applications: applications[]) => {
   const session = await auth();
   if (!session) return null;
   return applications.find(
-    (app) => app.creator_id === session.user?.creator_id,
+    (app) =>
+      app.creator_id === session.user?.creator_id && app.tiktok_url !== null,
   );
 };
 
@@ -21,10 +22,10 @@ export default async function IsAppliedChip({
   const isApplied = await getIsApplied(applications || []);
 
   return (
-    <h1 className="flex items-center gap-2 text-2xl font-bold">
+    <h1 className="flex items-center gap-4 text-2xl font-bold">
       {title}
       {isApplied && (
-        <Badge>
+        <Badge variant={"default"} className="font-bold py-1">
           <CheckIcon />
           応募済み
         </Badge>

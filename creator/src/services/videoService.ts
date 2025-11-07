@@ -1,4 +1,3 @@
-import { creators } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { getValidTikTokAccessToken } from "./creatorService";
 
@@ -10,13 +9,22 @@ type VideoMetrics = {
   shares?: number;
 };
 
-const FIELDS = [
+type UserMetrics = {
+  avatar_url?: string;
+  username?: string;
+  display_name?: string;
+};
+
+const VIDEO_FIELDS = [
   "id",
   "view_count",
   "like_count",
   "comment_count",
   "share_count",
 ] as const;
+
+const USER_FIELDS = ["avatar_url", "username", "display_name"] as const;
+
 const CONCURRENCY = 5;
 const FIFTEEN_MIN_MS = 15 * 60 * 1000;
 
@@ -46,6 +54,7 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       id: true,
       updated_engagement_at: true,
       applications: {
+        where: { tiktok_url: { not: null } },
         select: {
           id: true,
           views: true,
@@ -58,7 +67,13 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       },
     },
   });
+
   if (!competition) throw new Error("contest_not_found");
+
+  if (competition.applications.length === 0) {
+    const result = await fetchContestWithApps(contestId);
+    return { competition: result };
+  }
 
   // スロットル（前回から15分未満ならそのまま返す）
   if (
@@ -79,6 +94,11 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       commentCount: number;
       shareCount: number;
     } | null;
+    user: {
+      username: string;
+      display_name: string;
+      avatar_url: string;
+    } | null;
   };
   const results: AppResult[] = [];
 
@@ -86,11 +106,18 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
     const chunk = competition.applications.slice(i, i + CONCURRENCY);
     const settled = await Promise.allSettled(
       chunk.map(async (application) => {
-        const m = await fetchCreatorVideoMetrics(
+        const accessToken = await getValidTikTokAccessToken(
           application.creators,
+        );
+        const m = await fetchCreatorVideoMetrics(
+          accessToken,
           application.tiktok_url!,
         );
-        return { applicationId: application.id, ...m };
+        const u = await fetchCreatorUserMetrics(
+          accessToken,
+          application.creators.id,
+        );
+        return { applicationId: application.id, ...m, ...u };
       }),
     );
 
@@ -105,10 +132,15 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
             commentCount: numSafe(s.value.comments),
             shareCount: numSafe(s.value.shares),
           },
+          user: {
+            username: s.value.username ?? "",
+            display_name: s.value.display_name ?? "",
+            avatar_url: s.value.avatar_url ?? "",
+          },
         });
       } else {
         // 取得失敗は今回スキップ（DB更新しない）
-        results.push({ applicationId: app.id, metrics: null });
+        results.push({ applicationId: app.id, metrics: null, user: null });
       }
     });
   }
@@ -245,14 +277,13 @@ async function bulkUpdateEngagementOptimized(
 
 /** TikTok メトリクス取得 */
 export async function fetchCreatorVideoMetrics(
-  creator: creators,
+  accessToken: string,
   videoId: string,
 ): Promise<VideoMetrics> {
-  const accessToken = await getValidTikTokAccessToken(creator);
   if (!videoId) throw new Error("invalid_tiktok_url");
 
   const res: Response = await fetch(
-    `https://open.tiktokapis.com/v2/video/query/?fields=${FIELDS.join(",")}`,
+    `https://open.tiktokapis.com/v2/video/query/?fields=${VIDEO_FIELDS.join(",")}`,
     {
       method: "POST",
       headers: {
@@ -276,6 +307,45 @@ export async function fetchCreatorVideoMetrics(
     likes: data.data.videos?.[0]?.like_count ?? undefined,
     comments: data.data.videos?.[0]?.comment_count ?? undefined,
     shares: data.data.videos?.[0]?.share_count ?? undefined,
+  };
+}
+
+/** TikTok ユーザーメトリクス取得 */
+export async function fetchCreatorUserMetrics(
+  accessToken: string,
+  userId: string,
+): Promise<UserMetrics> {
+  const res: Response = await fetch(
+    `https://open.tiktokapis.com/v2/user/info/?fields=${USER_FIELDS.join(",")}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => "");
+    throw new Error(`user_metrics_failed(${res.status}): ${err}`);
+  }
+
+  const data = await res.json();
+
+  await prisma.creators.update({
+    where: { id: userId },
+    data: {
+      username: data.data.user?.username ?? undefined,
+      display_name: data.data.user?.display_name ?? undefined,
+      avatar_url: data.data.user?.avatar_url ?? undefined,
+    },
+  });
+
+  return {
+    username: data.data.user?.username ?? undefined,
+    display_name: data.data.user?.display_name ?? undefined,
+    avatar_url: data.data.user?.avatar_url ?? undefined,
   };
 }
 

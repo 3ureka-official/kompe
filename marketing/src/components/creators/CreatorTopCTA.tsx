@@ -1,0 +1,32 @@
+"use client";
+
+export function CreatorTopCTA() {
+  return (
+    <>
+      <div
+        className="absolute z-10 
+        top-[110vw] md:top-[65vw] xl:top-[70vh] 
+        right-[-50%] translate-x-[-50%] xl:right-[-178px] xl:translate-x-0
+        w-[100vw] xl:w-[850px] 
+        h-[25vw] xl:h-[800px] 
+        bg-[#222] 
+        rounded-[100%]"
+      >
+        <p className="absolute whitespace-nowrap top-[2vw] xl:top-[20px] left-[50%] translate-x-[-50%] text-white text-[5vw] md:text-[4vw] xl:text-3xl font-bold flex items-center justify-center pt-14">
+          簡単登録！今すぐ実力を試そう！
+        </p>
+
+        <a
+          href={process.env.NEXT_PUBLIC_CREATOR_APP_URL}
+          className="absolute whitespace-nowrap top-[-2vw] xl:top-[-20px] left-[50%] translate-x-[-50%] py-3 px-5 xl:py-5 xl:px-8 bg-[#FF0050] text-white text-[4vw] md:text-[3vw] xl:text-3xl font-bold cursor-pointer rounded-sm"
+        >
+          TikTokで登録/ログイン
+        </a>
+      </div>
+      <div
+        className="absolute z-10 top-[121vw] md:top-[78vw] xl:top-[100vh] left-0 w-[100vw] h-[100vw] md:h-[70vw] xl:h-[700px] bg-[#222]"
+        style={{ zIndex: 0 }}
+      />
+    </>
+  );
+}

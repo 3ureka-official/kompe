@@ -1,66 +1,66 @@
+import Image from "next/image";
+
 export function CreatorProblemSection() {
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-gray-900">
-            こんな悩みありませんか？
+    <section className="py-[10vw] xl:py-20 relative z-100">
+      <div className="bg-white w-[100vw] md:w-[90vw] xl:w-[950px] border-2 border-black/90 rounded-[20vw] md:rounded-4xl px-[5vw] xl:px-16 mx-auto xl:gap-10 h-[100vw] md:h-[55vw] xl:h-[570px] flex flex-col justify-center relative">
+        <div>
+          <div className="flex items-center mb-0 xl:mb-4 gap-2">
+            <Image
+              src="/images/logo/mv-tiktok.png"
+              alt="TikTok Logo"
+              width={0}
+              height={0}
+              quality={100}
+              sizes="100%"
+              className="w-[15vw] md:w-[13vw] xl:w-[140px]"
+            />
+            <p className="text-black text-[4vw] md:text-[3.5vw] xl:text-3xl font-bold">
+              クリエイターになるにあたって
+            </p>
+          </div>
+          <h2 className="text-[6vw] md:text-[5vw] xl:text-6xl font-bold mb-4 xl:mb-12 text-black">
+            こんなお悩みありませんか？
           </h2>
+        </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="text-red-500 text-6xl mb-4">😢</div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900">
-                フォロワー1万人
-                <br />
-                いかない...
-              </h3>
-              <p className="text-gray-600">
-                収益化プログラムの条件に達せず、頑張って動画を作っても稼げない
-              </p>
-            </div>
+        <div className="pt-3 border-t-2 border-black space-y-[2vw] xl:space-y-8">
+          <p className="font-medium text-[4.5vw] md:text-[2.5vw] xl:text-xl text-black">
+            <span className="inline font-bold text-[#FF0050] text-[5vw] md:text-[2.5vw] xl:text-3xl leading-none mr-1 md:mr-2">
+              ・
+            </span>
+            <span className="inline font-bold text-[4.5vw] md:text-[2.5vw] xl:text-3xl">
+              企業案件
+            </span>
+            に応募したいけど、募集が見つからない...
+          </p>
+          <p className="font-medium text-[4.5vw] md:text-[2.5vw] xl:text-xl text-black">
+            <span className="inline font-bold text-[#FF0050] text-[5vw] md:text-[2.5vw] xl:text-3xl leading-none mr-1 md:mr-2">
+              ・
+            </span>
+            <span className="inline font-bold text-[4.5vw] md:text-[2.5vw] xl:text-3xl">
+              動画制作
+            </span>
+            で稼ぎたいけど何から始めればいいかわからない...
+          </p>
+          <p className="font-medium text-[4.5vw] md:text-[2.5vw] xl:text-xl text-black">
+            <span className="inline font-bold text-[#FF0050] text-[5vw] md:text-[2.5vw] xl:text-3xl leading-none mr-1 md:mr-2">
+              ・
+            </span>
+            <span className="inline font-bold text-[4.5vw] md:text-[2.5vw] xl:text-3xl">
+              フォロワー
+            </span>
+            が少ないので収益化を諦めている...
+          </p>
+        </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="text-red-500 text-6xl mb-4">😔</div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900">
-                いいねは増えても
-                <br />
-                お金にならない
-              </h3>
-              <p className="text-gray-600">
-                反応は良いのに、それが収入に繋がらない...どうやって稼ぐの？
-              </p>
-            </div>
+        {/* 下向き矢印 */}
+        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
+          <div className="relative bg-white py-2.5 text-center">
+            {/* 三角形部分 */}
+            <div className="absolute z-10 bottom-[26px] left-1/2 -translate-x-1/2 translate-y-full w-0 h-0 border-t-[37px] border-r-[37px] border-l-[37px] border-b-0 border-t-white border-r-transparent border-l-transparent"></div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
-              <div className="text-red-500 text-6xl mb-4">😣</div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900">
-                企業案件なんて
-                <br />
-                夢のまた夢
-              </h3>
-              <p className="text-gray-600">
-                有名インフルエンサーじゃないと企業からの依頼は来ない...
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-red-100 to-orange-100 p-8 rounded-2xl mb-8">
-            <h3 className="text-2xl font-bold mb-4 text-gray-900">
-              💔 「動画作るの好きなのに、全然稼げない...」
-            </h3>
-            <p className="text-lg text-gray-700">
-              才能はあるのに、フォロワー数という壁に阻まれて諦めていませんか？
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-r from-[#FE2C55] to-[#25F4EE] text-white p-8 rounded-2xl">
-            <h3 className="text-3xl font-bold mb-4">
-              → Kompeなら解決できます！
-            </h3>
-            <p className="text-xl">
-              フォロワー数ゼロでも、今すぐ収益化のチャンス
-            </p>
+            <div className="absolute z-0 bottom-[24px] left-1/2 -translate-x-1/2 translate-y-full w-0 h-0 border-t-[38px] border-r-[38px] border-l-[38px] border-b-0 border-t-black/90 border-r-transparent border-l-transparent"></div>
           </div>
         </div>
       </div>

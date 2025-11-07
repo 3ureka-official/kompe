@@ -120,3 +120,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+html,
+body {
+  height: 100%;
+  overflow: hidden; /* 親要素のスクロールを無効化 */
+}
+
+body {
+  position: fixed;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  background-color: #f9fafb;
+}

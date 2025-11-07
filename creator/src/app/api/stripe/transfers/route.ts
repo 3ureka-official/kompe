@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     // 2) 送金先アカウント解決
     const connectedAccount = await prisma.stripe_connect_accounts.findUnique({
       where: {
-        creator_id: body.creatorId,
+        creator_id: session?.user?.creator_id,
       },
     });
 
@@ -46,32 +46,46 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const transfer = await prisma.contest_transfers.findUnique({
+    // 3) コンテスト取得
+    const contest = await prisma.contests.findUnique({
       where: {
-        contest_id: body.contestId,
-        application_id: body.applicationId,
-        creator_id: body.creatorId,
+        id: body.contestId,
+      },
+      include: {
+        applications: {
+          where: {
+            tiktok_url: { not: null },
+          },
+          orderBy: {
+            views: "desc",
+          },
+        },
       },
     });
 
-    if (!transfer) {
-      return NextResponse.json(
-        { error: "transfer_not_found" },
-        { status: 404 },
-      );
-    } else if (transfer.stripe_transfer_id) {
-      return NextResponse.json(
-        { error: "transfer_already_created" },
-        { status: 409 },
-      );
+    if (!contest) {
+      return NextResponse.json({ error: "contest_not_found" }, { status: 404 });
+    }
+
+    // 4) 応募者のランク取得
+    const rank = contest.applications.findIndex(
+      (application) => application.creator_id === session?.user?.creator_id,
+    );
+    if (rank === -1) {
+      return NextResponse.json({ error: "rank_not_found" }, { status: 404 });
+    }
+
+    const amount = contest.prize_distribution[rank];
+    if (!amount) {
+      return NextResponse.json({ error: "amount_not_found" }, { status: 404 });
     }
 
     // 3) Stripe Transfer を作成（route.ts で直に呼ぶ）
-    const idempotencyKey = `contest:${body.contestId}:app:${body.applicationId}:creator:${body.creatorId}:amt:${transfer.amount}`;
+    const idempotencyKey = `contest:${body.contestId}:app:${body.applicationId}:creator:${session?.user?.creator_id}:amt:${amount}`;
 
     const tr = await stripe.transfers.create(
       {
-        amount: Number(transfer.amount),
+        amount: Number(amount),
         currency: "jpy",
         destination: connectedAccount.stripe_account_id,
         transfer_group: body.contestId,
@@ -79,22 +93,23 @@ export async function POST(req: NextRequest) {
         metadata: {
           contestId: body.contestId,
           applicationId: body.applicationId,
-          creatorId: body.creatorId,
+          creatorId: session?.user?.creator_id,
         },
       },
       { idempotencyKey },
     );
 
     // 4) DBに記録（重複は upsert で防止）
-    await prisma.contest_transfers.update({
-      where: {
+    await prisma.contest_transfers.create({
+      data: {
+        brand_id: contest.brand_id,
+        creator_id: session?.user?.creator_id,
         contest_id: body.contestId,
         application_id: body.applicationId,
-        creator_id: body.creatorId,
-      },
-      data: {
         stripe_transfer_id: tr.id,
         destination_account: connectedAccount.stripe_account_id,
+        currency: "jpy" as const,
+        amount: Number(amount),
       },
     });
 
