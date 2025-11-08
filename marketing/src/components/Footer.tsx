@@ -53,7 +53,7 @@ export const Footer = () => {
               TikTok
             </Link>
             <Link
-              href="https://instagram.com/3ureka_official"
+              href="https://instagram.com/kompe.official"
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               Instagram
