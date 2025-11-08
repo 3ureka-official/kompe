@@ -30,7 +30,7 @@ export const MainHeader = ({
           priority
         />
       </Link>
-      <div>{process.env.NEXT_PUBLIC_APP_ENV}</div>
+      <div>{process.env.NEXT_PUBLIC_APP_ENV ?? undefined}</div>
       {!isDev &&
         (session ? (
           <HeaderAvatar session={session} />
