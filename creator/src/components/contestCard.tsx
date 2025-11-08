@@ -121,7 +121,10 @@ export default function ContestCard({
             {contest.title}
           </CardTitle>
         </CardContent>
-        <CardFooter className="justify-between px-3 py-2">
+        <CardFooter className="flex flex-col items-start justify-between px-3 pb-2">
+          <CardAction className="h-full flex items-center gap-2 font-bold text-xl text-primary py-2">
+            ¥{contest.prize_pool?.toLocaleString()}
+          </CardAction>
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-1 text-muted-foreground font-bold">
               <VideoIcon className="size-5 stroke-2" />
@@ -142,9 +145,6 @@ export default function ContestCard({
               )}
             </div>
           </div>
-          <CardAction className="h-full flex items-center gap-2 font-bold text-xl text-primary">
-            ¥{contest.prize_pool?.toLocaleString()}
-          </CardAction>
         </CardFooter>
       </Card>
     </Link>
