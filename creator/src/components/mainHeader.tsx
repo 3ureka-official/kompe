@@ -12,7 +12,7 @@ export const MainHeader = ({
   session: Session | null;
   className?: string;
 }) => {
-  const isDev = process.env.NODE_ENV === "development";
+  const isDev = process.env.NEXT_PUBLIC_NODE_ENV === "development";
 
   return (
     <nav

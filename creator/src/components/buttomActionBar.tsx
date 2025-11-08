@@ -101,7 +101,7 @@ export default async function ButtomActionBar({
         ) : (
           <ApplyDialog competitionId={competition.id} />
         )
-      ) : process.env.NODE_ENV === "development" ? (
+      ) : process.env.NEXT_PUBLIC_NODE_ENV === "development" ? (
         <p className="text-sm">コンテスト開始までお待ちください</p>
       ) : (
         <SignInButton
