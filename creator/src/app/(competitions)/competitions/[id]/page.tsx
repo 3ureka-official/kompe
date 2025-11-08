@@ -133,21 +133,27 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
               <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
                 コンテストの概要
               </h2>
-              <p className="text-sm px-4">{competition.description}</p>
+              <p className="text-sm px-4 whitespace-pre-line break-words">
+                {competition.description}
+              </p>
             </section>
 
             <section className="py-6 border-t border-t-foreground/10">
               <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
                 試供品について
               </h2>
-              <p className="text-sm px-4">{competition.supply_of_samples}</p>
+              <p className="text-sm px-4 whitespace-pre-line break-words">
+                {competition.supply_of_samples}
+              </p>
             </section>
 
             <section className="py-6 border-t border-t-foreground/10">
               <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
                 動画の条件
               </h2>
-              <p className="text-sm px-4">{competition.requirements}</p>
+              <p className="text-sm px-4 whitespace-pre-line break-words">
+                {competition.requirements}
+              </p>
             </section>
 
             <section className="py-6 border-t border-t-foreground/10">
@@ -169,7 +175,9 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
                       <Card className="p-4">
                         <CardContent className="p-0">
                           <div className="flex items-center gap-4">
-                            <p>{item.description}</p>
+                            <p className="whitespace-pre-line break-words">
+                              {item.description}
+                            </p>
                             <ExternalLinkIcon className="size-4 stroke-2 ml-auto" />
                           </div>
                         </CardContent>
@@ -189,7 +197,9 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
                         <CardContent className="p-0">
                           <div className="flex items-center gap-4">
                             <DownloadCloudIcon className="size-4 stroke-2" />
-                            <p>{asset.description}</p>
+                            <p className="whitespace-pre-line break-words">
+                              {asset.description}
+                            </p>
                             <ExternalLinkIcon className="size-4 stroke-2 ml-auto" />
                           </div>
                         </CardContent>
