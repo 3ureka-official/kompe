@@ -79,7 +79,7 @@ export default function ContestCard({
     <Link href={`/competitions/${contest.id}`}>
       <Card className="py-3 gap-2">
         <CardHeader className="px-3">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <Avatar>
               <AvatarImage
                 src={brands.logo_url || "" /* todo: fallback image */}
@@ -89,7 +89,7 @@ export default function ContestCard({
                 {brands.name.split("", 2)}
               </AvatarFallback>
             </Avatar>
-            <p>{brands.name}</p>
+            <p className="font-bold">{brands.name}</p>
           </div>
         </CardHeader>
         <CardContent className="grid gap-2 px-3">
