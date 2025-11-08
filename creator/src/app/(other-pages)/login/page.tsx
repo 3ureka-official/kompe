@@ -2,7 +2,7 @@ import SignInButton from "@/components/signInButton";
 import Image from "next/image";
 
 export default function Login() {
-  const isDev = process.env.NEXT_PUBLIC_NODE_ENV === "development";
+  const isDev = process.env.NEXT_PUBLIC_APP_ENV === "development";
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">

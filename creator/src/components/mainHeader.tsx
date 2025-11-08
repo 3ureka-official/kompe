@@ -12,7 +12,7 @@ export const MainHeader = ({
   session: Session | null;
   className?: string;
 }) => {
-  const isDev = process.env.NEXT_PUBLIC_NODE_ENV === "development";
+  const isDev = process.env.NEXT_PUBLIC_APP_ENV === "development";
 
   return (
     <nav
@@ -30,6 +30,7 @@ export const MainHeader = ({
           priority
         />
       </Link>
+      <div>{process.env.NEXT_PUBLIC_APP_ENV}</div>
       {!isDev &&
         (session ? (
           <HeaderAvatar session={session} />
