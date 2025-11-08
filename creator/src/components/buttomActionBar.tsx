@@ -79,9 +79,7 @@ export default async function ButtomActionBar({
               />
             )
           ) : (
-            <p className="text-sm text-muted-foreground">
-              このコンテストは終了しました。
-            </p>
+            <p className="text-sm">このコンテストは終了しました。</p>
           )
         ) : isApplied ? (
           <Button className="w-full py-5 font-bold" asChild>
@@ -103,6 +101,8 @@ export default async function ButtomActionBar({
         ) : (
           <ApplyDialog competitionId={competition.id} />
         )
+      ) : process.env.NODE_ENV === "development" ? (
+        <p className="text-sm">コンテスト開始までお待ちください</p>
       ) : (
         <SignInButton
           className="*:w-full *:py-5"
