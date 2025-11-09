@@ -26,13 +26,13 @@ export const Footer = () => {
         {/* ボトムセクション */}
         <div className="flex xl:flex-row md:flex-col gap-6 md:gap-2 xl:gap-10 pb-5">
           <div className="flex flex-col gap-2 xl:gap-4">
-            {/* <Link
-                href="/contact"
-                className="font-bold text-lg text-white hover:text-gray-500"
-              >
-              お問い合わせ
-            </Link> */}
             <Link
+              href="/contact"
+              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
+            >
+              お問い合わせ
+            </Link>
+            {/* <Link
               href="/terms"
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
@@ -43,17 +43,19 @@ export const Footer = () => {
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               プライバシーポリシー
-            </Link>
+            </Link> */}
           </div>
           <div className="flex flex-col gap-2 xl:gap-4">
             <Link
               href="https://tiktok.com/@kompe"
+              target="_blank"
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               TikTok
             </Link>
             <Link
-              href="https://instagram.com/3ureka_official"
+              href="https://instagram.com/kompe.official"
+              target="_blank"
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               Instagram
