@@ -48,12 +48,14 @@ export const Footer = () => {
           <div className="flex flex-col gap-2 xl:gap-4">
             <Link
               href="https://tiktok.com/@kompe"
+              target="_blank"
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               TikTok
             </Link>
             <Link
               href="https://instagram.com/kompe.official"
+              target="_blank"
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               Instagram
