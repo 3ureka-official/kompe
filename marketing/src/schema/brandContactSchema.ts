@@ -13,7 +13,7 @@ export const brandContactSchema = z.object({
     .string()
     .max(1000, "メッセージは1000文字以内で入力してください")
     .optional(),
-  inquiryType: z.enum(["self_introduction", "consultation"]),
+  inquiryType: z.enum(["contest_holding", "service_details", "other"]),
 });
 
 export type BrandContactFormData = z.infer<typeof brandContactSchema>;

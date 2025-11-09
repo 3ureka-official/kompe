@@ -12,8 +12,9 @@ if (!CONTACT_EMAIL || !FROM_EMAIL) {
 }
 
 const inquiryTypeLabels: Record<string, string> = {
-  self_introduction: "自社導入したい",
-  consultation: "話を聞きたい",
+  contest_holding: "コンテストを開催したい",
+  service_details: "サービス概要を詳しく知りたい",
+  other: "その他",
 };
 
 export async function POST(request: Request) {

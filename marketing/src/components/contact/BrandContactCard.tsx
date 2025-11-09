@@ -16,7 +16,7 @@ export function BrandContactCard() {
     name: "",
     email: "",
     message: "",
-    inquiryType: "self_introduction",
+    inquiryType: "contest_holding",
   });
 
   const [errors, setErrors] = useState<
@@ -44,7 +44,9 @@ export function BrandContactCard() {
     }
   };
 
-  const handleRadioChange = (value: "self_introduction" | "consultation") => {
+  const handleRadioChange = (
+    value: "contest_holding" | "service_details" | "other",
+  ) => {
     setFormData({
       ...formData,
       inquiryType: value,
@@ -96,7 +98,7 @@ export function BrandContactCard() {
         name: "",
         email: "",
         message: "",
-        inquiryType: "self_introduction",
+        inquiryType: "contest_holding",
       });
       setErrors({});
     } catch (error) {
@@ -125,26 +127,39 @@ export function BrandContactCard() {
                   <input
                     type="radio"
                     name="inquiryType"
-                    value="self_introduction"
-                    checked={formData.inquiryType === "self_introduction"}
-                    onChange={() => handleRadioChange("self_introduction")}
+                    value="contest_holding"
+                    checked={formData.inquiryType === "contest_holding"}
+                    onChange={() => handleRadioChange("contest_holding")}
                     className="w-4 h-4 text-[#FF0050] border-gray-300"
                   />
                   <span className="ml-3 text-sm md:text-base text-gray-700">
-                    自社導入したい
+                    コンテストを開催したい
                   </span>
                 </label>
                 <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="inquiryType"
-                    value="consultation"
-                    checked={formData.inquiryType === "consultation"}
-                    onChange={() => handleRadioChange("consultation")}
+                    value="service_details"
+                    checked={formData.inquiryType === "service_details"}
+                    onChange={() => handleRadioChange("service_details")}
                     className="w-4 h-4 text-[#FF0050] border-gray-300"
                   />
                   <span className="ml-3 text-sm md:text-base text-gray-700">
-                    話を聞きたい
+                    サービス概要を詳しく知りたい
+                  </span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="inquiryType"
+                    value="other"
+                    checked={formData.inquiryType === "other"}
+                    onChange={() => handleRadioChange("other")}
+                    className="w-4 h-4 text-[#FF0050] border-gray-300"
+                  />
+                  <span className="ml-3 text-sm md:text-base text-gray-700">
+                    その他
                   </span>
                 </label>
               </div>
@@ -243,15 +258,19 @@ export function BrandContactCard() {
             </div>
 
             {submitStatus === "success" && (
-              <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg text-sm md:text-base xl:text-base">
-                お問い合わせありがとうございます。内容を確認次第、ご連絡いたします。
-              </div>
+              <p className="text-green-800 py-1 text-sm md:text-base xl:text-base">
+                お問い合わせありがとうございます。
+                <br />
+                内容を確認次第、ご連絡いたします。
+              </p>
             )}
 
             {submitStatus === "error" && (
-              <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg text-sm md:text-base xl:text-base">
-                送信に失敗しました。しばらく時間をおいて再度お試しください。
-              </div>
+              <p className="text-red-800 py-1 text-sm md:text-base xl:text-base">
+                送信に失敗しました。
+                <br />
+                しばらく時間をおいて再度お試しください。
+              </p>
             )}
           </form>
         </div>
