@@ -102,6 +102,7 @@ export function BrandContactCard() {
       });
       setErrors({});
     } catch (error) {
+      console.error("Submission error:", error);
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);

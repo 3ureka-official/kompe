@@ -78,6 +78,7 @@ export function ContactCard() {
       setFormData({ name: "", email: "", subject: "", message: "" });
       setErrors({});
     } catch (error) {
+      console.error("Submission error:", error);
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
