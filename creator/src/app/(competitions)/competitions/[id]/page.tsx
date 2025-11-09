@@ -144,7 +144,7 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
               <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
                 コンテストの概要
               </h2>
-              <p className="text-sm px-4 whitespace-pre-line break-words">
+              <p className="text-md px-4 font-medium leading-[1.7] whitespace-pre-line break-words">
                 {competition.description}
               </p>
             </section>
@@ -153,7 +153,7 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
               <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
                 試供品について
               </h2>
-              <p className="text-sm px-4 whitespace-pre-line break-words">
+              <p className="text-md px-4 font-medium leading-[1.7] whitespace-pre-line break-words">
                 {competition.supply_of_samples}
               </p>
             </section>
@@ -162,7 +162,7 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
               <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
                 動画の条件
               </h2>
-              <p className="text-sm px-4 whitespace-pre-line break-words">
+              <p className="text-md px-4 font-medium leading-[1.7] whitespace-pre-line break-words">
                 {competition.requirements}
               </p>
             </section>

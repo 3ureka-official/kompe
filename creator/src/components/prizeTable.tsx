@@ -19,8 +19,8 @@ export default async function PrizeTable({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="px-4">順位</TableHead>
-          <TableHead className="text-right px-4">賞金</TableHead>
+          <TableHead className="text-md px-4">順位</TableHead>
+          <TableHead className="text-md text-right px-4">賞金</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="border-b border-b-gray">
@@ -29,10 +29,10 @@ export default async function PrizeTable({
             (prize, index) =>
               prize !== 0 && (
                 <TableRow key={index} className="h-12">
-                  <TableCell className="text-base font-medium px-4">
+                  <TableCell className="text-md font-medium px-4">
                     {index + 1}位
                   </TableCell>
-                  <TableCell className="text-right text-base font-bold px-4">
+                  <TableCell className="text-right text-md font-bold px-4">
                     {formatJpy(prize)}
                   </TableCell>
                 </TableRow>
