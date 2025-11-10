@@ -81,7 +81,7 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
     orderBy: {
       contest_start_date: "desc",
     },
-    where: filter,
+    where: { ...filter, is_draft: false },
   });
 
   return (

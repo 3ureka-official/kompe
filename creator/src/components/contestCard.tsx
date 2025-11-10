@@ -15,7 +15,7 @@ import {
   Loader2Icon,
   VideoIcon,
 } from "lucide-react";
-import { formatDistanceToNow, isSameYear } from "date-fns";
+import { formatDistanceToNow, getYear } from "date-fns";
 import { ja } from "date-fns/locale";
 import Image from "next/image";
 import {
@@ -74,6 +74,12 @@ export default function ContestCard({
   const isScheduled =
     contest.contest_start_date > boundary &&
     contest.contest_end_date > boundary;
+
+  const isNextYear = (date: Date): boolean => {
+    const currentYear = getYear(new Date());
+    const targetYear = getYear(date);
+    return targetYear > currentYear;
+  };
 
   return (
     <Link href={`/competitions/${contest.id}`}>
@@ -136,7 +142,7 @@ export default function ContestCard({
                 <p>{`終了しました`}</p>
               ) : isScheduled ? (
                 <p>
-                  {`${formatDate(contest.contest_start_date, isSameYear(contest.contest_start_date, contest.contest_end_date) ? "MM/dd" : "yyyy/MM/dd")}~${formatDate(contest.contest_end_date, isSameYear(contest.contest_start_date, contest.contest_end_date) ? "MM/dd" : "yyyy/MM/dd")}`}
+                  {`${formatDate(contest.contest_start_date, isNextYear(contest.contest_start_date) ? "yyyy年MM月dd日" : "MM月dd日")}~${formatDate(contest.contest_end_date, isNextYear(contest.contest_end_date) ? "yyyy年MM月dd日" : "MM月dd日")}`}
                 </p>
               ) : (
                 <p>
