@@ -32,7 +32,7 @@ export const Footer = () => {
             >
               お問い合わせ
             </Link>
-            {/* <Link
+            <Link
               href="/terms"
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
@@ -43,7 +43,7 @@ export const Footer = () => {
               className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
             >
               プライバシーポリシー
-            </Link> */}
+            </Link>
           </div>
           <div className="flex flex-col gap-2 xl:gap-4">
             <Link

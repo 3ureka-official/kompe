@@ -2,14 +2,17 @@ import { loadDoc } from "@/docs";
 import { notFound } from "next/navigation";
 import { MarkdownBox } from "@/components/markdown/MarkdownBox";
 
-type Props = { params: Promise<{ version: string }> };
+type Props = { params: Promise<{ version?: string[] }> };
 
-export default async function PrivacyPage({ params }: Props) {
-  const version = (await params).version;
+export default async function TermsPage({ params }: Props) {
+  const { version } = await params;
+  // versionが配列の場合は最初の要素、なければundefined（最新版を表示）
+  const versionParam =
+    Array.isArray(version) && version.length > 0 ? version[0] : undefined;
 
   let md: string;
   try {
-    md = loadDoc("privacy", version);
+    md = loadDoc("terms", versionParam);
   } catch {
     notFound();
   }

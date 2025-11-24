@@ -27,7 +27,12 @@ export const legalComponents: Components = {
   ul: ({ ...props }) => (
     <ul className="list-disc ml-6 space-y-1 mb-4" {...props} />
   ),
-  li: ({ ...props }) => <li className="text-sm leading-6" {...props} />,
+  ol: ({ ...props }) => (
+    <ol className="list-decimal ml-6 space-y-1 mb-4" {...props} />
+  ),
+  li: ({ ...props }) => (
+    <li className="leading-7 tracking-wide mb-4 text-gray-800" {...props} />
+  ),
 
   /* 引用・区切り線 ------------------------------------------ */
   blockquote: ({ ...props }) => (
@@ -52,7 +57,14 @@ export const legalComponents: Components = {
   /* テーブル（念のため） ------------------------------------- */
   table: ({ ...props }) => (
     <div className="overflow-x-auto my-6">
-      <table className="w-full text-left text-sm" {...props} />
+      <table className="w-full text-left" {...props} />
     </div>
+  ),
+
+  th: ({ ...props }) => (
+    <th className="border-gray-800 border p-2" {...props} />
+  ),
+  td: ({ ...props }) => (
+    <td className="border-gray-800 border p-2" {...props} />
   ),
 };
