@@ -8,6 +8,7 @@ type Props = {
   children: ReactNode;
   error?: string;
   description?: string;
+  descriptionClassName?: string;
 };
 
 export function FormField({
@@ -16,6 +17,7 @@ export function FormField({
   children,
   error,
   description,
+  descriptionClassName,
 }: Props) {
   return (
     <div className="mb-2">
@@ -24,7 +26,11 @@ export function FormField({
       </label>
       {children}
       {error && <p className="text-sm text-red-600">{error}</p>}
-      {description && <p className="text-sm text-gray-500">{description}</p>}
+      {description && (
+        <p className={`text-sm text-gray-500 ${descriptionClassName}`}>
+          {description}
+        </p>
+      )}
     </div>
   );
 }

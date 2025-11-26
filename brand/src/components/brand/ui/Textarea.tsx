@@ -38,6 +38,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, Props>(
           required={required}
           rows={rows}
           maxLength={maxLength}
+          style={
+            {
+              fieldSizing: "content",
+              minHeight: `${rows * 1.5}rem`,
+            } as React.CSSProperties
+          }
         />
         {showCharCount && maxLength && (
           <div className="flex justify-end mt-1">
