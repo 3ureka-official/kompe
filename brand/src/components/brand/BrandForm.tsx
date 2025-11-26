@@ -4,33 +4,60 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { AuthContext } from "@/contexts/AuthContext";
+import { BrandContext } from "@/contexts/BrandContext";
 import { Logo } from "@/components/ui/Logo";
 import { FormField, Textarea, SnsLinkField } from "./ui";
 import { Input } from "@/components/ui/Input";
+import { FileUpload } from "@/components/brand/ui/FileUpload";
 import { Button } from "@/components/ui/Button";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { FileUpload } from "@/components/brand/ui/FileUpload";
 import { brandCreateSchema } from "@/schema/createBrandSchema";
+import { useCreateBrand } from "@/hooks/brand/useCreateBrand";
 import { useUpdateBrand } from "@/hooks/brand/useUpdateBrand";
-import { BrandContext } from "@/contexts/BrandContext";
 import { Brand } from "@/types/Brand";
-import Image from "next/image";
+import { Loading } from "../ui/Loading";
 
-export function BrandUpdateForm() {
-  const { brand } = useContext(BrandContext);
+type Props = {
+  initialData?: Brand | null;
+};
 
-  const { mutate: updateBrand, isPending, error } = useUpdateBrand();
+export function BrandForm({ initialData }: Props) {
+  const { profile } = useContext(AuthContext);
+  const { brand: contextBrand } = useContext(BrandContext);
 
+  // initialDataが渡されていればそれを使用、なければcontextBrandを使用、どちらもなければnull（createモード）
+  const brand = initialData ?? contextBrand ?? null;
+  const isUpdateMode = brand !== null;
+
+  const [isPending, setIsPending] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isLogoChanged, setIsLogoChanged] = useState(false);
 
-  const getDefaultValues = (brand: Partial<Brand>) => ({
-    name: brand?.name || "",
-    website: brand?.website || null,
-    description: brand?.description || "",
-    tiktok_username: brand?.tiktok_username || null,
-    instagram_url: brand?.instagram_url || null,
+  const {
+    mutate: createBrand,
+    error: createError,
+    isPending: isCreatingBrand,
+  } = useCreateBrand();
+
+  const {
+    mutate: updateBrand,
+    error: updateError,
+    isPending: isUpdatingBrand,
+  } = useUpdateBrand();
+
+  const error = isUpdateMode ? updateError : createError;
+  const isPendingState = isUpdateMode
+    ? isUpdatingBrand
+    : isPending || isCreatingBrand;
+
+  const getDefaultValues = (brandData: Partial<Brand> | null) => ({
+    name: brandData?.name || "",
+    website: brandData?.website || null,
+    description: brandData?.description || "",
+    tiktok_username: brandData?.tiktok_username || null,
+    instagram_url: brandData?.instagram_url || null,
   });
 
   const {
@@ -43,37 +70,39 @@ export function BrandUpdateForm() {
   } = useForm({
     resolver: yupResolver(brandCreateSchema),
     mode: "onBlur",
-    defaultValues: getDefaultValues({}),
+    defaultValues: getDefaultValues(brand),
   });
 
-  const descriptionCount = watch("description")?.length || 0;
+  const description = watch("description");
+  const descriptionCount = description?.length || 0;
 
   useEffect(() => {
     if (brand) {
-      setLogoPreview(brand?.logo_url || null);
+      setLogoPreview(brand.logo_url || null);
       reset(getDefaultValues(brand));
     }
   }, [brand, reset]);
 
   const onSubmit = async () => {
-    if (!brand) {
-      console.error("ブランドが見つかりません");
-      return;
-    }
+    if (isUpdateMode) {
+      // Update mode
+      if (!brand) {
+        console.error("ブランドが見つかりません");
+        return;
+      }
 
-    const data = getValues();
+      const data = getValues();
 
-    try {
-      await updateBrand(
+      updateBrand(
         {
-          brandId: brand?.id,
+          brandId: brand.id,
           brandData: {
             name: data.name,
             description: data.description || "",
             website: data.website || null,
             tiktok_username: data.tiktok_username || null,
             instagram_url: data.instagram_url || null,
-            logo_url: brand?.logo_url || null,
+            logo_url: brand.logo_url || null,
           },
           logoFile: logoFile,
         },
@@ -84,10 +113,32 @@ export function BrandUpdateForm() {
           },
         },
       );
-    } catch (error) {
-      console.error("ブランド更新エラー:", error);
+    } else {
+      // Create mode
+      if (!profile) return;
+
+      const data = getValues();
+
+      setIsPending(true);
+
+      createBrand({
+        userId: profile.id,
+        brandData: {
+          name: data.name,
+          logo_url: logoPreview || null,
+          description: data.description || "",
+          website: data.website || null,
+          tiktok_username: data.tiktok_username || null,
+          instagram_url: data.instagram_url || null,
+        },
+        logoFile: logoFile,
+      });
     }
   };
+
+  if (isPendingState) {
+    return <Loading isPending={isPendingState} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -121,44 +172,23 @@ export function BrandUpdateForm() {
               )}
             />
 
-            {isLogoChanged}
             <FormField label="ロゴ画像">
               <FileUpload
                 onFileChange={(file: File | null) => {
                   setLogoFile(file);
-                  console.log("file", file);
-                  setIsLogoChanged(true);
+                  if (isUpdateMode) {
+                    setIsLogoChanged(true);
+                  }
                 }}
                 onPreviewChange={(url: string | null) => {
                   setLogoPreview(url);
                 }}
+                preview={logoPreview}
                 accept="image/*"
                 maxSize={5 * 1024 * 1024}
                 className="w-full"
               />
             </FormField>
-
-            {logoPreview !== null && (
-              <div className="flex justify-between items-center">
-                <Image
-                  src={logoPreview || ""}
-                  alt="file"
-                  width={160}
-                  height={100}
-                  className="w-[160px] h-[100px] object-cover"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={() => {
-                    setLogoPreview(null);
-                    setLogoFile(null);
-                  }}
-                >
-                  削除
-                </Button>
-              </div>
-            )}
 
             <Controller
               control={control}
@@ -175,7 +205,6 @@ export function BrandUpdateForm() {
                     placeholder="あなたのブランドについて教えてください"
                     maxLength={240}
                     showCharCount={false}
-                    required
                   />
                 </FormField>
               )}
@@ -194,7 +223,6 @@ export function BrandUpdateForm() {
                     value={field.value || ""}
                     onChange={field.onChange}
                     placeholder="https://"
-                    required
                   />
                 </FormField>
               )}
@@ -232,9 +260,19 @@ export function BrandUpdateForm() {
                 type="submit"
                 variant="default"
                 className="px-6 py-2"
-                disabled={isPending || (!isDirty && !isLogoChanged)}
+                disabled={
+                  isUpdateMode
+                    ? isPendingState || (!isDirty && !isLogoChanged)
+                    : isPendingState
+                }
               >
-                {isPending ? "更新中..." : "更新する"}
+                {isUpdateMode
+                  ? isPendingState
+                    ? "更新中..."
+                    : "更新する"
+                  : isPendingState
+                    ? "作成中..."
+                    : "続ける"}
               </Button>
             </div>
 
