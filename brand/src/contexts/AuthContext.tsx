@@ -3,52 +3,76 @@
 import React, { createContext, useEffect, useState } from "react";
 import { User as AuthUser } from "@supabase/supabase-js";
 import { User } from "@/types/User";
+import { useGetProfile } from "@/hooks/auth/useGetProfile";
+import { useGetUser } from "@/hooks/auth/useGetUser";
+import { Logo } from "@/components/ui/Logo";
 import { supabase } from "@/lib/supabase";
-import { getUser } from "@/services/userService";
 
 type AuthContextValue = {
   user: AuthUser | null;
   profile: User | null;
-  loading: boolean;
+  isAuthLoading: boolean;
+  hasEmailConfirmed: boolean;
 };
 
 export const AuthContext = createContext<AuthContextValue>({
   user: null,
   profile: null,
-  loading: true,
+  isAuthLoading: true,
+  hasEmailConfirmed: false,
 });
+
+const AuthLoading = () => {
+  return (
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-50">
+      <Logo size="lg" />
+    </div>
+  );
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [profile, setProfile] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isUserLoading, setIsUserLoading] = useState<boolean>(true);
+  const {
+    data: profile,
+    mutate: getProfile,
+    isPending: isProfileLoading,
+  } = useGetProfile();
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsUserLoading(true);
       if (session?.user) {
         setUser(session.user);
-        getUser(session.user.id)
-          .then((profile) => {
-            setProfile(profile);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+        getProfile(session.user.id);
       } else {
         setUser(null);
-        setProfile(null);
-        setLoading(false);
       }
+      setIsUserLoading(false);
     });
     return () => {
-      subscription?.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
+  // ローディング状態は、認証状態のローディングまたはプロフィールのローディング
+  const isAuthLoading = isUserLoading || isProfileLoading;
+
+  if (isAuthLoading && (!user || !profile)) {
+    return <AuthLoading />;
+  }
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading }}>
+    <AuthContext.Provider
+      value={{
+        user: user ?? null,
+        profile: profile ?? null,
+        isAuthLoading,
+        hasEmailConfirmed: user?.email_confirmed_at != null,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
