@@ -7,17 +7,24 @@ import { AuthContext } from "@/contexts/AuthContext";
 
 const ROOT_PATHS = ["/"];
 
-const PUBLIC_PATHS = ["/auth/login", "/auth/signup"];
+const PUBLIC_PATHS = [
+  "/auth/login",
+  "/auth/signup",
+  "/auth/signup/success",
+  "/auth/verify-email",
+  "/auth/verify-code",
+];
 
 const ONBOARD_PATHS = ["/brand/create"];
 
 export function AppGate({ children }: { children: React.ReactNode }) {
-  const { user, profile, loading } = useContext(AuthContext);
+  const { user, profile, hasEmailConfirmed, isAuthLoading } =
+    useContext(AuthContext);
   const router = useRouter();
   const path = usePathname();
 
   useEffect(() => {
-    if (loading) return;
+    if (isAuthLoading) return;
 
     const isRoot = ROOT_PATHS.includes(path);
     const isPublic = PUBLIC_PATHS.includes(path);
@@ -25,33 +32,74 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     const isLoggedIn = !!user;
     const hasBrand = !!profile?.brand_id;
 
+    // ルートパスの場合はコンテストページにリダイレクト
     if (isRoot) {
       router.replace("/contests");
+      return;
     }
 
-    if (!isLoggedIn && !isPublic) {
-      router.replace("/auth/login");
-    } else if (isLoggedIn && isPublic) {
+    // 未ログインの場合
+    if (!isLoggedIn) {
+      if (!isPublic) {
+        router.replace("/auth/login");
+      }
+      return;
+    }
+
+    // ログイン済みの場合
+    // メール確認が完了していない場合はverify-codeページにリダイレクト
+    if (isLoggedIn && !hasEmailConfirmed) {
+      // サインアップページにアクセスしようとした場合は、verify-codeページにリダイレクト
+      if (path === "/auth/signup") {
+        router.replace("/auth/verify-code");
+        return;
+      }
+      // verify-codeページまたはsignup/successページにいる場合は表示
+      if (path !== "/auth/verify-code") {
+        router.replace("/auth/verify-code");
+      }
+      return;
+    }
+
+    // メール確認済みの場合
+    // パブリックパスにいる場合はコンテストページにリダイレクト
+    if (isPublic) {
       router.replace("/contests");
-    } else if (isLoggedIn && profile && !hasBrand && !isOnboard) {
+      return;
+    }
+
+    // ブランド未作成の場合
+    if (!hasBrand && !isOnboard) {
       router.replace("/brand/create");
-    } else if (isLoggedIn && hasBrand && isOnboard) {
-      router.replace("/contests");
+      return;
     }
-  }, [user, profile, loading, path, router]);
 
-  // リダイレクト中は何も出さない
-  const isRedirecting =
-    (!user && !PUBLIC_PATHS.includes(path)) ||
-    (user && PUBLIC_PATHS.includes(path)) ||
-    (user && profile && !profile.brand_id && !ONBOARD_PATHS.includes(path)) ||
-    (user && profile && profile.brand_id && ONBOARD_PATHS.includes(path));
+    // ブランド作成済みでオンボードパスにいる場合
+    if (hasBrand && isOnboard) {
+      router.replace("/contests");
+      return;
+    }
+  }, [user, profile, isAuthLoading, path, router, hasEmailConfirmed]);
 
-  if (isRedirecting) {
-    return null;
+  // メール確認未完了でverify-codeページ、サインアップ成功ページ、またはメール確認ページにいる場合は表示
+  if (!hasEmailConfirmed && path === "/auth/verify-code") {
+    return <>{children}</>;
   }
 
-  if (loading) return <div>Loading...</div>;
+  // その他の場合はリダイレクト中なので何も表示しない
+  const isPublic = PUBLIC_PATHS.includes(path);
+  const isOnboard = ONBOARD_PATHS.includes(path);
+  const isLoggedIn = !!user;
+  const hasBrand = !!profile?.brand_id;
+
+  if (
+    (!isLoggedIn && !isPublic) ||
+    (isLoggedIn && hasEmailConfirmed && isPublic) ||
+    (isLoggedIn && !hasBrand && !isOnboard) ||
+    (isLoggedIn && hasBrand && isOnboard)
+  ) {
+    return null;
+  }
 
   return <>{children}</>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useContext } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
@@ -9,10 +9,15 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginUserSchema } from "@/schema/loginUserSchema";
 import { Input } from "@/components/ui/Input";
+import { useRouter } from "next/navigation";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export function LoginForm() {
-  const { mutate: signIn, isPending, error } = useSignIn();
+  const router = useRouter();
 
+  const { isAuthLoading } = useContext(AuthContext);
+
+  const { mutate: signIn, isPending, error } = useSignIn();
   const { control, handleSubmit, getValues } = useForm({
     resolver: yupResolver(loginUserSchema),
     mode: "onBlur",
@@ -22,9 +27,25 @@ export function LoginForm() {
     },
   });
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const data = getValues();
-    signIn({ email: data.email, password: data.password });
+    signIn(
+      { email: data.email, password: data.password },
+      {
+        onSuccess: (response) => {
+          if (!response?.user) {
+            return;
+          }
+
+          if (!response.email_confirmed_at) {
+            // メール確認前のユーザーはサインアップ成功ページにリダイレクト
+            router.replace(
+              `/auth/verify-code?email=${encodeURIComponent(response.user.email ?? "")}`,
+            );
+          }
+        },
+      },
+    );
   };
 
   return (
@@ -74,11 +95,11 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || isAuthLoading}
           variant="default"
           className="w-full"
         >
-          {isPending ? "ログイン中..." : "ログイン"}
+          {isPending || isAuthLoading ? "ログイン中..." : "ログイン"}
         </Button>
       </div>
       <div className="text-sm text-center">
