@@ -18,12 +18,13 @@ const PUBLIC_PATHS = [
 const ONBOARD_PATHS = ["/brand/create"];
 
 export function AppGate({ children }: { children: React.ReactNode }) {
-  const { user, profile, loading } = useContext(AuthContext);
+  const { user, profile, hasEmailConfirmed, isAuthLoading } =
+    useContext(AuthContext);
   const router = useRouter();
   const path = usePathname();
 
   useEffect(() => {
-    if (loading) return;
+    if (isAuthLoading) return;
 
     const isRoot = ROOT_PATHS.includes(path);
     const isPublic = PUBLIC_PATHS.includes(path);
@@ -44,7 +45,7 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     } else if (isLoggedIn && hasBrand && isOnboard) {
       router.replace("/contests");
     }
-  }, [user, profile, loading, path, router]);
+  }, [user, profile, isAuthLoading, path, router, hasEmailConfirmed]);
 
   // リダイレクト中は何も出さない
   const isRedirecting =
@@ -56,8 +57,6 @@ export function AppGate({ children }: { children: React.ReactNode }) {
   if (isRedirecting) {
     return null;
   }
-
-  if (loading) return <div>Loading...</div>;
 
   return <>{children}</>;
 }
