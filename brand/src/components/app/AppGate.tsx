@@ -7,7 +7,13 @@ import { AuthContext } from "@/contexts/AuthContext";
 
 const ROOT_PATHS = ["/"];
 
-const PUBLIC_PATHS = ["/auth/login", "/auth/signup"];
+const PUBLIC_PATHS = [
+  "/auth/login",
+  "/auth/signup",
+  "/auth/signup/success",
+  "/auth/verify-email",
+  "/auth/verify-code",
+];
 
 const ONBOARD_PATHS = ["/brand/create"];
 
