@@ -81,14 +81,28 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     }
   }, [user, profile, isAuthLoading, path, router, hasEmailConfirmed]);
 
-  // リダイレクト中は何も出さない
-  const isRedirecting =
-    (!user && !PUBLIC_PATHS.includes(path)) ||
-    (user && PUBLIC_PATHS.includes(path)) ||
-    (user && profile && !profile.brand_id && !ONBOARD_PATHS.includes(path)) ||
-    (user && profile && profile.brand_id && ONBOARD_PATHS.includes(path));
+  // メール確認未完了でverify-codeページ、サインアップ成功ページ、またはメール確認ページにいる場合は表示
+  if (
+    !hasEmailConfirmed &&
+    (path === "/auth/verify-code" ||
+      path === "/auth/signup/success" ||
+      path === "/auth/verify-email")
+  ) {
+    return <>{children}</>;
+  }
 
-  if (isRedirecting) {
+  // その他の場合はリダイレクト中なので何も表示しない
+  const isPublic = PUBLIC_PATHS.includes(path);
+  const isOnboard = ONBOARD_PATHS.includes(path);
+  const isLoggedIn = !!user;
+  const hasBrand = !!profile?.brand_id;
+
+  if (
+    (!isLoggedIn && !isPublic) ||
+    (isLoggedIn && hasEmailConfirmed && isPublic) ||
+    (isLoggedIn && !hasBrand && !isOnboard) ||
+    (isLoggedIn && hasBrand && isOnboard)
+  ) {
     return null;
   }
 
