@@ -82,12 +82,7 @@ export function AppGate({ children }: { children: React.ReactNode }) {
   }, [user, profile, isAuthLoading, path, router, hasEmailConfirmed]);
 
   // メール確認未完了でverify-codeページ、サインアップ成功ページ、またはメール確認ページにいる場合は表示
-  if (
-    !hasEmailConfirmed &&
-    (path === "/auth/verify-code" ||
-      path === "/auth/signup/success" ||
-      path === "/auth/verify-email")
-  ) {
+  if (!hasEmailConfirmed && path === "/auth/verify-code") {
     return <>{children}</>;
   }
 
