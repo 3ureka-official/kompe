@@ -1,7 +1,7 @@
 "use client";
 
-import { BrandUpdateForm } from "@/components/brand/BrandUpdateForm";
+import { BrandForm } from "@/components/brand/BrandForm";
 
 export default function BrandUpdatePage() {
-  return <BrandUpdateForm />;
+  return <BrandForm />;
 }
