@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { useSignUp } from "@/hooks/auth/useSignUp";
@@ -9,16 +10,32 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { Input } from "@/components/ui/Input";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export function SignupForm() {
   const { mutate: signUp, isPending, error } = useSignUp();
+  const router = useRouter();
+  const { user, isAuthLoading } = useContext(AuthContext);
+
+  // 既にログインしているユーザーがサインアップページにアクセスした場合の処理
+  useEffect(() => {
+    if (user) {
+      if (!user.email_confirmed_at) {
+        // メール確認前のユーザーはサインアップ成功ページにリダイレクト
+        router.replace(
+          "/auth/verify-code?email=${encodeURIComponent(user.email)}",
+        );
+      } else {
+        // メール確認済みのユーザーはコンテストページにリダイレクト
+        router.replace("/contests");
+      }
+    }
+  }, [user, router]);
 
   const { control, handleSubmit, getValues } = useForm({
     resolver: yupResolver(createUserSchema),
     mode: "onBlur",
     defaultValues: {
-      first_name: "",
-      last_name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -28,43 +45,30 @@ export function SignupForm() {
   const onSubmit = () => {
     const data = getValues();
 
-    signUp({
-      email: data.email,
-      password: data.password,
-    });
+    signUp(
+      {
+        email: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess: (response) => {
+          if (!response?.user) {
+            return;
+          }
+
+          if (!response.email_confirmed_at) {
+            // メール確認前のユーザーはサインアップ成功ページにリダイレクト
+            router.replace(
+              `/auth/verify-code?email=${encodeURIComponent(response.user.email ?? "")}`,
+            );
+          }
+        },
+      },
+    );
   };
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex gap-4">
-        <Controller
-          control={control}
-          name="first_name"
-          render={({ field, fieldState }) => (
-            <FormField label="苗字" required error={fieldState.error?.message}>
-              <Input
-                type="text"
-                value={field.value}
-                onChange={field.onChange}
-              />
-            </FormField>
-          )}
-        />
-        <Controller
-          control={control}
-          name="last_name"
-          render={({ field, fieldState }) => (
-            <FormField label="名前" required error={fieldState.error?.message}>
-              <Input
-                type="text"
-                value={field.value}
-                onChange={field.onChange}
-              />
-            </FormField>
-          )}
-        />
-      </div>
-
       <Controller
         control={control}
         name="email"
@@ -122,11 +126,13 @@ export function SignupForm() {
 
         <Button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || isAuthLoading}
           variant="default"
           className="w-full"
         >
-          {isPending ? "アカウント作成中..." : "アカウント作成"}
+          {isPending || isAuthLoading
+            ? "アカウント作成中..."
+            : "アカウント作成"}
         </Button>
       </div>
 
