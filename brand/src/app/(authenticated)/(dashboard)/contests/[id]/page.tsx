@@ -11,14 +11,14 @@ import { useGetContestPayment } from "@/hooks/contestPayment/useGetPayment";
 import { PaymentPollingOverlay } from "@/components/contests/detail/PaymentPollingOverlay";
 import { AlertCancel } from "@/components/contests/detail/AlertCancel";
 import { AlertSuccess } from "@/components/contests/detail/AlertSuccess";
-import { BrandContext } from "@/contexts/BrandContext";
+import { AuthContext } from "@/contexts/AuthContext";
 import { Loading } from "@/components/ui/Loading";
 import { useGetContestEngage } from "@/hooks/contest/useGetContestEngage";
 
 export default function ContestDetailPage() {
   const params = useParams();
   const contestId = params.id as string;
-  const { brand } = useContext(BrandContext);
+  const { brand } = useContext(AuthContext);
 
   const { data, isPending, refetch } = useGetContestEngage(
     contestId,
