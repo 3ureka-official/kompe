@@ -32,18 +32,52 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     const isLoggedIn = !!user;
     const hasBrand = !!profile?.brand_id;
 
+    // ルートパスの場合はコンテストページにリダイレクト
     if (isRoot) {
       router.replace("/contests");
+      return;
     }
 
-    if (!isLoggedIn && !isPublic) {
-      router.replace("/auth/login");
-    } else if (isLoggedIn && isPublic) {
+    // 未ログインの場合
+    if (!isLoggedIn) {
+      if (!isPublic) {
+        router.replace("/auth/login");
+      }
+      return;
+    }
+
+    // ログイン済みの場合
+    // メール確認が完了していない場合はverify-codeページにリダイレクト
+    if (isLoggedIn && !hasEmailConfirmed) {
+      // サインアップページにアクセスしようとした場合は、verify-codeページにリダイレクト
+      if (path === "/auth/signup") {
+        router.replace("/auth/verify-code");
+        return;
+      }
+      // verify-codeページまたはsignup/successページにいる場合は表示
+      if (path !== "/auth/verify-code") {
+        router.replace("/auth/verify-code");
+      }
+      return;
+    }
+
+    // メール確認済みの場合
+    // パブリックパスにいる場合はコンテストページにリダイレクト
+    if (isPublic) {
       router.replace("/contests");
-    } else if (isLoggedIn && profile && !hasBrand && !isOnboard) {
+      return;
+    }
+
+    // ブランド未作成の場合
+    if (!hasBrand && !isOnboard) {
       router.replace("/brand/create");
-    } else if (isLoggedIn && hasBrand && isOnboard) {
+      return;
+    }
+
+    // ブランド作成済みでオンボードパスにいる場合
+    if (hasBrand && isOnboard) {
       router.replace("/contests");
+      return;
     }
   }, [user, profile, isAuthLoading, path, router, hasEmailConfirmed]);
 
