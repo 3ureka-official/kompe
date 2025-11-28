@@ -14,6 +14,7 @@ export function useGetAssets(contestId: string): UseGetAssets {
   const getAssetsQuery = useQuery({
     queryKey: ["assets", contestId],
     queryFn: () => getAssets(contestId),
+    enabled: !!contestId,
   });
 
   return { getAssetsQuery };
