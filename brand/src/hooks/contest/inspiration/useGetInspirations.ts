@@ -14,6 +14,7 @@ export function useGetInspirations(contestId: string): UseGetInspirations {
   const getInspirationsQuery = useQuery({
     queryKey: ["inspirations", contestId],
     queryFn: () => getInspirations(contestId),
+    enabled: !!contestId,
   });
 
   return { getInspirationsQuery };

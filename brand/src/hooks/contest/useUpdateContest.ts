@@ -10,6 +10,7 @@ export function useUpdateContest() {
       contestData,
       assetsData,
       inspirationData,
+      prizeDistribution,
     }: {
       brandId: string;
       contestId: string;
@@ -35,6 +36,7 @@ export function useUpdateContest() {
         InspirationItem,
         "id" | "created_at" | "brand_id" | "contest_id"
       >[];
+      prizeDistribution?: number[];
     }) =>
       updateContest(
         brandId,
@@ -42,6 +44,7 @@ export function useUpdateContest() {
         contestData,
         assetsData,
         inspirationData,
+        prizeDistribution,
       ),
 
     onError: (error: Error) => {

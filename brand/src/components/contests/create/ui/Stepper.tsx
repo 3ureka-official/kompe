@@ -2,6 +2,7 @@
 
 interface Step {
   id: string;
+  view: React.ReactNode;
   title: string;
 }
 
@@ -17,16 +18,13 @@ export function Stepper({ steps, currentStep }: StepperProps) {
         <ol className="flex items-center">
           {steps.map((step, index) => (
             <li key={step.id} className="relative flex-1">
-              <div className="group flex items-center flex-col justify-center items-center">
+              <div className="group flex items-center flex-col justify-center">
                 <span
                   className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                     index <= currentStep
-                      ? "text-black"
+                      ? "bg-primary text-primary-foreground"
                       : "bg-gray-200 text-gray-500"
                   }`}
-                  style={
-                    index <= currentStep ? { backgroundColor: "#25F4EE" } : {}
-                  }
                 >
                   {index + 1}
                 </span>
@@ -41,13 +39,11 @@ export function Stepper({ steps, currentStep }: StepperProps) {
               {index < steps.length - 1 && (
                 <div
                   className={`hidden sm:block absolute h-0.5 top-4 -translate-y-1/2 ${
-                    index < currentStep ? "" : "bg-gray-200"
+                    index < currentStep ? "bg-primary" : "bg-gray-200"
                   }`}
                   style={{
                     left: "calc(50% + 1rem)",
                     right: "calc(-50% + 1rem)",
-                    backgroundColor:
-                      index < currentStep ? "#25F4EE" : undefined,
                   }}
                 />
               )}
