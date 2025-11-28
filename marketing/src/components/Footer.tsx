@@ -24,39 +24,45 @@ export const Footer = () => {
         </div>
 
         {/* ボトムセクション */}
-        <div className="flex xl:flex-row md:flex-col gap-6 md:gap-2 xl:gap-10 pb-5">
-          <div className="flex flex-col gap-2 xl:gap-4">
+        <div className="flex sm:flex-row flex-col gap-6 md:gap-2 xl:gap-10 pb-5">
+          <div className="flex flex-col gap-2 md:gap-4">
             <Link
               href="/contact"
-              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-xs md:text-sm xl:text-lg text-white hover:text-gray-500"
             >
               お問い合わせ
             </Link>
             <Link
               href="/terms"
-              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-xs md:text-sm xl:text-lg text-white hover:text-gray-500"
             >
               利用規約
             </Link>
             <Link
               href="/privacy"
-              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-xs md:text-sm xl:text-lg text-white hover:text-gray-500"
             >
               プライバシーポリシー
             </Link>
+            <Link
+              href="/commerce-policy"
+              className="font-bold text-xs md:text-sm xl:text-lg text-white hover:text-gray-500"
+            >
+              特定商取引法に基づく表記
+            </Link>
           </div>
-          <div className="flex flex-col gap-2 xl:gap-4">
+          <div className="flex flex-col gap-2 md:gap-4">
             <Link
               href="https://tiktok.com/@kompe"
               target="_blank"
-              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-xs md:text-sm xl:text-lg text-white hover:text-gray-500"
             >
               TikTok
             </Link>
             <Link
               href="https://instagram.com/kompe.official"
               target="_blank"
-              className="font-bold text-sm md:text-md xl:text-lg text-white hover:text-gray-500"
+              className="font-bold text-xs md:text-sm xl:text-lg text-white hover:text-gray-500"
             >
               Instagram
             </Link>
