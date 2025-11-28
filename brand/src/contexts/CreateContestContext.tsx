@@ -1,35 +1,25 @@
 "use client";
-import React, {
-  createContext,
-  useState,
-  ReactNode,
-  useEffect,
-  useContext,
-} from "react";
+import React, { createContext, ReactNode, useContext } from "react";
 import { ContestCreateFormData } from "@/schema/createContestSchema";
-import { ContestFormDefaultValues } from "@/constants/contest.constant";
-import { useUpdateContest } from "@/hooks/contest/useUpdateContest";
-import { useCreateContest } from "@/hooks/contest/useCreateContest";
-import { BrandContext } from "@/contexts/BrandContext";
-import { AssetItem, InspirationItem } from "@/types/Contest";
-import { useRouter } from "next/navigation";
-import { useGetContest } from "@/hooks/contest/useGetContest";
-import { useGetAssets } from "@/hooks/contest/asset/useGetAssets";
-import { useGetInspirations } from "@/hooks/contest/inspiration/useGetInspirations";
-import { useCreateCheckoutSession } from "@/hooks/stripe/useCreateCheckoutSession";
+import { useContestFormState } from "@/hooks/contest/create/useContestFormState";
+import { useContestNavigation } from "@/hooks/contest/create/useContestNavigation";
+import { useContestInit } from "@/hooks/contest/create/useContestInit";
+import { useContestSubmit } from "@/hooks/contest/create/useContestSubmit";
+import { AuthContext } from "@/contexts/AuthContext";
 
 type CreateContestContextType = {
   step: number;
   data: Partial<ContestCreateFormData>;
   next: <T extends object>(partial: T) => void;
   back: <T extends object>(partial: T) => void;
-  contestId: string | null;
+  contestId: string | undefined;
   submit: (isDraft: boolean, newData: Partial<ContestCreateFormData>) => void;
   isCreating: boolean;
   isUpdating: boolean;
   updateData: <T extends object>(partial: T) => void;
   setContestId: (contestId: string) => void;
-  initContest: (brandId: string, paramContestId?: string) => void;
+  initContest: (brandId: string, paramContestId?: string) => Promise<void>;
+  clearInitFlag?: () => void;
 };
 
 export const CreateContestContext = createContext<CreateContestContextType>({
@@ -37,166 +27,55 @@ export const CreateContestContext = createContext<CreateContestContextType>({
   data: {},
   next: () => {},
   back: () => {},
-  contestId: null,
+  contestId: undefined,
   submit: () => {},
   isCreating: false,
   isUpdating: false,
   updateData: () => {},
   setContestId: () => {},
-  initContest: () => {},
+  initContest: async () => {},
 });
 
 /** Provider */
 export function CreateContestProvider({ children }: { children: ReactNode }) {
-  const router = useRouter();
-  const [step, setStep] = useState(0);
-  const [data, setData] = useState<ContestCreateFormData>(
-    ContestFormDefaultValues,
+  const { brand } = useContext(AuthContext);
+
+  // フォーム状態管理（sessionStorageの読み込み・保存はuseContestFormState内で処理）
+  const { data, updateData, setData, clearStorage, hasStoredData } =
+    useContestFormState();
+
+  // ステップ遷移
+  const { step, setStep } = useContestNavigation();
+
+  // コンテスト初期化
+  const { contestId, setContestId, initContest, isCreating } = useContestInit(
+    setData,
+    hasStoredData,
   );
-  const [contestId, setContestId] = useState<string>("");
-  const { brand } = useContext(BrandContext);
 
-  const { mutate: createContest, isPending: isCreating } = useCreateContest();
-  const { mutate: updateContest, isPending: isUpdating } = useUpdateContest();
-  const { data: getContestQuery } = useGetContest(contestId, brand?.id || "");
-  const { getAssetsQuery } = useGetAssets(contestId);
-  const { getInspirationsQuery } = useGetInspirations(contestId);
+  // コンテスト送信
+  const { submit, isUpdating } = useContestSubmit(
+    data,
+    brand ?? null,
+    contestId,
+    clearStorage,
+  );
 
-  const { mutate: createCheckoutSession } = useCreateCheckoutSession();
-
+  // nextとbackをラップしてupdateDataも実行（updateData内でsessionStorageに保存される）
   const next = <T extends object>(partial: T) => {
-    setData((prev) => ({ ...prev, ...partial }));
+    updateData(partial, contestId);
     setStep((s) => s + 1);
   };
 
   const back = <T extends object>(partial: T) => {
-    setData((prev) => ({ ...prev, ...partial }));
+    updateData(partial, contestId);
     setStep((s) => Math.max(s - 1, 0));
   };
 
-  const updateData = <T extends object>(partial: T) => {
-    setData((prev) => ({ ...prev, ...partial }));
+  // updateDataをラップしてcontestIdを渡す
+  const updateDataWithContestId = <T extends object>(partial: T) => {
+    updateData(partial, contestId);
   };
-
-  const submit = (
-    isDraft: boolean,
-    newData: Partial<ContestCreateFormData>,
-  ) => {
-    const mergedData = { ...data, ...newData };
-
-    const assetsData: Omit<
-      AssetItem,
-      "id" | "created_at" | "brand_id" | "contest_id"
-    >[] =
-      mergedData.assets?.map((asset) => ({
-        id: asset.id || "",
-        url: asset.url || "",
-        description: asset.description || "",
-      })) || [];
-
-    const inspirationData: Omit<
-      InspirationItem,
-      "id" | "created_at" | "brand_id" | "contest_id"
-    >[] =
-      mergedData.inspirations?.map((inspiration) => ({
-        id: inspiration.id || "",
-        url: inspiration.url || "",
-        description: inspiration.description || "",
-      })) || [];
-
-    const completeData = {
-      title: mergedData.title || "",
-      description: mergedData.description || "",
-      supply_of_samples: mergedData.supply_of_samples || "",
-      requirements: mergedData.requirements || "",
-      contest_start_date: mergedData.contest_start_date || "",
-      contest_end_date: mergedData.contest_end_date || "",
-      prize_pool: mergedData.prize_pool || 0,
-      prize_distribution: mergedData.prize_distribution || [],
-      thumbnail_url: mergedData.thumbnail_url || "",
-      is_draft: true,
-    };
-
-    if (!brand?.id || !contestId) return;
-
-    if (contestId) {
-      updateContest(
-        {
-          brandId: brand.id,
-          contestId: contestId,
-          contestData: completeData,
-          assetsData,
-          inspirationData,
-        },
-        {
-          onSuccess: () => {
-            if (!isDraft) {
-              createCheckoutSession(
-                { contestId: contestId, amountJpy: mergedData.prize_pool },
-                {
-                  onSuccess: (data) => {
-                    window.location.href = data.url;
-                  },
-                },
-              );
-            } else {
-              router.push("/contests");
-            }
-          },
-        },
-      );
-    }
-  };
-
-  const initContest = (brandId: string, paramContestId?: string) => {
-    let contestId = paramContestId;
-
-    if (contestId) {
-      setContestId(contestId);
-    } else {
-      contestId = crypto.randomUUID();
-      createContest(
-        {
-          brandId: brandId,
-          contestId: contestId,
-          contestData: data,
-        },
-        {
-          onSuccess: (id) => {
-            setContestId(id);
-          },
-        },
-      );
-    }
-  };
-
-  useEffect(() => {
-    if (getContestQuery) {
-      setData(getContestQuery as ContestCreateFormData);
-    }
-  }, [getContestQuery]);
-
-  useEffect(() => {
-    if (getAssetsQuery.data) {
-      const assets = getAssetsQuery.data.map((asset) => ({
-        id: asset.id,
-        url: asset.url || "",
-        description: asset.description || "",
-      }));
-      setData((prev) => ({ ...prev, assets }));
-    }
-  }, [getAssetsQuery.data]);
-
-  useEffect(() => {
-    if (getInspirationsQuery.data) {
-      const inspirations = getInspirationsQuery.data.map((inspiration) => ({
-        id: inspiration.id,
-        url: inspiration.url || "",
-        description: inspiration.description || "",
-      }));
-      setData((prev) => ({ ...prev, inspirations }));
-    }
-  }, [getInspirationsQuery.data]);
 
   return (
     <CreateContestContext.Provider
@@ -209,9 +88,10 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
         submit,
         isCreating,
         isUpdating,
-        updateData,
+        updateData: updateDataWithContestId,
         setContestId,
         initContest,
+        clearInitFlag: clearStorage,
       }}
     >
       {children}
