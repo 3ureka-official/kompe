@@ -159,7 +159,8 @@ async function fetchContestWithApps(
       ),
       brands (*),
       contests_assets (*),
-      contests_inspirations (*)
+      contests_inspirations (*),
+      sample_products (*)
     `,
     )
     .eq("id", contestId)

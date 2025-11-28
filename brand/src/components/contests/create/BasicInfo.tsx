@@ -22,6 +22,11 @@ export function BasicInfo() {
     defaultValues: {
       title: data.title || "",
       thumbnail_url: data.thumbnail_url || "",
+      entry_start_date: data.entry_start_date || new Date(),
+      entry_end_date: data.entry_end_date || new Date(),
+      video_production_start_date:
+        data.video_production_start_date || new Date(),
+      video_production_end_date: data.video_production_end_date || new Date(),
       contest_start_date: data.contest_start_date || new Date(),
       contest_end_date: data.contest_end_date || new Date(),
     },
@@ -143,17 +148,37 @@ export function BasicInfo() {
         </div>
       </div>
 
-      <div className="flex flex-col bg-white rounded-lg p-8 shadow-sm">
-        <label className="block text-sm font-medium text-gray-700 mb-4">
-          開催期間 <span className="text-red-500">*</span>
-        </label>
+      {/* 応募期間 */}
+      <div className="flex flex-col gap-8 bg-white rounded-lg p-8 shadow-sm">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700 mb-4">
+            応募期間 <span className="text-red-500">*</span>
+          </label>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm text-gray-600 mb-2">開始日</label>
+          <div className="flex gap-4 items-center">
             <Controller
               control={control}
-              name="contest_start_date"
+              name="entry_start_date"
+              render={({ field, fieldState }) => (
+                <div>
+                  <DateInput
+                    value={field.value}
+                    onChange={(e) => field.onChange(e)}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
+
+            <span className="text-sm text-gray-600">〜</span>
+
+            <Controller
+              control={control}
+              name="entry_end_date"
               render={({ field, fieldState }) => (
                 <div>
                   <DateInput
@@ -169,9 +194,83 @@ export function BasicInfo() {
               )}
             />
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-2">終了日</label>
+        {/* 動画制作期間 */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700 mb-4">
+            動画制作期間 <span className="text-red-500">*</span>
+          </label>
+
+          <div className="flex gap-4 items-center">
+            <Controller
+              control={control}
+              name="video_production_start_date"
+              render={({ field, fieldState }) => (
+                <div>
+                  <DateInput
+                    value={field.value}
+                    onChange={(e) => field.onChange(e)}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
+
+            <span className="text-sm text-gray-600">〜</span>
+
+            <Controller
+              control={control}
+              name="video_production_end_date"
+              render={({ field, fieldState }) => (
+                <div>
+                  <DateInput
+                    value={field.value}
+                    onChange={(e) => field.onChange(e)}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* 開催期間 */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700 mb-4">
+            開催期間 <span className="text-red-500">*</span>
+          </label>
+
+          <div className="flex gap-4 items-center">
+            <Controller
+              control={control}
+              name="contest_start_date"
+              render={({ field, fieldState }) => (
+                <div>
+                  <DateInput
+                    value={field.value}
+                    className="w-full"
+                    onChange={(e) => field.onChange(e)}
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
+
+            <span className="text-sm text-gray-600">〜</span>
+
             <Controller
               control={control}
               name="contest_end_date"
@@ -179,6 +278,7 @@ export function BasicInfo() {
                 <div>
                   <DateInput
                     value={field.value}
+                    className="w-full"
                     onChange={(e) => field.onChange(e)}
                   />
                   {fieldState.error && (

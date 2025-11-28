@@ -1,58 +1,29 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { Stepper } from "@/components/contests/create/Stepper";
-import { BasicInfo } from "@/components/contests/create/BasicInfo";
-import { Brief } from "@/components/contests/create/Brief";
-import { Resources } from "@/components/contests/create/Resources";
-import { Prize } from "@/components/contests/create/Prize";
 import {
   CreateContestContext,
   CreateContestProvider,
 } from "@/contexts/CreateContestContext";
-import { BrandContext } from "@/contexts/BrandContext";
-
-const steps = [
-  { id: "basic", title: "基本情報" },
-  { id: "brief", title: "コンテスト概要" },
-  { id: "resources", title: "リソース" },
-  { id: "prize", title: "賞金設定" },
-];
+import { AuthContext } from "@/contexts/AuthContext";
+import { ContestFormLayout } from "@/components/contests/create/ContestFormLayout";
 
 function CreateContestContent() {
-  const { step, initContest } = useContext(CreateContestContext);
-  const { brand } = useContext(BrandContext);
+  const { initContest } = useContext(CreateContestContext);
+  const { brand } = useContext(AuthContext);
   const [hasInitialized, setHasInitialized] = useState(false);
-
-  const renderStep = () => {
-    switch (step) {
-      case 0:
-        return <BasicInfo />;
-      case 1:
-        return <Brief />;
-      case 2:
-        return <Resources />;
-      case 3:
-        return <Prize />;
-      default:
-        return null;
-    }
-  };
 
   useEffect(() => {
     if (brand?.id && !hasInitialized) {
-      initContest(brand.id);
-      setHasInitialized(true);
+      const initialize = async () => {
+        await initContest(brand.id);
+        setHasInitialized(true);
+      };
+      initialize();
     }
   }, [brand?.id, initContest, hasInitialized]);
 
-  return (
-    <div className="max-w-4xl mx-auto py-8">
-      <Stepper steps={steps} currentStep={step} />
-
-      <div className="mt-8">{renderStep()}</div>
-    </div>
-  );
+  return <ContestFormLayout />;
 }
 
 export default function CreateContestPage() {

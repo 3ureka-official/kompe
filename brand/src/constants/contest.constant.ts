@@ -20,16 +20,37 @@ export const CONTEST_CATEGORIES = [
   { id: "other", label: "その他" },
 ];
 
-export const ContestFormDefaultValues = {
+import type { ContestCreateFormData } from "@/schema/createContestSchema";
+
+export const ContestFormDefaultValues: ContestCreateFormData = {
   title: "",
   thumbnail_url: "",
-  contest_start_date: new Date(),
-  contest_end_date: new Date(new Date().setDate(new Date().getDate() + 7)),
+  entry_start_date: new Date(),
+  entry_end_date: new Date(new Date().setDate(new Date().getDate() + 7)),
+  video_production_start_date: new Date(
+    new Date().setDate(new Date().getDate() + 7),
+  ),
+  video_production_end_date: new Date(
+    new Date().setDate(new Date().getDate() + 14),
+  ),
+  contest_start_date: new Date(new Date().setDate(new Date().getDate() + 14)),
+  contest_end_date: new Date(new Date().setDate(new Date().getDate() + 21)),
   description: "",
-  supply_of_samples: "",
   requirements: "",
-  prize_pool: 0,
-  prize_distribution: [0, 0, 0],
+  prize_pool: 50000,
+  prize_distribution: [50000],
+  requires_purchase_proof: false,
+  purchase_product_name: null,
+  purchase_product_url: null,
+  purchase_description: null,
+  has_sample: false,
+  sample_product_name: null,
+  sample_rental_or_purchase: null,
+  sample_price_per_creator: null,
+  sample_return_postal_code: null,
+  sample_return_prefecture: null,
+  sample_return_city: null,
+  sample_return_address_line: null,
 };
 
 export const CONTEST_STATUS_LABELS = {
