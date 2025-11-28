@@ -7,13 +7,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 
 const ROOT_PATHS = ["/"];
 
-const PUBLIC_PATHS = [
-  "/auth/login",
-  "/auth/signup",
-  "/auth/signup/success",
-  "/auth/verify-email",
-  "/auth/verify-code",
-];
+const PUBLIC_PATHS = ["/auth/login", "/auth/signup", "/auth/verify-code"];
 
 const ONBOARD_PATHS = ["/brand/create"];
 
@@ -49,12 +43,7 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     // ログイン済みの場合
     // メール確認が完了していない場合はverify-codeページにリダイレクト
     if (isLoggedIn && !hasEmailConfirmed) {
-      // サインアップページにアクセスしようとした場合は、verify-codeページにリダイレクト
-      if (path === "/auth/signup") {
-        router.replace("/auth/verify-code");
-        return;
-      }
-      // verify-codeページまたはsignup/successページにいる場合は表示
+      // verify-codeページにいない場合はリダイレクト
       if (path !== "/auth/verify-code") {
         router.replace("/auth/verify-code");
       }
@@ -81,25 +70,36 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     }
   }, [user, profile, isAuthLoading, path, router, hasEmailConfirmed]);
 
-  // メール確認未完了でverify-codeページ、サインアップ成功ページ、またはメール確認ページにいる場合は表示
-  if (!hasEmailConfirmed && path === "/auth/verify-code") {
-    return <>{children}</>;
+  // ローディング中は何も表示しない
+  if (isAuthLoading) {
+    return null;
   }
 
-  // その他の場合はリダイレクト中なので何も表示しない
   const isPublic = PUBLIC_PATHS.includes(path);
   const isOnboard = ONBOARD_PATHS.includes(path);
   const isLoggedIn = !!user;
   const hasBrand = !!profile?.brand_id;
 
-  if (
-    (!isLoggedIn && !isPublic) ||
-    (isLoggedIn && hasEmailConfirmed && isPublic) ||
-    (isLoggedIn && !hasBrand && !isOnboard) ||
-    (isLoggedIn && hasBrand && isOnboard)
-  ) {
-    return null;
+  // メール確認未完了でverify-codeページにいる場合は表示
+  if (!hasEmailConfirmed && path === "/auth/verify-code") {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  // 未ログインでパブリックパスにいる場合は表示
+  if (!isLoggedIn && isPublic) {
+    return <>{children}</>;
+  }
+
+  // メール確認済みでブランド未作成でオンボードパスにいる場合は表示
+  if (isLoggedIn && hasEmailConfirmed && !hasBrand && isOnboard) {
+    return <>{children}</>;
+  }
+
+  // メール確認済みでブランド作成済みでオンボードパス以外にいる場合は表示
+  if (isLoggedIn && hasEmailConfirmed && hasBrand && !isOnboard && !isPublic) {
+    return <>{children}</>;
+  }
+
+  // その他の場合はリダイレクト中なので何も表示しない
+  return null;
 }

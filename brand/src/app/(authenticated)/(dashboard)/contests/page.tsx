@@ -6,11 +6,11 @@ import { ContestsPageLayout } from "@/components/contests/list/ContestsPageLayou
 import { EmptyContestsState } from "@/components/contests/list/EmptyContestsState";
 import { useGetAllContests } from "@/hooks/contest/useGetAllContests";
 import { useContext } from "react";
-import { BrandContext } from "@/contexts/BrandContext";
+import { AuthContext } from "@/contexts/AuthContext";
 import { Loading } from "@/components/ui/Loading";
 
 export default function ContestsPage() {
-  const { brand } = useContext(BrandContext);
+  const { brand } = useContext(AuthContext);
   const { data, isPending, refetch } = useGetAllContests(brand?.id || "");
 
   if (isPending) {
