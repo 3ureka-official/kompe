@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 export const updateContestPrizes = async (
   prizeDistribution: number[],
   contestId: string,
+  brandId: string,
 ): Promise<void> => {
   try {
     const { error: deleteError } = await supabase
@@ -24,7 +25,7 @@ export const updateContestPrizes = async (
     }
 
     if (prizeDistribution.length > 0) {
-      await createContestPrizes(prizeDistribution, contestId);
+      await createContestPrizes(prizeDistribution, contestId, brandId);
     }
   } catch (error) {
     console.error("賞金更新エラー:", error);
@@ -40,6 +41,7 @@ export const updateContestPrizes = async (
 export const createContestPrizes = async (
   prizeDistribution: number[],
   contestId: string,
+  brandId: string,
 ): Promise<void> => {
   const insertData = prizeDistribution
     .map((amount, index) => ({
@@ -47,6 +49,7 @@ export const createContestPrizes = async (
       contest_id: contestId,
       rank: index + 1,
       amount: amount,
+      brand_id: brandId,
     }))
     .filter((prize) => prize.amount > 0); // 0円の賞金は除外
 
