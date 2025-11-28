@@ -16,7 +16,8 @@ export function Logo({ size = "md" }: LogoProps) {
       src="/images/logo/logo-coloredhdpi.png"
       alt="Logo"
       width={sizeClasses[size]}
-      height={sizeClasses[size]}
+      height={0}
+      className={`object-contain w-[${sizeClasses[size]}px] h-auto`}
     />
   );
 }
