@@ -1,8 +1,6 @@
 import * as yup from "yup";
 
 export const createUserSchema = yup.object().shape({
-  first_name: yup.string().required("苗字を入力してください"),
-  last_name: yup.string().required("名前を入力してください"),
   email: yup
     .string()
     .email("メールアドレスの形式が正しくありません")
