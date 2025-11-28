@@ -71,6 +71,7 @@ export interface InspirationItem {
 export interface ContestPrize {
   id: string;
   contest_id: string;
+  brand_id: string;
   rank: number;
   amount: number;
   created_at: string | Date;
