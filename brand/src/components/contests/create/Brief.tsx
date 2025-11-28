@@ -6,19 +6,25 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { briefSchema } from "@/schema/createContestSchema";
 import { FormField } from "@/components/ui/FormField";
 import { Textarea } from "@/components/ui/Textarea";
+import { Input } from "@/components/ui/Input";
 
 export function Brief() {
   const { data, next, back, submit, isUpdating, updateData } =
     useContext(CreateContestContext);
-  const { control, handleSubmit, getValues, reset } = useForm({
+  const { control, handleSubmit, getValues, reset, watch } = useForm({
     resolver: yupResolver(briefSchema),
     mode: "onSubmit",
     defaultValues: {
       description: data.description || "",
-      supply_of_samples: data.supply_of_samples || "",
       requirements: data.requirements || "",
+      requires_purchase_proof: data.requires_purchase_proof || false,
+      purchase_product_name: data.purchase_product_name || null,
+      purchase_product_url: data.purchase_product_url || null,
+      purchase_description: data.purchase_description || null,
     },
   });
+
+  const requiresPurchaseProof = watch("requires_purchase_proof");
 
   useEffect(() => {
     if (data) {
@@ -48,26 +54,6 @@ export function Brief() {
                 value={field.value || ""}
                 onChange={(e) => field.onChange(e.target.value)}
                 placeholder="例：コンテストを通じた新作の認知・購入促進を目的としています。"
-              />
-            </FormField>
-          )}
-        />
-      </div>
-
-      <div className="flex flex-col gap-4 bg-white rounded-lg p-8 shadow-sm">
-        <Controller
-          control={control}
-          name="supply_of_samples"
-          render={({ field, fieldState }) => (
-            <FormField
-              label="試供品の負担について"
-              required
-              error={fieldState.error?.message}
-            >
-              <Textarea
-                value={field.value || ""}
-                onChange={(e) => field.onChange(e.target.value)}
-                placeholder="例：クリエイター自身が試供品の配送料を負担します。"
               />
             </FormField>
           )}
