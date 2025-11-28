@@ -5,7 +5,6 @@ import { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AuthContext } from "@/contexts/AuthContext";
-import { BrandContext } from "@/contexts/BrandContext";
 import { Logo } from "@/components/ui/Logo";
 import { FormField, Textarea, SnsLinkField } from "./ui";
 import { Input } from "@/components/ui/Input";
@@ -18,16 +17,8 @@ import { useUpdateBrand } from "@/hooks/brand/useUpdateBrand";
 import { Brand } from "@/types/Brand";
 import { Loading } from "../ui/Loading";
 
-type Props = {
-  initialData?: Brand | null;
-};
-
-export function BrandForm({ initialData }: Props) {
-  const { profile } = useContext(AuthContext);
-  const { brand: contextBrand } = useContext(BrandContext);
-
-  // initialDataが渡されていればそれを使用、なければcontextBrandを使用、どちらもなければnull（createモード）
-  const brand = initialData ?? contextBrand ?? null;
+export function BrandForm() {
+  const { profile, brand } = useContext(AuthContext);
   const isUpdateMode = brand !== null;
 
   const [isPending, setIsPending] = useState(false);
