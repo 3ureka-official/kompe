@@ -55,6 +55,14 @@ export const ContestFormDefaultValues: ContestCreateFormData = {
 
 export const CONTEST_STATUS_LABELS = {
   0: { text: "下書き", color: "bg-gray-100 text-gray-800" },
-  1: { text: "開催中", color: "bg-blue-100 text-blue-800" },
-  2: { text: "終了", color: "bg-red-100 text-red-800" },
+  1: { text: "開催前", color: "bg-purple-100 text-purple-800" },
+  2: { text: "開催中", color: "bg-blue-100 text-blue-800" },
+  3: { text: "終了", color: "bg-red-100 text-red-800" },
 };
+
+export const CONTEST_STATUS_TYPE_LABELS = {
+  draft: { text: "下書き", color: "bg-gray-100 text-gray-800" },
+  scheduled: { text: "開催前", color: "bg-purple-100 text-purple-800" },
+  holding: { text: "開催中", color: "bg-blue-100 text-blue-800" },
+  ended: { text: "終了", color: "bg-red-100 text-red-800" },
+} as const;

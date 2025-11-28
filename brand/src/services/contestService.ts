@@ -110,6 +110,8 @@ export const getAllContests = async (
       .from("contests")
       .select("*, contest_payments(*), applications(*), contest_prizes(*)")
       .eq("brand_id", brandId)
+      .order("contest_start_date", { ascending: false })
+      .order("created_at", { ascending: false })
       .order("rank", { ascending: true, referencedTable: "contest_prizes" });
 
     if (error) {

@@ -2,8 +2,11 @@ import { Contest, ContestPrize } from "@/types/Contest";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import { formatCurrency, formatDate, formatNumber } from "@/utils/format";
-import { CONTEST_STATUS_LABELS } from "@/constants/contest.constant";
-import { getContestStatus } from "@/utils/getContestStatus";
+import { CONTEST_STATUS_TYPE_LABELS } from "@/constants/contest.constant";
+import {
+  getContestStatusType,
+  getContestDetailStatusType,
+} from "@/utils/getContestStatus";
 import { TrashIcon } from "lucide-react";
 import { useDeleteContest } from "@/hooks/contest/useDeleteContest";
 import { useRouter } from "next/navigation";
@@ -21,6 +24,70 @@ export const ContestCard = ({ contest, refetch, applications }: Props) => {
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { mutate: deleteContest, isPending } = useDeleteContest();
+
+  const statusType = getContestStatusType(contest);
+  const statusLabel = CONTEST_STATUS_TYPE_LABELS[statusType];
+  const detailStatusType = getContestDetailStatusType(contest);
+
+  // 期間表示のロジック
+  const getPeriodDisplay = () => {
+    if (statusType === "draft") {
+      // 下書きの場合：応募期間を表示
+      if (contest.entry_start_date && contest.entry_end_date) {
+        return {
+          label: "応募期間",
+          startDate: contest.entry_start_date,
+          endDate: contest.entry_end_date,
+        };
+      }
+    } else if (statusType === "holding") {
+      // 開催中の場合：現在の期間（応募、動画制作、開催）を表示
+      if (detailStatusType === "entry") {
+        return {
+          label: "応募期間",
+          startDate: contest.entry_start_date,
+          endDate: contest.entry_end_date,
+        };
+      } else if (detailStatusType === "video_production") {
+        return {
+          label: "動画制作期間",
+          startDate: contest.video_production_start_date,
+          endDate: contest.video_production_end_date,
+        };
+      } else if (detailStatusType === "contest") {
+        return {
+          label: "開催期間",
+          startDate: contest.contest_start_date,
+          endDate: contest.contest_end_date,
+        };
+      }
+    } else if (statusType === "scheduled") {
+      // 開催前の場合：応募期間を表示
+      if (contest.entry_start_date && contest.entry_end_date) {
+        return {
+          label: "応募期間",
+          startDate: contest.entry_start_date,
+          endDate: contest.entry_end_date,
+        };
+      }
+    } else if (statusType === "ended") {
+      // 終了の場合：開催期間を表示
+      return {
+        label: "開催期間",
+        startDate: contest.contest_start_date,
+        endDate: contest.contest_end_date,
+      };
+    }
+
+    // デフォルト：開催期間を表示
+    return {
+      label: "開催期間",
+      startDate: contest.contest_start_date,
+      endDate: contest.contest_end_date,
+    };
+  };
+
+  const periodDisplay = getPeriodDisplay();
 
   const handleClickCard = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -78,20 +145,20 @@ export const ContestCard = ({ contest, refetch, applications }: Props) => {
                 </h2>
               </div>
               <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  CONTEST_STATUS_LABELS[getContestStatus(contest)].color
-                }`}
+                className={`px-3 py-1 rounded-full text-sm font-medium ${statusLabel.color}`}
               >
-                {CONTEST_STATUS_LABELS[getContestStatus(contest)].text}
+                {statusLabel.text}
               </span>
             </div>
 
             <div className="flex-1">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex flex-col gap-2">
-                  <span className="text-gray-500">開催期間</span>
+                  <span className="text-gray-500">{periodDisplay.label}</span>
                   <p className="text-base text-gray-900">
-                    {`${formatDate(contest.contest_start_date, "PPP")} 〜 ${formatDate(contest.contest_end_date, "PPP")}`}
+                    {periodDisplay.startDate && periodDisplay.endDate
+                      ? `${formatDate(periodDisplay.startDate, "PPP")} 〜 ${formatDate(periodDisplay.endDate, "PPP")}`
+                      : "-"}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
