@@ -85,7 +85,7 @@ export const createContest = async (
 
     // 賞金レコードを作成
     if (prizeDistribution && prizeDistribution.length > 0) {
-      await updateContestPrizes(prizeDistribution, contestId);
+      await updateContestPrizes(prizeDistribution, contestId, brandId);
     }
 
     console.log("contest", contest.id);
@@ -222,7 +222,7 @@ export const updateContest = async (
 
     // 賞金レコードを更新
     if (prizeDistribution !== undefined) {
-      await updateContestPrizes(prizeDistribution, contestId);
+      await updateContestPrizes(prizeDistribution, contestId, brandId);
     }
   } catch (error) {
     console.error("コンテスト更新エラー:", error);
