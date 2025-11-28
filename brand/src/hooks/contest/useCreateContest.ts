@@ -8,6 +8,7 @@ export function useCreateContest() {
       brandId,
       contestId,
       contestData,
+      prizeDistribution,
     }: {
       brandId: string;
       contestId: string;
@@ -25,7 +26,8 @@ export function useCreateContest() {
         | "shares"
         | "updated_engagement_at"
       >;
-    }) => createContest(brandId, contestId, contestData),
+      prizeDistribution?: number[];
+    }) => createContest(brandId, contestId, contestData, prizeDistribution),
 
     onError: (error: Error) => {
       alert(`コンテスト作成に失敗しました：${error.message}`);
