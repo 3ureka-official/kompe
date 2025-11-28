@@ -1,4 +1,4 @@
-import { Contest } from "@/types/Contest";
+import { Contest, ContestPrize } from "@/types/Contest";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import { formatCurrency, formatDate, formatNumber } from "@/utils/format";
@@ -12,7 +12,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Application } from "@/types/Application";
 
 type Props = {
-  contest: Contest;
+  contest: Contest & { contest_prizes?: ContestPrize[] };
   applications: Application[];
   refetch: () => void;
 };
@@ -97,7 +97,12 @@ export const ContestCard = ({ contest, refetch, applications }: Props) => {
                 <div className="flex flex-col gap-2">
                   <span className="text-gray-500">賞金総額</span>
                   <p className="text-base text-gray-900">
-                    {formatCurrency(contest.prize_pool)}
+                    {formatCurrency(
+                      contest.contest_prizes?.reduce(
+                        (sum, prize) => sum + prize.amount,
+                        0,
+                      ) || 0,
+                    )}
                   </p>
                 </div>
               </div>
