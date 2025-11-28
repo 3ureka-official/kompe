@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useUpsertContest } from "@/hooks/contest/create/useUpsertContest";
 import { useCreateCheckoutSession } from "@/hooks/stripe/useCreateCheckoutSession";
 import { ContestCreateFormData } from "@/schema/createContestSchema";
-import { AssetItem, InspirationItem, Contest } from "@/types/Contest";
+import { AssetItem, InspirationItem } from "@/types/Contest";
 import { Brand } from "@/types/Brand";
 
 function useContestSubmit(

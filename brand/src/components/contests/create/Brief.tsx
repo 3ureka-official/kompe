@@ -6,12 +6,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { briefSchema } from "@/schema/createContestSchema";
 import { FormField } from "@/components/ui/FormField";
 import { Textarea } from "@/components/ui/Textarea";
-import { Input } from "@/components/ui/Input";
 
 export function Brief() {
   const { data, next, back, submit, isUpdating, updateData } =
     useContext(CreateContestContext);
-  const { control, handleSubmit, getValues, reset, watch } = useForm({
+  const { control, handleSubmit, getValues, reset } = useForm({
     resolver: yupResolver(briefSchema),
     mode: "onSubmit",
     defaultValues: {
@@ -23,8 +22,6 @@ export function Brief() {
       purchase_description: data.purchase_description || null,
     },
   });
-
-  const requiresPurchaseProof = watch("requires_purchase_proof");
 
   useEffect(() => {
     if (data) {

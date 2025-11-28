@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [getProfile, getBrand]);
 
   // ローディング状態は、認証状態のローディングまたはプロフィールのローディング
   const isAuthLoading = isUserLoading || isProfileLoading || isBrandLoading;
