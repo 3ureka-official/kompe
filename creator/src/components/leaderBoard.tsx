@@ -6,6 +6,7 @@ import {
   applications,
   creators,
   contest_transfers,
+  contest_prizes,
 } from "@prisma/client";
 import { formatDateTime } from "@/utils/format";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -13,7 +14,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 
 type LeaderBoardType = {
-  competition: contests;
+  competition: contests & { contest_prizes?: contest_prizes[] };
   applications:
     | (applications & { creators: creators } & {
         contest_transfers: contest_transfers | null;
@@ -29,9 +30,11 @@ export default async function LeaderBoard({
 
   return (
     <div>
-      <div className="text-sm text-muted-foreground mb-2 px-4">
-        前回の更新: {formatDateTime(competition.updated_engagement_at)}
-      </div>
+      {competition.updated_engagement_at && (
+        <div className="text-sm text-muted-foreground mb-2 px-4">
+          前回の更新: {formatDateTime(competition.updated_engagement_at)}
+        </div>
+      )}
       <Table>
         <TableBody className="border-y border-y-gray">
           {applications &&
@@ -73,7 +76,12 @@ export default async function LeaderBoard({
                   </TableCell>
                   <TableCell className="w-12">
                     <p className="text-base font-bold">
-                      {formatJpy(competition.prize_distribution[index])}
+                      {competition.contest_prizes &&
+                      competition.contest_prizes[index]
+                        ? formatJpy(
+                            Number(competition.contest_prizes[index].amount),
+                          )
+                        : "¥0"}
                     </p>
                   </TableCell>
                   <TableCell className="text-right w-5 pr-4">

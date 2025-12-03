@@ -79,7 +79,7 @@ async function ApplicationPageContent({
 
   const application = await prisma.applications.findFirst({
     where: { contest_id: id, creator_id: session.user?.creator_id },
-    include: { contests: { include: { brands: true } } },
+    include: { contests: { include: { brands: true, contest_prizes: true } } },
   });
 
   const appliedVideo = application?.tiktok_url
@@ -203,7 +203,7 @@ async function ApplicationPageContent({
                   <CircleDollarSignIcon className="size-4 stroke-2" />
                   <p>賞金プール</p>
                 </div>
-                <p className="text-lg font-semibold">{`¥${competition.prize_pool?.toLocaleString()}`}</p>
+                <p className="text-lg font-semibold">{`¥${application.contests.contest_prizes.reduce((sum, prize) => sum + Number(prize.amount), 0).toLocaleString() || 0}`}</p>
               </div>
             </div>
           </section>

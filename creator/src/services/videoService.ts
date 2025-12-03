@@ -40,6 +40,9 @@ const CONTEST_INCLUDE = {
   brands: true,
   contests_assets: true,
   contests_inspirations: true,
+  contest_prizes: {
+    orderBy: { rank: "asc" },
+  },
 } as const;
 
 export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
@@ -63,6 +66,16 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
           shares: true,
           tiktok_url: true,
           creators: true,
+        },
+      },
+      contest_prizes: {
+        orderBy: { rank: "asc" },
+        select: {
+          id: true,
+          rank: true,
+          amount: true,
+          brand_id: true,
+          brands: true,
         },
       },
     },

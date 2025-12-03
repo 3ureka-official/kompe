@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
-import { contests, applications } from "@prisma/client";
+import { contests, applications, contest_prizes } from "@prisma/client";
 import { formatJpy } from "@/utils/format";
 import { useCreateContestTransfer } from "@/hooks/useCreateContestTransfer";
 import { getErrorMessage } from "@/utils/errorMessages";
@@ -24,7 +24,7 @@ export default function GetPrizeDialog({
   application,
   ranking,
 }: {
-  competition: contests;
+  competition: contests & { contest_prizes?: contest_prizes[] };
   application: applications;
   ranking: number;
 }) {
@@ -72,7 +72,12 @@ export default function GetPrizeDialog({
         </AlertDialogHeader>
         <div className="space-y-2">
           <p>順位：{ranking + 1}位</p>
-          <p>賞金：{formatJpy(competition.prize_distribution[ranking])}</p>
+          <p>
+            賞金：
+            {competition.contest_prizes && competition.contest_prizes[ranking]
+              ? formatJpy(Number(competition.contest_prizes[ranking].amount))
+              : "¥0"}
+          </p>
         </div>
         <div className="space-y-1">
           <p>受け取った賞金はマイページの口座情報から確認できます。</p>

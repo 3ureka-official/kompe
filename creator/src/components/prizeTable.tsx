@@ -8,13 +8,19 @@ import {
   TableRow,
 } from "./ui/table";
 
-type PrizeTableType = {
-  prizeDistribution: number[];
+type ContestPrize = {
+  id: string;
+  contest_id: string;
+  rank: bigint;
+  amount: bigint;
+  created_at: string | Date;
 };
 
-export default async function PrizeTable({
-  prizeDistribution,
-}: PrizeTableType) {
+type PrizeTableType = {
+  contestPrizes: ContestPrize[];
+};
+
+export default async function PrizeTable({ contestPrizes }: PrizeTableType) {
   return (
     <Table>
       <TableHeader>
@@ -24,20 +30,17 @@ export default async function PrizeTable({
         </TableRow>
       </TableHeader>
       <TableBody className="border-b border-b-gray">
-        {prizeDistribution?.length &&
-          prizeDistribution.map(
-            (prize, index) =>
-              prize !== 0 && (
-                <TableRow key={index} className="h-12">
-                  <TableCell className="text-md font-medium px-4">
-                    {index + 1}位
-                  </TableCell>
-                  <TableCell className="text-right text-md font-bold px-4">
-                    {formatJpy(prize)}
-                  </TableCell>
-                </TableRow>
-              ),
-          )}
+        {contestPrizes?.length > 0 &&
+          contestPrizes.map((prize) => (
+            <TableRow key={prize.id} className="h-12">
+              <TableCell className="text-md font-medium px-4">
+                {prize.rank}位
+              </TableCell>
+              <TableCell className="text-right text-md font-bold px-4">
+                {formatJpy(Number(prize.amount))}
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

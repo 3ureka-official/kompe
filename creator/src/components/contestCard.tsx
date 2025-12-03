@@ -23,6 +23,7 @@ import {
   brands,
   applications,
   contest_transfers,
+  contest_prizes,
 } from "@prisma/client";
 import { formatDate } from "@/utils/format";
 
@@ -31,6 +32,7 @@ type ContestCardProps = {
   applications: applications[];
   my_application: applications | null;
   contest_transfer: contest_transfers | null;
+  contest_prizes: contest_prizes[];
   brands: brands;
 };
 
@@ -38,17 +40,17 @@ const getNotReceivedPrize = (
   applications: applications[],
   contest_transfer: contest_transfers | null,
   my_application: applications | null,
-  contest?: contests,
+  contest: contests,
+  contest_prizes: contest_prizes[],
 ) => {
   if (!my_application || !contest) {
     return false;
   }
 
-  return (
-    !contest_transfer?.stripe_transfer_id &&
-    applications.findIndex((app) => app.id === my_application.id) <
-      contest.prize_distribution.length
-  );
+  const ranking = applications.findIndex((app) => app.id === my_application.id);
+  const hasPrize = contest_prizes[ranking];
+
+  return !contest_transfer?.stripe_transfer_id && hasPrize !== undefined;
 };
 
 export default function ContestCard({
@@ -57,12 +59,14 @@ export default function ContestCard({
   my_application,
   contest_transfer,
   brands,
+  contest_prizes,
 }: ContestCardProps) {
   const isNotReceivedPrize = getNotReceivedPrize(
     applications,
     contest_transfer,
     my_application,
     contest,
+    contest_prizes,
   );
 
   const today = formatDate(new Date());
@@ -129,7 +133,8 @@ export default function ContestCard({
         </CardContent>
         <CardFooter className="flex flex-col items-start justify-between px-3 pb-2">
           <CardAction className="h-full flex items-center gap-2 font-bold text-xl text-primary py-2">
-            ¥{contest.prize_pool?.toLocaleString()}
+            ¥
+            {`${contest_prizes.reduce((sum, prize) => sum + Number(prize.amount), 0).toLocaleString() || 0}`}
           </CardAction>
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-1 text-muted-foreground font-bold">

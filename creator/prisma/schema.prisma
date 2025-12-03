@@ -19,6 +19,7 @@ model brands {
   tiktok_username       String?
   instagram_url         String?
   contest_payments      contest_payments[]
+  contest_prizes        contest_prizes[]
   contest_transfers     contest_transfers[]
   contests              contests[]
   contests_assets       contests_assets[]
@@ -29,33 +30,49 @@ model brands {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model contests {
-  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  brand_id              String                  @db.Uuid
-  title                 String?                 @db.VarChar
-  category              String?                 @db.VarChar
-  thumbnail_url         String?
-  contest_start_date    DateTime                @db.Date
-  contest_end_date      DateTime                @db.Date
-  description           String?
-  requirements          String?
-  prize_pool            BigInt?
-  prize_distribution    Int[]
-  videos                BigInt                  @default(0)
-  views                 BigInt                  @default(0)
-  likes                 BigInt                  @default(0)
-  comments              BigInt                  @default(0)
-  shares                BigInt                  @default(0)
-  is_draft              Boolean                 @default(true)
-  created_at            DateTime                @default(now()) @db.Timestamptz(6)
-  supply_of_samples     String?
-  updated_engagement_at DateTime                @default(now()) @db.Timestamptz(6)
-  applications          applications[]
-  contest_payments      contest_payments?
-  contest_refunds       contest_refunds[]
-  contest_transfers     contest_transfers[]
-  brands                brands                  @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  contests_assets       contests_assets[]
-  contests_inspirations contests_inspirations[]
+  id                          String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brand_id                    String                  @db.Uuid
+  title                       String?                 @db.VarChar
+  category                    String?                 @db.VarChar
+  thumbnail_url               String?
+  contest_start_date          DateTime                @db.Date
+  contest_end_date            DateTime                @db.Date
+  description                 String?
+  requirements                String?
+  videos                      BigInt                  @default(0)
+  views                       BigInt                  @default(0)
+  likes                       BigInt                  @default(0)
+  comments                    BigInt                  @default(0)
+  shares                      BigInt                  @default(0)
+  is_draft                    Boolean                 @default(true)
+  created_at                  DateTime                @default(now()) @db.Timestamptz(6)
+  supply_of_samples           String?
+  updated_engagement_at       DateTime?               @default(now()) @db.Timestamptz(6)
+  requires_purchase_proof     Boolean?
+  purchase_product_name       String?
+  purchase_product_url        String?
+  purchase_description        String?
+  entry_start_date            DateTime?               @db.Date
+  entry_end_date              DateTime?               @db.Date
+  video_production_start_date DateTime?               @db.Date
+  video_production_end_date   DateTime?               @db.Date
+  sample_product_name         String?
+  sample_rental_or_purchase   String?
+  sample_return_postal_code   String?
+  sample_return_prefecture    String?
+  sample_return_city          String?
+  sample_return_address_line  String?
+  has_sample                  Boolean                 @default(false)
+  sample_price_per_creator    BigInt?
+  applications                applications[]
+  contest_payments            contest_payments?
+  contest_prizes              contest_prizes[]
+  contest_refunds             contest_refunds[]
+  contest_transfers           contest_transfers[]
+  brands                      brands                  @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  contests_assets             contests_assets[]
+  contests_inspirations       contests_inspirations[]
+  sample_products             sample_products[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -84,9 +101,21 @@ model contests_inspirations {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model contest_prizes {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contest_id String   @db.Uuid
+  rank       BigInt
+  amount     BigInt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  brand_id   String   @db.Uuid
+  brands     brands   @relation(fields: [brand_id], references: [id], onDelete: Cascade)
+  contests   contests @relation(fields: [contest_id], references: [id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model users {
   created_at DateTime @default(now()) @db.Timestamptz(6)
-  email      String
+  email      String   @unique
   brand_id   String?  @db.Uuid
   id         String   @id @db.Uuid
   brands     brands?  @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -185,4 +214,19 @@ model stripe_connect_accounts {
   stripe_account_id String
   created_at        DateTime @default(now()) @db.Timestamptz(6)
   creators          creators @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model sample_products {
+  id                  BigInt   @id @default(autoincrement())
+  contest_id          String   @db.Uuid
+  product_name        String
+  rental_or_purchase  String
+  price_per_creator   Int      @db.SmallInt
+  return_postal_code  String?
+  return_prefecture   String?
+  return_city         String?
+  return_address_line String?
+  created_at          DateTime @default(now()) @db.Timestamptz(6)
+  contests            contests @relation(fields: [contest_id], references: [id], onDelete: Cascade)
 }
