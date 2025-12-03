@@ -137,7 +137,7 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
                   <CircleDollarSignIcon className="size-4 stroke-2" />
                   <p>賞金プール</p>
                 </div>
-                <p className="text-lg font-semibold">{`¥${competition.prize_pool?.toLocaleString()}`}</p>
+                <p className="text-lg font-semibold">{`¥${competition.contest_prizes?.reduce((sum, prize) => sum + Number(prize.amount), 0).toLocaleString() || 0}`}</p>
               </div>
             </div>
             <section className="py-6 border-t border-t-foreground/10">
@@ -171,7 +171,7 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
               <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
                 賞金
               </h2>
-              <PrizeTable prizeDistribution={competition.prize_distribution} />
+              <PrizeTable contestPrizes={competition.contest_prizes ?? []} />
             </section>
           </TabsContent>
           <TabsContent value="assets">
