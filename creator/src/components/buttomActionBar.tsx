@@ -10,11 +10,12 @@ import {
   contest_transfers,
   contests,
   creators,
+  contest_prizes,
 } from "@prisma/client";
 import { auth } from "@/auth";
 
 type ButtomActionBarType = {
-  competition: contests;
+  competition: contests & { contest_prizes?: contest_prizes[] };
   applications:
     | (applications & { creators: creators } & {
         contest_transfers: contest_transfers | null;
