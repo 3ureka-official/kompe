@@ -1,5 +1,6 @@
 import SignInButton from "@/components/signInButton";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Login() {
   const isDev = process.env.NEXT_PUBLIC_APP_ENV === "development";
@@ -22,11 +23,41 @@ export default function Login() {
             <p>近日、公開予定のページです。</p>
           </div>
         ) : (
-          <div className="flex items-center gap-4">
-            <SignInButton />
-          </div>
+          <LoginPageContent />
         )}
       </main>
     </div>
+  );
+}
+
+async function LoginPageContent() {
+  return (
+    <>
+      <p className="text-xl font-bold text-center">
+        Kompeにログインしてコンテストに応募しましょう
+      </p>
+      <div className="flex items-center gap-4">
+        <SignInButton />
+      </div>
+      <div className="flex flex-col items-center gap-4">
+        <p className="text-sm">
+          続行すると、利用規約とプライバシーポリシーに同意したことになります。
+        </p>
+        <Link
+          href="https://www.kompe.app/terms"
+          target="_blank"
+          className="text-sm text-muted-foreground"
+        >
+          利用規約
+        </Link>
+        <Link
+          href="https://www.kompe.app/privacy"
+          target="_blank"
+          className="text-sm text-muted-foreground"
+        >
+          プライバシーポリシー
+        </Link>
+      </div>
+    </>
   );
 }
