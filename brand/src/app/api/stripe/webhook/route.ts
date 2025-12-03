@@ -4,8 +4,8 @@ import { stripe } from "@/lib/stripe";
 import {
   upsertPendingFromSession,
   upsertSucceededFromPI,
-} from "@/services/contestPaymentService";
-import { updateContestPublic } from "@/services/contestService";
+} from "@/services/supabase/contestPaymentService";
+import { updateContestPublic } from "@/services/supabase/contestService";
 
 export const runtime = "nodejs";
 

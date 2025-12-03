@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "@/features/auth/contexts/AuthContext";
 
 const ROOT_PATHS = ["/"];
 

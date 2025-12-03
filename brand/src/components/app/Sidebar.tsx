@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
-import { logout } from "@/services/userService";
-import { Logo } from "@/components/ui/Logo";
+import { AuthContext } from "@/features/auth/contexts/AuthContext";
+import { logout } from "@/services/supabase/userService";
+import { Logo } from "@/components/ui-elements/Logo";
 import { usePathname, useRouter } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
 import { FaTrophy, FaStore } from "react-icons/fa";
