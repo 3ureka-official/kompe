@@ -1,7 +1,3 @@
-"use client";
+import { UpdateBrandPage } from "@/features/brand/update/pages/UpdateBrandPage";
 
-import { BrandForm } from "@/components/brand/BrandForm";
-
-export default function BrandUpdatePage() {
-  return <BrandForm />;
-}
+export default UpdateBrandPage;
