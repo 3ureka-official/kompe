@@ -4,6 +4,7 @@ import { Session } from "next-auth";
 import HeaderAvatar from "./headerAvatar";
 import SignInButton from "./signInButton";
 import { cn } from "@/lib/utils";
+import LoginLinkButton from "./LoginLinkButton";
 
 export const MainHeader = ({
   session,
@@ -34,7 +35,7 @@ export const MainHeader = ({
         (session ? (
           <HeaderAvatar session={session} />
         ) : (
-          <SignInButton variant="minimal" />
+          <LoginLinkButton variant="minimal" />
         ))}
     </nav>
   );
