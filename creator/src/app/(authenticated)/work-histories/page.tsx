@@ -45,6 +45,7 @@ async function WorkHistoriesPageContent({ session }: { session: Session }) {
               views: "desc",
             },
           },
+          contest_prizes: true,
         },
       },
       contest_transfers: true,
