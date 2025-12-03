@@ -6,6 +6,7 @@ import {
   contests,
   brands,
   contest_transfers,
+  contest_prizes,
 } from "@prisma/client";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import ContestCard from "./contestCard";
@@ -13,30 +14,44 @@ import ContestCard from "./contestCard";
 const getRankingApplications = (
   applications: (applications & {
     contest_transfers: contest_transfers | null;
-    contests: (contests & { applications: applications[] }) & {
+    contests: (contests & {
+      applications: applications[];
+      contest_prizes?: contest_prizes[];
+    }) & {
       brands: brands;
     };
   })[],
 ) => {
-  return applications.filter(
-    (application) =>
-      !application.contest_transfers &&
-      application.contests.applications.findIndex(
-        (app) => app.id === application.id,
-      ) < application.contests.prize_distribution.length,
-  );
+  return applications.filter((application) => {
+    if (application.contest_transfers) {
+      return false;
+    }
+    const ranking = application.contests.applications.findIndex(
+      (app) => app.id === application.id,
+    );
+    const hasPrize =
+      application.contests.contest_prizes &&
+      application.contests.contest_prizes[ranking];
+    return hasPrize !== undefined;
+  });
 };
 
 type CompetitionsListProps = {
   applications: (applications & {
     contest_transfers: contest_transfers | null;
-    contests: (contests & { applications: applications[] }) & {
+    contests: (contests & {
+      applications: applications[];
+      contest_prizes?: contest_prizes[];
+    }) & {
       brands: brands;
     };
   })[];
   rankingApplications?: (applications & {
     contest_transfers: contest_transfers | null;
-    contests: (contests & { applications: applications[] }) & {
+    contests: (contests & {
+      applications: applications[];
+      contest_prizes?: contest_prizes[];
+    }) & {
       brands: brands;
     };
   })[];
@@ -48,7 +63,10 @@ export default function AppliedContestTabs({
 }: {
   applications: (applications & {
     contest_transfers: contest_transfers | null;
-    contests: (contests & { applications: applications[] }) & {
+    contests: (contests & {
+      applications: applications[];
+      contest_prizes?: contest_prizes[];
+    }) & {
       brands: brands;
     };
   })[];
@@ -118,6 +136,7 @@ const CompetitionsList = ({
             my_application={application}
             contest_transfer={application.contest_transfers}
             brands={application.contests.brands}
+            contest_prizes={application.contests.contest_prizes ?? []}
             key={application.id}
           />
         ))
