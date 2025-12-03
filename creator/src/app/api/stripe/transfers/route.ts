@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
             views: "desc",
           },
         },
+        contest_prizes: true,
       },
     });
 
@@ -75,7 +76,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "rank_not_found" }, { status: 404 });
     }
 
-    const amount = contest.prize_distribution[rank];
+    const amount = contest.contest_prizes[rank].amount;
     if (!amount) {
       return NextResponse.json({ error: "amount_not_found" }, { status: 404 });
     }
