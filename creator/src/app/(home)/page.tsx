@@ -77,6 +77,7 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
           views: "asc",
         },
       },
+      contest_prizes: true,
     },
     orderBy: {
       contest_start_date: "desc",
@@ -112,6 +113,7 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
               brands={competition.brands}
               contest_transfer={my_contest_transfer}
               my_application={my_application}
+              contest_prizes={competition.contest_prizes ?? []}
             />
           );
         })
