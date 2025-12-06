@@ -1,167 +1,142 @@
-import { useContext, useEffect, useState, useMemo, useCallback } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  samplesSchema,
-  ContestCreateFormData,
-} from "@/features/contest/form/schemas/createContestSchema";
+import { v4 as uuidv4 } from "uuid";
+import { samplesSchema } from "@/features/contest/form/schemas/samplesSchema";
 import { CreateContestContext } from "@/features/contest/common/contexts/CreateContestContext";
-import { SampleProductFormData } from "@/types/SampleProduct";
-import * as yup from "yup";
-
-const defaultSample: SampleProductFormData = {
-  product_name: "",
-  rental_or_purchase: "RENTAL",
-  price_per_creator: 0,
-  return_postal_code: null,
-  return_prefecture: null,
-  return_city: null,
-  return_address_line: null,
-};
-
-// データからSampleProductFormDataを取得するヘルパー関数
-const getSampleFromData = (
-  data: Partial<ContestCreateFormData>,
-): SampleProductFormData | null => {
-  const hasSample = data.has_sample || false;
-  if (!hasSample) return null;
-
-  return {
-    product_name: data.sample_product_name || "",
-    rental_or_purchase:
-      (data.sample_rental_or_purchase as "RENTAL" | "PURCHASE") || "RENTAL",
-    price_per_creator: data.sample_price_per_creator || 0,
-    return_postal_code: data.sample_return_postal_code || null,
-    return_prefecture: data.sample_return_prefecture || null,
-    return_city: data.sample_return_city || null,
-    return_address_line: data.sample_return_address_line || null,
-  };
-};
-
-// SampleProductFormDataをフォームデータに変換するヘルパー関数
-const sampleToFormData = (
-  hasSample: boolean,
-  sample: SampleProductFormData | null,
-) => ({
-  has_sample: hasSample,
-  sample_product_name: sample?.product_name || null,
-  sample_rental_or_purchase: sample?.rental_or_purchase || null,
-  sample_price_per_creator: sample?.price_per_creator || null,
-  sample_return_postal_code: sample?.return_postal_code || null,
-  sample_return_prefecture: sample?.return_prefecture || null,
-  sample_return_city: sample?.return_city || null,
-  sample_return_address_line: sample?.return_address_line || null,
-});
+import { SamplesFormData } from "@/features/contest/form/schemas/samplesSchema";
+import { useUploadFile } from "@/features/storage/hooks/useUploadFile";
+import { useDeleteFiles } from "@/features/storage/hooks/useDeleteFiles";
 
 export function useSamples() {
-  const { data, back, submit, isUpdating, updateData, next } =
+  const { data, back, submit, isPending, updateData, next } =
     useContext(CreateContestContext);
 
-  const existingSample = getSampleFromData(
-    data as Partial<ContestCreateFormData>,
-  );
-  const existingHasSample =
-    (data as Partial<ContestCreateFormData>).has_sample || false;
-
-  const [hasSamples, setHasSamples] = useState<boolean>(existingHasSample);
-  const [sample, setSample] = useState<SampleProductFormData>(
-    existingSample || defaultSample,
-  );
-
-  // バリデーション用のコンテキストをメモ化
-  const validationContext = useMemo(() => ({ hasSamples }), [hasSamples]);
-
   const {
+    control,
     handleSubmit,
     reset,
     setValue,
     getValues,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(samplesSchema),
-    context: validationContext,
     mode: "onSubmit",
-    defaultValues: sampleToFormData(hasSamples, sample),
+    defaultValues: samplesSchema.cast(data),
   });
 
-  useEffect(() => {
-    const newSample = getSampleFromData(data as Partial<ContestCreateFormData>);
-    const newHasSample =
-      (data as Partial<ContestCreateFormData>).has_sample || false;
+  const formValues = watch();
+  const hasSamples = formValues.has_sample || false;
+  const sample = formValues;
+  const watchSampleImageUrl = watch("sample_image_url") || "";
 
-    setHasSamples(newHasSample);
-    setSample(newSample || defaultSample);
-    reset(sampleToFormData(newHasSample, newSample));
+  const { mutate: uploadSampleImage, isPending: isUploadingSampleImage } =
+    useUploadFile();
+  const { mutate: deleteSampleImage, isPending: isDeletingSampleImage } =
+    useDeleteFiles();
+
+  useEffect(() => {
+    if (data) {
+      const castedData = samplesSchema.cast(data);
+      if (castedData) {
+        reset({ ...castedData });
+      }
+    }
   }, [data, reset]);
 
-  // サンプルデータをフォームに反映するヘルパー関数
-  const syncSampleToForm = useCallback(
-    (sampleData: SampleProductFormData) => {
-      const formData = sampleToFormData(true, sampleData);
-      Object.entries(formData).forEach(([key, value]) => {
-        setValue(key as any, value, { shouldValidate: false });
-      });
-    },
-    [setValue],
-  );
-
-  // フォームをクリアするヘルパー関数
-  const clearSampleForm = useCallback(() => {
-    const formData = sampleToFormData(false, null);
-    Object.entries(formData).forEach(([key, value]) => {
-      setValue(key as any, value, { shouldValidate: false });
+  const handleSampleChange = (updates: Partial<SamplesFormData>) => {
+    if (!updates) return;
+    Object.entries(updates).forEach(([key, value]) => {
+      setValue(key as keyof SamplesFormData, value, { shouldValidate: false });
     });
-  }, [setValue]);
+  };
 
-  const handleSampleChange = useCallback(
-    (updates: Partial<SampleProductFormData>) => {
-      const updatedSample = { ...sample, ...updates };
-      setSample(updatedSample);
-      syncSampleToForm(updatedSample);
-    },
-    [sample, syncSampleToForm],
-  );
+  const handleToggleChange = (checked: boolean) => {
+    setValue("has_sample", checked, { shouldValidate: false });
+  };
 
-  const handleToggleChange = useCallback(
-    (checked: boolean) => {
-      setHasSamples(checked);
-      setValue("has_sample", checked, { shouldValidate: false });
+  const handleSampleImageSubmit = (file: File | null) => {
+    if (!file) return;
 
-      if (!checked) {
-        setSample(defaultSample);
-        clearSampleForm();
-      } else {
-        syncSampleToForm(sample);
-      }
-    },
-    [sample, setValue, syncSampleToForm, clearSampleForm],
-  );
+    const imageId = uuidv4();
+    const path = `${imageId}.png`;
 
-  const draft = useCallback(() => {
+    uploadSampleImage(
+      {
+        bucket: "contests",
+        path,
+        file,
+      },
+      {
+        onSuccess: (url) => {
+          setValue("sample_image_url", url);
+          // 画像アップロード後に下書き保存（遷移しない）
+          const values = { ...getValues(), sample_image_url: url };
+          updateData(values);
+          submit(true, values, false);
+        },
+      },
+    );
+  };
+
+  const handleDeleteSampleImage = () => {
+    const currentUrl = getValues("sample_image_url");
+    if (!currentUrl) return;
+
+    // URLからパスを抽出（contests/uuid.png形式）
+    const pathMatch = currentUrl.match(/contests\/([^/]+\.png)$/);
+    const path = pathMatch ? pathMatch[1] : "";
+
+    deleteSampleImage(
+      {
+        bucket: "contests",
+        paths: [path],
+      },
+      {
+        onSuccess: () => {
+          setValue("sample_image_url", "");
+          // 画像削除後に下書き保存（遷移しない）
+          const values = { ...getValues(), sample_image_url: "" };
+          updateData(values);
+          submit(true, values, false);
+        },
+      },
+    );
+  };
+
+  const handleBack = () => {
+    const values = getValues();
+    back(values);
+  };
+
+  const handleDraft = () => {
     const values = getValues();
     updateData(values);
     submit(true, values);
-  }, [getValues, updateData, submit]);
+  };
 
-  const handleNext = useCallback(
-    (formData: yup.InferType<typeof samplesSchema>) => {
-      updateData(formData);
-      next(formData);
-    },
-    [updateData, next],
-  );
+  const handleNext = handleSubmit((values: SamplesFormData | undefined) => {
+    if (!values) return;
+    updateData(values);
+    next(values);
+  });
 
   return {
+    control,
     handleSubmit,
     getValues,
     hasSamples,
     sample,
+    watchSampleImageUrl,
     errors,
-    isUpdating,
+    isPending: isPending || isUploadingSampleImage || isDeletingSampleImage,
     handleSampleChange,
     handleToggleChange,
-    draft,
+    handleSampleImageSubmit,
+    handleDeleteSampleImage,
+    handleDraft,
     handleNext,
-    back,
+    handleBack,
   };
 }

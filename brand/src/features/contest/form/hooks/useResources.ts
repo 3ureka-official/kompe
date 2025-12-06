@@ -1,26 +1,21 @@
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { resourcesSchema } from "@/features/contest/form/schemas/createContestSchema";
+import { resourcesSchema } from "@/features/contest/form/schemas/resourcesSchema";
 import { CreateContestContext } from "@/features/contest/common/contexts/CreateContestContext";
 import { v4 as uuidv4 } from "uuid";
-import * as yup from "yup";
-import {
-  assetFormSchema,
-  inspirationItemSchema,
-} from "@/features/contest/form/schemas/createContestSchema";
+import { AssetItemFormData } from "@/features/contest/form/schemas/assetItemSchema";
+import { InspirationItemFormData } from "@/features/contest/form/schemas/inspirationItemSchema";
+import { ResourcesFormData } from "../schemas/resourcesSchema";
 
 export function useResources() {
-  const { next, back, data, submit, isUpdating } =
+  const { next, back, data, submit, isPending, updateData } =
     useContext(CreateContestContext);
 
   const { handleSubmit, getValues, setValue, watch, reset } = useForm({
     resolver: yupResolver(resourcesSchema),
     mode: "onSubmit",
-    defaultValues: {
-      assets: data.assets ?? [],
-      inspirations: data.inspirations ?? [],
-    },
+    defaultValues: resourcesSchema.cast(data),
   });
 
   useEffect(() => {
@@ -32,7 +27,7 @@ export function useResources() {
   const watchedAssets = watch("assets");
   const watchedInspirations = watch("inspirations");
 
-  const addAsset = (asset: yup.InferType<typeof assetFormSchema>) => {
+  const addAsset = (asset: AssetItemFormData) => {
     const assets = getValues("assets") || [];
     assets.push({
       id: uuidv4(),
@@ -50,9 +45,7 @@ export function useResources() {
     setValue("assets", assets);
   };
 
-  const addInspiration = (
-    inspiration: yup.InferType<typeof inspirationItemSchema>,
-  ) => {
+  const addInspiration = (inspiration: InspirationItemFormData) => {
     const inspirationId = uuidv4();
     const inspirations = getValues("inspirations") || [];
     inspirations.push({
@@ -71,23 +64,33 @@ export function useResources() {
     setValue("inspirations", inspirations);
   };
 
-  const draft = () => {
+  const handleDraft = () => {
     const values = getValues();
+    updateData(values);
     submit(true, values);
   };
 
+  const handleBack = () => {
+    const values = getValues();
+    back(values);
+  };
+
+  const handleNext = handleSubmit((values: ResourcesFormData | undefined) => {
+    if (!values) return;
+    updateData(values);
+    next(values);
+  });
+
   return {
-    handleSubmit,
-    getValues,
     watchedAssets,
     watchedInspirations,
-    isUpdating,
+    isPending,
     addAsset,
     removeAsset,
     addInspiration,
     removeInspiration,
-    draft,
-    next,
-    back,
+    handleDraft,
+    handleNext,
+    handleBack,
   };
 }
