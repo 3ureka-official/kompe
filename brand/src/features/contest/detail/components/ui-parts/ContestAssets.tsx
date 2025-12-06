@@ -22,7 +22,7 @@ export function ContestAssets({ contest }: Props) {
   return (
     <div>
       <SectionContainer>
-        <SectionTitle>動画素材</SectionTitle>
+        <SectionTitle className="mb-2">動画素材</SectionTitle>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {assets?.length === 0 && (
             <EmptyState message="動画素材がありません" />
@@ -40,7 +40,7 @@ export function ContestAssets({ contest }: Props) {
       <Separator />
 
       <SectionContainer>
-        <SectionTitle>イメージ動画</SectionTitle>
+        <SectionTitle className="mb-2">イメージ動画</SectionTitle>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {inspirations?.length === 0 && (
             <EmptyState message="イメージ動画がありません" />
