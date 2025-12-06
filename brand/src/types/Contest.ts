@@ -2,7 +2,7 @@ import { Application } from "./Application";
 import { ContestPayment } from "./ContestPayment";
 import { Creator } from "./Creator";
 import { Brand } from "./Brand";
-import { SampleProduct } from "./SampleProduct";
+import { SAMPLE_OPTIONS } from "@/features/contest/common/constants/contest.constant";
 
 /**
  * コンテスト関連の型定義
@@ -12,7 +12,7 @@ export type Contest = {
   brand_id: string;
   is_draft: boolean;
   title: string;
-  thumbnail_url: string;
+  thumbnail_urls?: string[];
   contest_start_date: string | Date;
   contest_end_date: string | Date;
 
@@ -31,15 +31,10 @@ export type Contest = {
 
   supply_of_samples?: string;
 
-  requires_purchase_proof?: boolean;
-  purchase_product_name?: string | null;
-  purchase_product_url?: string | null;
-  purchase_description?: string | null;
-
   has_sample?: boolean;
   sample_product_name?: string | null;
-  sample_rental_or_purchase?: "RENTAL" | "PURCHASE" | null;
-  sample_price_per_creator?: number | null;
+  sample_image_url?: string | null;
+  sample_provide_type: (typeof SAMPLE_OPTIONS)[number]["value"];
   sample_return_postal_code?: string | null;
   sample_return_prefecture?: string | null;
   sample_return_city?: string | null;
@@ -77,11 +72,19 @@ export interface ContestPrize {
   created_at: string | Date;
 }
 
+export interface ContestImage {
+  id: string;
+  contest_id: string;
+  brand_id: string;
+  url: string;
+  display_order: number;
+  created_at: string | Date;
+}
+
 export type ContestWithApplications = Contest & {
   applications: (Application & { creators: Creator })[];
   brands: Brand;
   contests_assets: Array<AssetItem>;
   contests_inspirations: Array<InspirationItem>;
   contest_prizes?: Array<ContestPrize>;
-  sample_products?: Array<SampleProduct>;
 };
