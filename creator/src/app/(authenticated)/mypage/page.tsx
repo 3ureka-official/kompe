@@ -19,6 +19,8 @@ import { SessionProvider } from "next-auth/react";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
 import { Session } from "next-auth";
+import { getAddress } from "@/actions/address";
+import AddressDialog from "@/components/addressDialog";
 
 export default async function MyPage() {
   const session = await auth();
@@ -77,6 +79,8 @@ async function MyPageContent({ session }: { session: Session }) {
       creator_id: creatorId,
     },
   });
+
+  const address = await getAddress();
 
   return (
     <div className="w-full flex flex-col gap-4 p-4 bg-gray-50 min-h-full">
@@ -145,6 +149,57 @@ async function MyPageContent({ session }: { session: Session }) {
         </CardHeader>
         <CardContent className="flex flex-row items-center gap-4">
           {account ? <CheckStripeHistoryButton /> : <ConnectStripeButton />}
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm font-bold">住所情報</CardTitle>
+          <CardDescription>
+            {address
+              ? "試供品送付用の住所が登録されています"
+              : "試供品送付用の住所が登録されていません"}
+          </CardDescription>
+          {address && (
+            <CardAction>
+              <Badge variant="secondary">
+                登録済み
+                <BadgeCheckIcon />
+              </Badge>
+            </CardAction>
+          )}
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {address ? (
+            <div className="space-y-2">
+              <div>
+                <p className="text-sm text-muted-foreground">郵便番号</p>
+                <p className="text-base font-medium">{address.postal_code}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">都道府県</p>
+                <p className="text-base font-medium">{address.prefecture}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">市区町村</p>
+                <p className="text-base font-medium">{address.city}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">番地・建物名</p>
+                <p className="text-base font-medium">{address.address_line}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              試供品ありのコンテストに応募する際に必要です。
+            </p>
+          )}
+          <div>
+            <AddressDialog
+              initialData={address}
+              triggerLabel={address ? "住所を変更する" : "住所を登録する"}
+              title={address ? "住所を変更" : "住所を登録"}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>
