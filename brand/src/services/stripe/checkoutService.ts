@@ -2,7 +2,7 @@ import { supabase } from "@/lib/supabase";
 
 export async function createCheckoutSession(
   contestId: string,
-  amountJpy: number,
+  originPath: string,
 ) {
   const {
     data: { session },
@@ -13,17 +13,14 @@ export async function createCheckoutSession(
   const token = session.access_token;
   if (!token) throw new Error("No access token");
 
-  const res = await fetch(
-    `/api/contests/${contestId}/deposit/checkout-session`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ amountJpy: amountJpy }),
+  const res = await fetch(`/api/contests/${contestId}/checkout/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
-  );
+    body: JSON.stringify({ originPath: originPath }),
+  });
 
   if (!res.ok) throw new Error("Failed to create checkout session");
   return res.json() as Promise<{ url: string }>;
