@@ -1,11 +1,14 @@
 import { supabase } from "@/lib/supabase";
+import { fetchCreatorInfo } from "@/services/tiktok/creatorService";
 import { fetchCreatorVideoMetrics } from "@/services/tiktok/videoService";
 import { Application } from "@/types/Application";
 import { ContestWithApplications } from "@/types/Contest";
 import { Creator } from "@/types/Creator";
+import { getValidTikTokAccessToken } from "./creatorService";
+import { TikTokUserInfo } from "@/types/TikTok";
 
 const CONCURRENCY = 5;
-const FIFTEEN_MIN_MS = 15 * 60 * 1000;
+const FIFTEEN_MIN_MS = 1 * 60 * 1000;
 
 export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
   competition: ContestWithApplications;
@@ -24,14 +27,27 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
         creators (
           *
         )
-      )
+      ),
+      contest_images (*),
+      contest_prizes (*)
     `,
     )
     .eq("id", contestId)
+    .order("rank", { ascending: true, referencedTable: "contest_prizes" })
+    .order("display_order", {
+      ascending: true,
+      referencedTable: "contest_images",
+    })
     .single();
 
   if (competitionError || !competition) {
     throw new Error("contest_not_found");
+  }
+
+  // 応募者が0人の場合はそのまま返す
+  if (competition.applications.length === 0) {
+    const result = await fetchContestWithApps(contestId);
+    return { competition: result };
   }
 
   // スロットル（前回から15分未満ならそのまま返す）
@@ -47,12 +63,13 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
   // --- TikTok メトリクス取得（並列制御） ---
   type AppResult = {
     applicationId: string;
-    metrics: {
+    videoMetrics: {
       viewCount: number;
       likeCount: number;
       commentCount: number;
       shareCount: number;
     } | null;
+    userInfo: TikTokUserInfo | null;
   };
   const results: AppResult[] = [];
 
@@ -60,11 +77,15 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
     const chunk = competition.applications.slice(i, i + CONCURRENCY);
     const settled = await Promise.allSettled(
       chunk.map(async (application: Application & { creators: Creator }) => {
-        const m = await fetchCreatorVideoMetrics(
+        const accessToken = await getValidTikTokAccessToken(
           application.creators,
+        );
+        const m = await fetchCreatorVideoMetrics(
+          accessToken,
           application.tiktok_url!,
         );
-        return { applicationId: application.id, ...m };
+        const u = await fetchCreatorInfo(accessToken, application.tiktok_url!);
+        return { applicationId: application.id, ...m, ...u };
       }),
     );
 
@@ -73,22 +94,31 @@ export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{
       if (s.status === "fulfilled") {
         results.push({
           applicationId: app.id,
-          metrics: {
+          videoMetrics: {
             viewCount: numSafe(s.value.views),
             likeCount: numSafe(s.value.likes),
             commentCount: numSafe(s.value.comments),
             shareCount: numSafe(s.value.shares),
           },
+          userInfo: {
+            avatar_url: s.value.avatar_url,
+            username: s.value.username,
+            display_name: s.value.display_name,
+          },
         });
       } else {
         // 取得失敗は今回スキップ（DB更新しない）
-        results.push({ applicationId: app.id, metrics: null });
+        results.push({
+          applicationId: app.id,
+          videoMetrics: null,
+          userInfo: null,
+        });
       }
     });
   }
 
   // --- 差分抽出（undefined/NaN/負数は0に丸める） ---
-  const byId = new Map(results.map((r) => [r.applicationId, r.metrics]));
+  const byId = new Map(results.map((r) => [r.applicationId, r.videoMetrics]));
   const diffs: Array<{
     id: string;
     viewCount: number;
@@ -145,18 +175,24 @@ async function fetchContestWithApps(
       brands (*),
       contests_assets (*),
       contests_inspirations (*),
-      sample_products (*)
+      contest_prizes (*),
+      contest_images (*)
     `,
     )
     .eq("id", contestId)
     .order("views", { ascending: false, referencedTable: "applications" })
+    .order("rank", { ascending: true, referencedTable: "contest_prizes" })
+    .order("display_order", {
+      ascending: true,
+      referencedTable: "contest_images",
+    })
     .single();
 
   if (error || !contest) {
     throw new Error("contest_not_found_after_update");
   }
 
-  return contest as ContestWithApplications;
+  return contest;
 }
 
 // パフォーマンスを重視する場合の代替実装
