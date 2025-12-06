@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { ContestPayment } from "@/types/ContestPayment";
+
+const POLLING_INTERVAL_MS = 3000; // 3秒ごとにポーリング
 
 interface UsePaymentPollingProps {
   visible: boolean;
@@ -8,78 +10,75 @@ interface UsePaymentPollingProps {
   onFailed: () => void;
 }
 
-const INTERVAL_MS = 2000;
-const TIMEOUT_MS = 2 * 60 * 1000;
-
 export function usePaymentPolling({
   visible,
   refetchContestPayment,
   onSuccess,
   onFailed,
 }: UsePaymentPollingProps) {
-  const startedAtRef = useRef<number | null>(null);
-  const [elapsed, setElapsed] = useState(0);
-  const [timedOut, setTimedOut] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const tick = useCallback(async () => {
+    try {
+      const res = await refetchContestPayment();
+      const data = res?.data;
+      const status = data?.status;
+
+      if (status === "succeeded") {
+        onSuccess();
+        return true; // 完了
+      }
+      if (status === "failed") {
+        setErrorMsg(
+          "決済に失敗しました。カード会社の認証や残高をご確認ください。",
+        );
+        onFailed();
+        return true; // 完了
+      }
+
+      // 進行中（pending/processing/未作成）
+      return false; // 継続
+    } catch {
+      // フェッチエラー時も次回で回復する可能性があるので継続
+      return false;
+    }
+  }, [refetchContestPayment, onSuccess, onFailed]);
 
   useEffect(() => {
-    if (!visible) return;
-    let mounted = true;
-    let timer: NodeJS.Timeout | undefined;
-
-    const tick = async () => {
-      try {
-        const res = await refetchContestPayment();
-        const data = res?.data;
-        const status = data?.status;
-
-        if (!mounted) return;
-
-        if (status === "succeeded") {
-          onSuccess();
-          return;
-        }
-        if (status === "failed") {
-          setErrorMsg(
-            "決済に失敗しました。カード会社の認証や残高をご確認ください。",
-          );
-          onFailed();
-          return;
-        }
-
-        // 進行中（pending/processing/未作成）
-        const now = Date.now();
-        if (startedAtRef.current == null) startedAtRef.current = now;
-        const elapsedTime = now - startedAtRef.current;
-        setElapsed(elapsedTime);
-        if (elapsedTime > TIMEOUT_MS) {
-          setTimedOut(true);
-        }
-      } catch {
-        // フェッチエラー時も次回で回復する可能性があるので継続
-      } finally {
-        if (mounted) {
-          timer = setTimeout(tick, INTERVAL_MS);
-        }
+    if (!visible) {
+      // 非表示になったらインターバルをクリア
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
-    };
+      return;
+    }
 
     // 初回即時実行
-    tick();
+    tick().then((done) => {
+      if (done) return;
 
+      // まだ完了していない場合はポーリング開始
+      intervalRef.current = setInterval(async () => {
+        const isDone = await tick();
+        if (isDone && intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      }, POLLING_INTERVAL_MS);
+    });
+
+    // クリーンアップ
     return () => {
-      mounted = false;
-      if (timer) clearTimeout(timer);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
-  }, [visible, refetchContestPayment, onSuccess, onFailed]);
-
-  const minutes = Math.floor(elapsed / 60000);
-  const seconds = Math.floor((elapsed % 60000) / 1000);
+  }, [visible, tick]);
 
   return {
-    minutes,
-    seconds,
-    timedOut,
     errorMsg,
   };
 }
