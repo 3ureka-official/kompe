@@ -1,13 +1,4 @@
-import { Creator } from "@/types/Creator";
-import { getValidTikTokAccessToken } from "../supabase/creatorService";
-
-type VideoMetrics = {
-  id: string;
-  views?: number;
-  likes?: number;
-  comments?: number;
-  shares?: number;
-};
+import { TikTokVideoMetrics } from "@/types/TikTok";
 
 const FIELDS = [
   "id",
@@ -19,10 +10,9 @@ const FIELDS = [
 
 /** TikTok メトリクス取得 */
 export async function fetchCreatorVideoMetrics(
-  creator: Creator,
+  accessToken: string,
   videoId: string,
-): Promise<VideoMetrics> {
-  const accessToken = await getValidTikTokAccessToken(creator);
+): Promise<TikTokVideoMetrics> {
   if (!videoId) throw new Error("invalid_tiktok_url");
 
   const res: Response = await fetch(
