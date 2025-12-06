@@ -2,25 +2,27 @@
 
 import { FormField } from "@/components/ui-elements/form/FormField";
 import { Input } from "@/components/ui-elements/form/Input";
-import { Control, Controller } from "react-hook-form";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
-interface TextFieldProps {
-  control: Control<any>;
-  name: string;
+interface TextFieldProps<T extends FieldValues = FieldValues> {
+  control: Control<T>;
+  name: Path<T>;
   label: string;
-  placeholder: string;
+  placeholder?: string;
   required: boolean;
   description?: string;
+  type?: "text" | "email" | "password" | "tel" | "url";
 }
 
-export function TextField({
+export function TextField<T extends FieldValues = FieldValues>({
   control,
   name,
   label,
   placeholder,
   required = false,
   description = "",
-}: TextFieldProps) {
+  type = "text",
+}: TextFieldProps<T>) {
   return (
     <Controller
       control={control}
@@ -35,6 +37,7 @@ export function TextField({
             description={description}
           >
             <Input
+              type={type}
               value={value}
               onChange={field.onChange}
               placeholder={placeholder}

@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 
-type Props = {
+type NumberInputProps = {
   placeholder?: string;
   value: number;
   onChange: (value: string) => void;
@@ -12,7 +12,7 @@ type Props = {
   min?: number;
 };
 
-export const NumberInput = forwardRef<HTMLInputElement, Props>(
+export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
   (
     {
       placeholder,

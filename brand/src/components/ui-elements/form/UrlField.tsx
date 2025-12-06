@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { Controller, Control } from "react-hook-form";
+import { Controller, Control, Path, FieldValues } from "react-hook-form";
 import { FormField } from "@/components/ui-elements/form/FormField";
 import { Input } from "@/components/ui-elements/form/Input";
 
-interface UrlFieldProps {
-  control: Control<any>;
-  name: string;
+interface UrlFieldProps<T extends FieldValues = FieldValues> {
+  control: Control<T>;
+  name: Path<T>;
   label?: string;
   placeholder?: string;
   required?: boolean;
@@ -15,7 +15,7 @@ interface UrlFieldProps {
   descriptionClassName?: string;
 }
 
-export function UrlField({
+export function UrlField<T extends FieldValues = FieldValues>({
   control,
   name,
   label,
@@ -23,7 +23,7 @@ export function UrlField({
   required = false,
   description,
   descriptionClassName,
-}: UrlFieldProps) {
+}: UrlFieldProps<T>) {
   return (
     <Controller
       control={control}

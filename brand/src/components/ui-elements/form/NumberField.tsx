@@ -1,18 +1,17 @@
 "use client";
 
 import React from "react";
-import { Controller, Control, FieldPath, FieldValues } from "react-hook-form";
+import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import { FormField } from "@/components/ui-elements/form/FormField";
 import { NumberInput } from "@/components/ui-elements/form/NumberInput";
 
 interface NumberFieldProps<T extends FieldValues = FieldValues> {
-  control: Control<T, any>;
-  name: FieldPath<T>;
+  control: Control<T>;
+  name: Path<T>;
   label?: string;
   placeholder?: string;
   required?: boolean;
   min?: number;
-  max?: number;
   step?: number;
   description?: string;
   descriptionClassName?: string;
@@ -25,7 +24,6 @@ export function FormNumberField<T extends FieldValues = FieldValues>({
   placeholder,
   required = false,
   min,
-  max,
   step = 1,
   description,
   descriptionClassName,
