@@ -15,6 +15,12 @@ export function useContestHeader({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { mutate: deleteContest, isPending } = useDeleteContest();
 
+  const handleBack = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    router.push("/contests");
+  };
+
   const handleDeleteContest = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -48,6 +54,7 @@ export function useContestHeader({
   return {
     showDeleteDialog,
     isDeleting: isPending,
+    handleBack,
     handleDeleteContest,
     handleEditContest,
     openDeleteDialog,
