@@ -5,20 +5,18 @@ import { usePaymentPolling } from "@/features/contest/detail/hooks/usePaymentPol
 
 export function PaymentPollingOverlay({
   visible,
-  sessionId,
   refetchContestPayment,
   onClose,
   onSuccess,
   onFailed,
 }: {
   visible: boolean;
-  sessionId: string | null;
   refetchContestPayment: () => Promise<{ data: ContestPayment | null }>;
   onClose: () => void;
   onSuccess: () => void;
   onFailed: () => void;
 }) {
-  const { minutes, seconds, timedOut, errorMsg } = usePaymentPolling({
+  const { errorMsg } = usePaymentPolling({
     visible,
     refetchContestPayment,
     onSuccess,
@@ -37,33 +35,17 @@ export function PaymentPollingOverlay({
             <AlertCircleIcon className="h-6 w-6 text-red-500" />
           )}
           <h2 className="text-lg font-semibold">
-            コンテスト賞金の支払いを確定中
+            コンテスト賞金の支払いを処理中
           </h2>
         </div>
 
         <div className="mt-3 text-sm text-gray-600">
           {!errorMsg ? (
-            <>
-              <p>
-                Stripeからの確定通知を反映しています。ページはこのままでOKです。
-              </p>
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>
-                  セッションID:{" "}
-                  <code className="bg-gray-100 px-1 py-0.5 rounded">
-                    {sessionId ?? "取得中..."}
-                  </code>
-                </li>
-                <li>
-                  経過時間: {minutes}:{seconds.toString().padStart(2, "0")}
-                </li>
-              </ul>
-              {timedOut && (
-                <div className="mt-3 text-amber-600">
-                  反映に時間がかかっています。もう少しお待ちいただくか、再読み込みをお試しください。
-                </div>
-              )}
-            </>
+            <p>
+              支払い処理を行っています。
+              <br />
+              処理が完了次第、コンテストが公開されます。
+            </p>
           ) : (
             <p className="text-red-600">{errorMsg}</p>
           )}
