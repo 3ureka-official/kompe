@@ -1,21 +1,18 @@
-import { LoadingButton } from "@/components/ui-elements/LoadingButton";
 import { useBasicInfo } from "@/features/contest/form/hooks/useBasicInfo";
 import { DateRangeField } from "@/components/ui-elements/form/DateRangeField";
 import { TextField } from "@/components/ui-elements/form/TextField";
-import { FileUploadField } from "@/features/contest/form/components/ui-elements/FileUploadField";
 import { ActionButtons } from "./ActionButtons";
+import { MultiImageUploadField } from "../ui-elements/MultiImageUploadField";
 
 export function BasicInfo() {
   const {
     control,
-    handleSubmit,
     watchThumbnail,
-    uploadingThumbnail,
-    isUpdating,
+    isLoading,
     handleThumbnailSubmit,
     handleDeleteThumbnail,
-    draft,
-    next,
+    handleDraft,
+    handleNext,
   } = useBasicInfo();
 
   return (
@@ -29,14 +26,15 @@ export function BasicInfo() {
           placeholder="例：コーディネートコンテスト"
         />
 
-        <FileUploadField
+        <MultiImageUploadField
           control={control}
-          name="thumbnail_url"
+          name="thumbnail_urls"
           label="サムネイル画像"
           handleSubmit={handleThumbnailSubmit}
           handleDelete={handleDeleteThumbnail}
-          selectedFileUrl={watchThumbnail}
-          hasSelected={watchThumbnail !== ""}
+          disabled={isLoading}
+          images={watchThumbnail}
+          maxImages={5}
         />
       </div>
 
@@ -76,9 +74,9 @@ export function BasicInfo() {
       </div>
 
       <ActionButtons
-        isLoading={isUpdating}
-        handleDraft={draft}
-        handleNext={handleSubmit((data) => next(data))}
+        isLoading={isLoading}
+        handleDraft={handleDraft}
+        handleNext={handleNext}
         needBackButton={false}
         needSubmitButton={false}
       />

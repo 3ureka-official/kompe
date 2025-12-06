@@ -52,3 +52,12 @@ export async function upsertSucceededFromPI(
     .upsert(payload, { onConflict: "stripe_payment_intent_id" });
   if (error) throw error;
 }
+
+export async function upsertFailedFromPI(
+  payload: Omit<ContestPayment, "id" | "created_at">,
+) {
+  const { error } = await supabaseAdmin()
+    .from("contest_payments")
+    .upsert(payload, { onConflict: "stripe_payment_intent_id" });
+  if (error) throw error;
+}

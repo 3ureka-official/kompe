@@ -20,11 +20,16 @@ export const CONTEST_CATEGORIES = [
   { id: "other", label: "その他" },
 ];
 
+export const SAMPLE_OPTIONS = [
+  { value: "RENTAL" as const, label: "レンタル" },
+  { value: "PROVIDE" as const, label: "提供" },
+];
+
 import type { ContestCreateFormData } from "@/features/contest/form/schemas/createContestSchema";
 
 export const ContestFormDefaultValues: ContestCreateFormData = {
   title: "",
-  thumbnail_url: "",
+  thumbnail_urls: [],
   entry_start_date: new Date(),
   entry_end_date: new Date(new Date().setDate(new Date().getDate() + 7)),
   video_production_start_date: new Date(
@@ -39,18 +44,16 @@ export const ContestFormDefaultValues: ContestCreateFormData = {
   requirements: "",
   prize_pool: 50000,
   prize_distribution: [50000],
-  requires_purchase_proof: false,
-  purchase_product_name: null,
-  purchase_product_url: null,
-  purchase_description: null,
   has_sample: false,
-  sample_product_name: null,
-  sample_rental_or_purchase: null,
-  sample_price_per_creator: null,
-  sample_return_postal_code: null,
-  sample_return_prefecture: null,
-  sample_return_city: null,
-  sample_return_address_line: null,
+  sample_product_name: "",
+  sample_image_url: "",
+  sample_provide_type: SAMPLE_OPTIONS[0].value,
+  sample_return_postal_code: "",
+  sample_return_prefecture: "",
+  sample_return_city: "",
+  sample_return_address_line: "",
+  assets: [],
+  inspirations: [],
 };
 
 export const CONTEST_STATUS_LABELS = {

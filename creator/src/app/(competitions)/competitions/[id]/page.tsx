@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -21,6 +20,13 @@ import PrizeTable from "@/components/prizeTable";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
 import { formatDate } from "@/utils/format";
+import { ImageCarousel } from "@/components/ImageCarousel";
+import { ContestPeriodStepper } from "@/components/ContestPeriodStepper";
+import { getContestDetailStatusType } from "@/utils/getContestStatus";
+import { auth } from "@/auth";
+import prisma from "@/lib/prisma";
+import { SampleShippingStepper } from "@/components/SampleShippingStepper";
+import SampleReceivedButton from "@/components/sampleReceivedButton";
 
 export default async function CompetitionPage({
   params,
@@ -39,6 +45,7 @@ export default async function CompetitionPage({
 
 async function CompetitionPageContent({ contestId }: { contestId: string }) {
   const { competition } = await getTikTokMetricsAndUpdate(contestId);
+  const session = await auth();
 
   if (!competition) {
     return (
@@ -62,22 +69,44 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
     competition.contest_start_date > boundary &&
     competition.contest_end_date > boundary;
 
+  const detailStatus = getContestDetailStatusType(competition);
+
+  // 現在のユーザーの応募情報と発送通知を取得
+  let myApplication = null;
+  let shippingNotification = null;
+  if (session?.user?.creator_id) {
+    myApplication = competition.applications.find(
+      (app) => app.creator_id === session.user.creator_id,
+    );
+
+    if (myApplication) {
+      shippingNotification =
+        await prisma.shipping_sample_notifications.findFirst({
+          where: {
+            application_id: myApplication.id,
+          },
+        });
+    }
+  }
+
   return (
     <div className="relative flex flex-col min-h-full max-h-full">
       <div className="grow min-h-0 overflow-auto gap-4 pb-30">
-        <section className="flex flex-col gap-4 p-4">
-          <Image
-            src={competition.thumbnail_url || "" /* todo: add fallback image */}
+        <section className="flex flex-col gap-4">
+          <ImageCarousel
+            images={competition.contest_images || []}
             alt={competition.title || "タイトル未設定のコンテスト"}
-            width={500}
-            height={300}
-            className="rounded-lg"
           />
-          <IsAppliedChip
-            title={competition.title || "タイトルなしのコンテスト"}
-            applications={competition.applications || []}
-          />
-          <div className="flex items-center gap-2">
+
+          <div className="px-4">
+            <IsAppliedChip
+              title={competition.title || "タイトルなしのコンテスト"}
+              applications={competition.applications || []}
+            />
+            <p className="text-2xl font-semibold">{`¥${competition.contest_prizes?.reduce((sum, prize) => sum + Number(prize.amount), 0).toLocaleString() || 0}`}</p>
+          </div>
+
+          <div className="flex items-center gap-2 px-4">
             <Avatar>
               <AvatarImage
                 src={
@@ -90,71 +119,45 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
             </Avatar>
             <p className="font-bold">{competition.brands.name}</p>
           </div>
+
+          {/* ステッパー */}
+          <div className="pt-4 px-4 rounded-lg border-t border-t-foreground/10">
+            <ContestPeriodStepper contest={competition} />
+          </div>
         </section>
+
+        {/* 試供品についての誘導メッセージ */}
+        {competition.has_sample && myApplication && (
+          <div className="px-4 py-3 bg-blue-50 border-l-4 border-blue-500">
+            <p className="text-sm text-blue-900">
+              試供品の配送情報は「試供品」タブから確認できます。
+            </p>
+          </div>
+        )}
 
         <Tabs defaultValue="summary">
           <TabsList className="w-full bg-[#f9fafb] sticky top-0 z-10">
             <TabsTrigger value="summary">概要</TabsTrigger>
+            {competition.has_sample && (
+              <TabsTrigger value="sample">
+                <span className="relative">
+                  試供品
+                  {shippingNotification?.status === "shipped" && (
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                  )}
+                </span>
+              </TabsTrigger>
+            )}
             <TabsTrigger value="assets">資料など</TabsTrigger>
             <TabsTrigger value="leaderboard">ランキング</TabsTrigger>
           </TabsList>
-          <TabsContent value="summary" className="grid gap-8 py-8">
-            <div className="w-full flex items-center gap-2 flex-wrap justify-around">
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-1">
-                  <CalendarClockIcon className="size-4 stroke-2" />
-                  <p>
-                    {isEnded
-                      ? "終了しました"
-                      : isScheduled
-                        ? "開催まで"
-                        : "終了まで"}
-                  </p>
-                </div>
-                <p className="text-lg font-semibold">
-                  {isEnded
-                    ? "終了しました"
-                    : isScheduled
-                      ? formatDistanceToNow(
-                          new Date(competition.contest_start_date),
-                          { addSuffix: true, locale: ja },
-                        )
-                      : formatDistanceToNow(
-                          new Date(competition.contest_end_date),
-                          { addSuffix: true, locale: ja },
-                        )}
-                </p>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-1">
-                  <VideoIcon className="size-4 stroke-2" />
-                  <p>応募件数</p>
-                </div>
-                <p className="text-lg font-semibold">{applicationLength}</p>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex items-center gap-1">
-                  <CircleDollarSignIcon className="size-4 stroke-2" />
-                  <p>賞金プール</p>
-                </div>
-                <p className="text-lg font-semibold">{`¥${competition.contest_prizes?.reduce((sum, prize) => sum + Number(prize.amount), 0).toLocaleString() || 0}`}</p>
-              </div>
-            </div>
-            <section className="py-6 border-t border-t-foreground/10">
+          <TabsContent value="summary" className="grid gap-8 pb-8">
+            <section className="pt-2">
               <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
                 コンテストの概要
               </h2>
               <p className="text-md px-4 font-medium leading-[1.7] whitespace-pre-line break-words">
                 {competition.description}
-              </p>
-            </section>
-
-            <section className="py-6 border-t border-t-foreground/10">
-              <h2 className="text-sm font-bold text-muted-foreground px-4 mb-2">
-                試供品について
-              </h2>
-              <p className="text-md px-4 font-medium leading-[1.7] whitespace-pre-line break-words">
-                {competition.supply_of_samples}
               </p>
             </section>
 
@@ -174,6 +177,100 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
               <PrizeTable contestPrizes={competition.contest_prizes ?? []} />
             </section>
           </TabsContent>
+          {competition.has_sample && (
+            <TabsContent value="sample" className="grid gap-8 pb-8">
+              {/* 試供品ステッパー */}
+              {myApplication && (
+                <section className="px-4 pt-2">
+                  <h2 className="text-sm font-bold text-muted-foreground mb-2">
+                    配送状況
+                  </h2>
+                  <SampleShippingStepper
+                    status={
+                      shippingNotification?.status as
+                        | "pending"
+                        | "shipped"
+                        | "delivered"
+                        | null
+                    }
+                  />
+                  {shippingNotification?.status === "shipped" && (
+                    <div className="mt-6">
+                      <Card className="py-2">
+                        <CardContent className="p-4 space-y-2">
+                          <div>
+                            <p className="text-sm text-muted-foreground">
+                              運送会社
+                            </p>
+                            <p className="text-base font-medium">
+                              {shippingNotification.carrier}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">
+                              追跡番号
+                            </p>
+                            <p className="text-base font-medium">
+                              {shippingNotification.tracking_number}
+                            </p>
+                          </div>
+                          {shippingNotification.message && (
+                            <div>
+                              <p className="text-sm text-muted-foreground">
+                                メッセージ
+                              </p>
+                              <p className="text-base font-medium">
+                                {shippingNotification.message}
+                              </p>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
+                  {shippingNotification?.status === "shipped" && (
+                    <div className="mt-4 px-4">
+                      <SampleReceivedButton
+                        applicationId={myApplication.id}
+                        contestId={contestId}
+                      />
+                    </div>
+                  )}
+                </section>
+              )}
+              <section>
+                {competition.sample_product_name && (
+                  <div className="px-4 mb-2">
+                    <p className="text-md font-medium">
+                      {competition.sample_product_name}
+                    </p>
+                  </div>
+                )}
+                {competition.sample_provide_type && (
+                  <div className="px-4 mb-2">
+                    <p className="text-sm text-muted-foreground">
+                      提供方法:{" "}
+                      {competition.sample_provide_type === "RENTAL"
+                        ? "レンタル"
+                        : "提供"}
+                    </p>
+                  </div>
+                )}
+                {competition.sample_image_url && (
+                  <div className="px-4 mb-4">
+                    <img
+                      src={competition.sample_image_url}
+                      alt={competition.sample_product_name || "試供品"}
+                      className="w-full max-w-md rounded-lg"
+                    />
+                  </div>
+                )}
+                <p className="text-md px-4 font-medium leading-[1.7] whitespace-pre-line break-words">
+                  {competition.supply_of_samples}
+                </p>
+              </section>
+            </TabsContent>
+          )}
           <TabsContent value="assets">
             <div className="*:border-b *:border-b-foreground/10">
               <section className="grid gap-2 py-4">
@@ -222,10 +319,18 @@ async function CompetitionPageContent({ contestId }: { contestId: string }) {
             </div>
           </TabsContent>
           <TabsContent value="leaderboard">
-            <LeaderBoard
-              competition={competition}
-              applications={competition.applications || []}
-            />
+            {detailStatus === "contest" ? (
+              <LeaderBoard
+                competition={competition}
+                applications={competition.applications || []}
+              />
+            ) : (
+              <div className="px-4 py-8">
+                <p className="text-sm text-muted-foreground text-center">
+                  ランキングは開催期間に表示されます
+                </p>
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>

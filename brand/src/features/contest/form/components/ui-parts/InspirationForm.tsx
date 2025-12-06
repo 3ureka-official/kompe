@@ -1,69 +1,49 @@
-import { Controller, useForm } from "react-hook-form";
-import { FormField } from "@/components/ui-elements/form/FormField";
-import { Input } from "@/components/ui-elements/form/Input";
-import { Textarea } from "@/components/ui/Textarea";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
-import { inspirationItemSchema } from "@/features/contest/form/schemas/createContestSchema";
+import {
+  InspirationItemFormData,
+  inspirationItemSchema,
+} from "@/features/contest/form/schemas/inspirationItemSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+import { UrlField } from "@/components/ui-elements/form/UrlField";
+import { TextareaField } from "@/components/ui-elements/form/TextareaField";
 
 type Props = {
-  addInspiration: (
-    inspiration: yup.InferType<typeof inspirationItemSchema>,
-  ) => void;
+  addInspiration: (inspiration: InspirationItemFormData) => void;
 };
 
 export function InspirationForm({ addInspiration }: Props) {
   const { control, handleSubmit, reset } = useForm({
     resolver: yupResolver(inspirationItemSchema),
     mode: "onChange",
-    defaultValues: {
-      url: "",
-      description: "",
-    },
+    defaultValues: inspirationItemSchema.cast({}),
   });
 
-  const onSubmit = handleSubmit(
-    (value: yup.InferType<typeof inspirationItemSchema>) => {
-      addInspiration(value);
-      reset();
-    },
-  );
+  const onSubmit = handleSubmit((value: InspirationItemFormData) => {
+    addInspiration(value);
+    reset();
+  });
 
   return (
-    <div className="flex flex-col rounded">
-      <Controller
+    <div className="flex flex-col gap-4">
+      <UrlField
         control={control}
         name="url"
-        render={({ field, fieldState }) => (
-          <FormField label="URL" error={fieldState.error?.message}>
-            <Input
-              {...field}
-              placeholder="TikTok、YouTube等のURL"
-              className="mb-2"
-            />
-          </FormField>
-        )}
+        label="URL"
+        placeholder="TikTok、YouTube等のURL"
       />
 
-      <Controller
+      <TextareaField
         control={control}
         name="description"
-        render={({ field, fieldState }) => (
-          <FormField label="説明" error={fieldState.error?.message}>
-            <Textarea
-              {...field}
-              placeholder="このインスピレーションについての説明"
-              rows={3}
-              className="mb-2"
-            />
-          </FormField>
-        )}
+        label="説明"
+        placeholder="この参考動画についての説明"
+        rows={3}
       />
 
       <div className="flex justify-end">
         <Button type="button" variant="default" onClick={onSubmit}>
-          このインスピレーションを追加
+          この参考動画を追加
         </Button>
       </div>
     </div>

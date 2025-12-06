@@ -78,6 +78,11 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
         },
       },
       contest_prizes: true,
+      contest_images: {
+        orderBy: {
+          display_order: "asc",
+        },
+      },
     },
     orderBy: {
       contest_start_date: "desc",
@@ -86,7 +91,7 @@ async function ContestsList({ periodOptions }: { periodOptions: string }) {
   });
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-6">
       {data.length > 0 ? (
         data.map((competition) => {
           let my_contest_transfer = null;

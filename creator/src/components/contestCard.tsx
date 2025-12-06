@@ -27,8 +27,19 @@ import {
 } from "@prisma/client";
 import { formatDate } from "@/utils/format";
 
+type ContestImage = {
+  id: string;
+  contest_id: string;
+  brand_id: string;
+  url: string;
+  display_order: bigint;
+  created_at: Date;
+};
+
 type ContestCardProps = {
-  contest: contests;
+  contest: contests & {
+    contest_images?: ContestImage[];
+  };
   applications: applications[];
   my_application: applications | null;
   contest_transfer: contest_transfers | null;
@@ -87,33 +98,19 @@ export default function ContestCard({
 
   return (
     <Link href={`/competitions/${contest.id}`}>
-      <Card className="py-3 gap-2">
-        <CardHeader className="px-3">
-          <div className="flex items-center gap-2">
-            <Avatar>
-              <AvatarImage
-                src={brands.logo_url || "" /* todo: fallback image */}
-                alt={brands.name}
-              />
-              <AvatarFallback className="uppercase">
-                {brands.name.split("", 2)}
-              </AvatarFallback>
-            </Avatar>
-            <p className="font-bold">{brands.name}</p>
-          </div>
-        </CardHeader>
-        <CardContent className="grid gap-2 px-3">
-          <div className="relative w-full aspect-[16/9] rounded-lg border border-foreground/20">
-            {contest.thumbnail_url ? (
+      <Card className="pb-3 pt-0 gap-2">
+        <CardContent className="grid gap-2 px-0">
+          <div className="relative w-full aspect-video rounded-lg border border-foreground/20">
+            {contest.contest_images && contest.contest_images.length > 0 ? (
               <Image
-                src={contest.thumbnail_url}
+                src={contest.contest_images[0].url}
                 alt={contest.title || "タイトル未設定のコンテスト"}
                 fill
                 quality={80}
                 className="rounded-lg object-cover w-full h-full"
               />
             ) : (
-              <div className="rounded-lg object-cover w-full h-full bg-gray-200 flex items-center justify-center">
+              <div className="rounded-lg object-cover w-full h-full bg-gray-400 flex items-center justify-center">
                 <Loader2Icon className="size-4 stroke-2" />
               </div>
             )}
@@ -127,7 +124,7 @@ export default function ContestCard({
               賞金未受け取り
             </Badge>
           )}
-          <CardTitle className="text-lg font-bold my-2 h-[3em] overflow-hidden text-ellipsis line-clamp-2">
+          <CardTitle className="text-lg font-bold px-3 my-2 h-[3em] overflow-hidden text-ellipsis line-clamp-2">
             {contest.title}
           </CardTitle>
         </CardContent>

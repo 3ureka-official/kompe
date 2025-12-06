@@ -13,9 +13,12 @@ type CreateContestContextType = {
   next: <T extends object>(partial: T) => void;
   back: <T extends object>(partial: T) => void;
   contestId: string | undefined;
-  submit: (isDraft: boolean, newData: Partial<ContestCreateFormData>) => void;
-  isCreating: boolean;
-  isUpdating: boolean;
+  submit: (
+    isDraft: boolean,
+    newData: Partial<ContestCreateFormData>,
+    shouldNavigate?: boolean,
+  ) => void;
+  isPending: boolean;
   updateData: <T extends object>(partial: T) => void;
   setContestId: (contestId: string) => void;
   initContest: (brandId: string, paramContestId?: string) => Promise<void>;
@@ -29,8 +32,7 @@ export const CreateContestContext = createContext<CreateContestContextType>({
   back: () => {},
   contestId: undefined,
   submit: () => {},
-  isCreating: false,
-  isUpdating: false,
+  isPending: false,
   updateData: () => {},
   setContestId: () => {},
   initContest: async () => {},
@@ -54,7 +56,7 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
   );
 
   // コンテスト送信
-  const { submit, isUpdating } = useContestSubmit(
+  const { submit, isPending } = useContestSubmit(
     data,
     brand ?? null,
     contestId,
@@ -86,8 +88,7 @@ export function CreateContestProvider({ children }: { children: ReactNode }) {
         back,
         contestId,
         submit,
-        isCreating,
-        isUpdating,
+        isPending: isCreating || isPending,
         updateData: updateDataWithContestId,
         setContestId,
         initContest,

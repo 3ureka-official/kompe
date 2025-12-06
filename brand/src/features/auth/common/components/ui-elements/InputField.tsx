@@ -1,27 +1,27 @@
 "use client";
 
 import React from "react";
-import { Controller, Control, FieldPath, FieldValues } from "react-hook-form";
+import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import { FormField } from "@/components/ui-elements/form/FormField";
 import { Input } from "@/components/ui-elements/form/Input";
 
-interface FormInputFieldProps<T extends FieldValues> {
+interface InputFieldProps<T extends FieldValues> {
   control: Control<T>;
-  name: FieldPath<T>;
-  type?: "text" | "email" | "password" | "tel" | "number";
+  name: Path<T>;
+  type?: "text" | "email" | "password" | "tel" | "url";
   label?: string;
   placeholder?: string;
   required?: boolean;
 }
 
-export function FormInputField<T extends FieldValues>({
+export function InputField<T extends FieldValues>({
   control,
   name,
   type = "text",
   label,
   placeholder,
   required = false,
-}: FormInputFieldProps<T>) {
+}: InputFieldProps<T>) {
   // デフォルトのラベルとプレースホルダーをtypeから推測
   const defaultLabel =
     label ||

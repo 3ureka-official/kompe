@@ -6,7 +6,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AuthContext } from "@/features/auth/contexts/AuthContext";
 import { brandFormSchema } from "@/features/brand/common/schemas/brandFormSchema";
 import { useUpdateBrand } from "@/features/brand/update/hooks/useUpdateBrand";
-import { Brand } from "@/types/Brand";
 
 export function useUpdateBrandForm() {
   const { brand } = useContext(AuthContext);
@@ -20,14 +19,6 @@ export function useUpdateBrandForm() {
     isPending: isUpdatingBrand,
   } = useUpdateBrand();
 
-  const getDefaultValues = (brandData: Partial<Brand> | null) => ({
-    name: brandData?.name || "",
-    website: brandData?.website || "",
-    description: brandData?.description || "",
-    tiktok_username: brandData?.tiktok_username || "",
-    instagram_url: brandData?.instagram_url || "",
-  });
-
   const {
     control,
     handleSubmit,
@@ -38,7 +29,7 @@ export function useUpdateBrandForm() {
   } = useForm({
     resolver: yupResolver(brandFormSchema),
     mode: "onBlur",
-    defaultValues: getDefaultValues(brand),
+    defaultValues: brandFormSchema.cast(brand),
   });
 
   const description = watch("description");
@@ -46,8 +37,8 @@ export function useUpdateBrandForm() {
 
   useEffect(() => {
     if (brand) {
-      setLogoPreview(brand.logo_url || null);
-      reset(getDefaultValues(brand));
+      setLogoPreview(brand.logo_url);
+      reset(brandFormSchema.cast(brand));
     }
   }, [brand, reset]);
 
@@ -75,7 +66,7 @@ export function useUpdateBrandForm() {
       {
         onSuccess: () => {
           setIsLogoChanged(false);
-          reset(getDefaultValues(data));
+          reset(brandFormSchema.cast(data));
         },
       },
     );

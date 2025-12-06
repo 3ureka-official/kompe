@@ -30,6 +30,7 @@ type UpsertContestParams = {
     "id" | "created_at" | "brand_id" | "contest_id"
   >[];
   prizeDistribution?: number[];
+  imageUrls?: string[];
   onSuccess?: (contestId: string) => void;
   onError?: () => void;
 };
@@ -46,6 +47,7 @@ function useUpsertContest() {
       assetsData,
       inspirationData,
       prizeDistribution,
+      imageUrls,
       onSuccess,
       onError,
     }: UpsertContestParams) => {
@@ -59,6 +61,7 @@ function useUpsertContest() {
             assetsData,
             inspirationData,
             prizeDistribution,
+            imageUrls,
           },
           {
             onSuccess: () => {
@@ -92,7 +95,7 @@ function useUpsertContest() {
           },
           {
             onSuccess: async () => {
-              // 成功後、アセットとインスピレーションを更新（createContestでは処理されないため）
+              // 成功後、アセットとインスピレーションと画像を更新（createContestでは処理されないため）
               updateContest(
                 {
                   brandId,
@@ -101,6 +104,7 @@ function useUpsertContest() {
                   assetsData,
                   inspirationData,
                   prizeDistribution,
+                  imageUrls,
                 },
                 {
                   onSuccess: () => {

@@ -17,12 +17,13 @@ import { auth } from "@/auth";
 import SubmitVideoForm from "@/components/submitVideoForm";
 import { tikTokAPIClient } from "@/lib/api/tiktok";
 import { redirect } from "next/navigation";
-import { RequiredVideo } from "@/models/tiktok/video";
+import { RequiredVideo, TikTokVideo } from "@/models/tiktok/video";
 import { Suspense } from "react";
 import Loading from "@/components/loading";
 import { SessionProvider } from "next-auth/react";
 import { creators } from "@prisma/client";
 import { Session } from "next-auth";
+import { getContestDetailStatusType } from "@/utils/getContestStatus";
 
 export default async function ApplicationPage({
   params,
@@ -75,11 +76,24 @@ async function ApplicationPageContent({
     "title",
     "cover_image_url",
     "view_count",
+    "create_time",
   ]);
 
   const application = await prisma.applications.findFirst({
     where: { contest_id: id, creator_id: session.user?.creator_id },
-    include: { contests: { include: { brands: true, contest_prizes: true } } },
+    include: {
+      contests: {
+        include: {
+          brands: true,
+          contest_prizes: true,
+          contest_images: {
+            orderBy: {
+              display_order: "asc",
+            },
+          },
+        },
+      },
+    },
   });
 
   const appliedVideo = application?.tiktok_url
@@ -100,6 +114,7 @@ async function ApplicationPageContent({
   }
 
   const competition = application.contests;
+  const detailStatus = getContestDetailStatusType(competition);
 
   return (
     <div className="flex flex-col max-h-full">
@@ -107,18 +122,18 @@ async function ApplicationPageContent({
         <h1 className="text-xl font-bold px-4">{competition.title}</h1>
         <div className="*:border-b *:border-b-foreground/10">
           <section className="grid gap-2 py-6">
-            <h2 className="text-sm font-bold text-muted-foreground px-4">
+            <h2 className="text-sm font-bold text-muted-foreground px-2">
               自分の動画
             </h2>
             {application.tiktok_url && appliedVideo ? (
               <Link
-                className="px-4"
+                className="px-2"
                 href={appliedVideo.share_url || ""}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Card className="h-[100px] py-4">
-                  <CardContent className="h-full px-4">
+                  <CardContent className="h-full px-2">
                     <div className="h-full flex items-center gap-4">
                       <Image
                         src={
@@ -128,7 +143,7 @@ async function ApplicationPageContent({
                         alt={appliedVideo.title || "タイトル未設定の動画"}
                         width={500}
                         height={500}
-                        className="h-full w-auto rounded-lg"
+                        className=" h-full w-auto rounded-lg"
                       />
                       <div>
                         <p className="text-md line-clamp-2">
@@ -154,25 +169,30 @@ async function ApplicationPageContent({
             )}
           </section>
           <section className="grid gap-2 py-6">
-            <h2 className="text-sm font-bold text-muted-foreground px-4">
-              コンペティション情報
+            <h2 className="text-sm font-bold text-muted-foreground px-2">
+              コンテスト情報
             </h2>
-            <Link href={`/competitions/${competition.id}`} className="px-4">
+            <Link href={`/competitions/${competition.id}`} className="px-2">
               <Card className="h-[100px] py-4">
-                <CardContent className="h-full px-4">
+                <CardContent className="h-full px-2">
                   <div className="h-full flex items-center gap-4">
-                    <Image
-                      src={
-                        competition.thumbnail_url ||
-                        "" /* todo: add fallback image */
-                      }
-                      alt={
-                        competition.title || "タイトル未設定のコンペティション"
-                      }
-                      width={500}
-                      height={300}
-                      className="h-full w-auto rounded-lg"
-                    />
+                    {competition.contest_images &&
+                    competition.contest_images.length > 0 ? (
+                      <Image
+                        src={competition.contest_images[0].url}
+                        alt={
+                          competition.title ||
+                          "タイトル未設定のコンペティション"
+                        }
+                        width={500}
+                        height={300}
+                        className="h-full w-auto rounded-lg object-cover aspect-video"
+                      />
+                    ) : (
+                      <div className="h-full w-[100px] rounded-lg bg-gray-400 flex items-center justify-center">
+                        <span className="text-xs text-gray-600">画像なし</span>
+                      </div>
+                    )}
                     <p>{competition.title}</p>
                     <ChevronRightIcon className="size-4 stroke-2 ml-auto" />
                   </div>
@@ -210,12 +230,26 @@ async function ApplicationPageContent({
         </div>
       </div>
       <div className="fixed bottom-[66px] left-0 right-0 bg-card border border-b-0 rounded-t-2xl w-full p-4">
-        <SubmitVideoForm
-          competitionId={competition.id}
-          previousValue={application.tiktok_url}
-          videos={videoList.data.videos as RequiredVideo[]}
-          initialSelectedVideoId={appliedVideo?.id}
-        />
+        {detailStatus === "contest" ? (
+          <SubmitVideoForm
+            competitionId={competition.id}
+            previousValue={application.tiktok_url}
+            videos={videoList.data.videos as (RequiredVideo | TikTokVideo)[]}
+            initialSelectedVideoId={appliedVideo?.id}
+            videoProductionStartDate={competition.video_production_start_date}
+            videoProductionEndDate={competition.video_production_end_date}
+            contestStartDate={competition.contest_start_date}
+            contestEndDate={competition.contest_end_date}
+          />
+        ) : (
+          <div className="text-sm text-muted-foreground text-center py-4">
+            {detailStatus === "entry"
+              ? "応募期間中です。動画を結びつけることはできません。"
+              : detailStatus === "video_production"
+                ? "動画制作期間中です。開催期間になると動画を結びつけることができます。"
+                : "動画を結びつけることはできません。"}
+          </div>
+        )}
       </div>
     </div>
   );

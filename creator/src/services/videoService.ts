@@ -43,6 +43,9 @@ const CONTEST_INCLUDE = {
   contest_prizes: {
     orderBy: { rank: "asc" },
   },
+  contest_images: {
+    orderBy: { display_order: "asc" },
+  },
 } as const;
 
 export async function getTikTokMetricsAndUpdate(contestId: string): Promise<{

@@ -1,20 +1,12 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { Application } from "@/types/Application";
-import { Contest, ContestPrize } from "@/types/Contest";
+import { ContestPrize } from "@/types/Contest";
 import { formatNumber } from "@/utils/format";
 
-interface UseContestCreatorSectionProps {
-  contestId: string;
-}
-
-export function useContestCreatorSection({
-  contestId,
-}: UseContestCreatorSectionProps) {
+export function useContestCreatorSection() {
   const [selectedApplication, setSelectedApplication] =
     useState<Application | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const queryClient = useQueryClient();
 
   const handleOpenModal = (application: Application) => {
     setSelectedApplication(application);

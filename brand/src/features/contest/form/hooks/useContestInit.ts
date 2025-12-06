@@ -1,9 +1,13 @@
 import { useState, useCallback } from "react";
 import { ContestCreateFormData } from "@/features/contest/form/schemas/createContestSchema";
-import { ContestFormDefaultValues } from "@/features/contest/common/constants/contest.constant";
+import {
+  ContestFormDefaultValues,
+  SAMPLE_OPTIONS,
+} from "@/features/contest/common/constants/contest.constant";
 import { getContest } from "@/services/supabase/contestService";
 import { getAssets } from "@/services/supabase/assetService";
 import { getInspirations } from "@/services/supabase/inspirationService";
+import { getContestImages } from "@/services/supabase/contestImageService";
 
 function useContestInit(
   setData: (data: ContestCreateFormData, contestId?: string) => void,
@@ -31,10 +35,11 @@ function useContestInit(
             // コンテストデータを取得
             const contest = await getContest(paramContestId, brandId);
 
-            // アセットとインスピレーションを取得
-            const [assets, inspirations] = await Promise.all([
+            // アセット、インスピレーション、画像を取得
+            const [assets, inspirations, contestImages] = await Promise.all([
               getAssets(paramContestId),
               getInspirations(paramContestId),
+              getContestImages(paramContestId),
             ]);
 
             // contest_prizesからprize_distributionとprize_poolを再構築
@@ -59,9 +64,11 @@ function useContestInit(
             );
 
             // フォームデータを構築
+            // contest_imagesテーブルから画像URLを取得
+            const thumbnailUrls = contestImages.map((img) => img.url);
             const formData: ContestCreateFormData = {
               title: contest.title || "",
-              thumbnail_url: contest.thumbnail_url || "",
+              thumbnail_urls: thumbnailUrls,
               description: contest.description || "",
               requirements: contest.requirements || "",
               entry_start_date: contest.entry_start_date
@@ -84,23 +91,17 @@ function useContestInit(
                 : new Date(),
               prize_pool: prizePool,
               prize_distribution: prizeDistribution,
-              requires_purchase_proof: contest.requires_purchase_proof || false,
-              purchase_product_name: contest.purchase_product_name || null,
-              purchase_product_url: contest.purchase_product_url || null,
-              purchase_description: contest.purchase_description || null,
               has_sample: contest.has_sample || false,
-              sample_product_name: contest.sample_product_name || null,
-              sample_rental_or_purchase:
-                contest.sample_rental_or_purchase || null,
-              sample_price_per_creator:
-                contest.sample_price_per_creator || null,
+              sample_product_name: contest.sample_product_name || "",
+              sample_provide_type:
+                contest.sample_provide_type || SAMPLE_OPTIONS[0].value,
+              sample_image_url: contest.sample_image_url || "",
               sample_return_postal_code:
-                contest.sample_return_postal_code || null,
-              sample_return_prefecture:
-                contest.sample_return_prefecture || null,
-              sample_return_city: contest.sample_return_city || null,
+                contest.sample_return_postal_code || "",
+              sample_return_prefecture: contest.sample_return_prefecture || "",
+              sample_return_city: contest.sample_return_city || "",
               sample_return_address_line:
-                contest.sample_return_address_line || null,
+                contest.sample_return_address_line || "",
               assets: assets.map((asset) => ({
                 id: asset.id,
                 url: asset.url || "",

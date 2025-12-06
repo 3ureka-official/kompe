@@ -14,7 +14,7 @@ type Props = {
   preview?: string | null;
 };
 
-export function FileUpload({
+export function IconUploadButton({
   onFileChange,
   onPreviewChange,
   accept = "image/*",

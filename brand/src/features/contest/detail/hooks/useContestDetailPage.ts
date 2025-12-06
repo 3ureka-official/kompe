@@ -27,10 +27,17 @@ export function useContestDetailPage({
 
   // すでに支払い済み（リロード時など）は即クローズして成功表示
   useEffect(() => {
-    if (!showCheckoutLoading || isPendingContestPayment) return;
+    if (isPendingContestPayment) return;
     if (contestPayment?.status === "succeeded") {
-      setShowCheckoutLoading(false);
-      setShowSuccessBanner(true);
+      if (showCheckoutLoading) {
+        setShowCheckoutLoading(false);
+        setShowSuccessBanner(true);
+      }
+      return;
+    }
+    // pendingの場合はダイアログを表示
+    if (contestPayment?.status === "pending") {
+      setShowCheckoutLoading(true);
     }
   }, [contestPayment, showCheckoutLoading, isPendingContestPayment]);
 

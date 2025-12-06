@@ -2,26 +2,23 @@ import { Button } from "@/components/ui/Button";
 import { Controller } from "react-hook-form";
 import { NumberInput } from "@/components/ui-elements/form/NumberInput";
 import { FormNumberField } from "@/components/ui-elements/form/NumberField";
-import { LoadingButton } from "@/components/ui-elements/LoadingButton";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { usePrize } from "@/features/contest/form/hooks/usePrize";
+import { ActionButtons } from "./ActionButtons";
 
 export function Prize() {
   const {
     control,
-    handleSubmit,
     watchedprize_pool,
     watchedDistribution,
     totalPrize,
-    isSubmitting,
-    isUpdating,
+    isPending,
     addWinner,
     removeWinner,
     updateAmount,
-    draft,
-    publish,
-    back,
-    getValues,
+    handleDraft,
+    handlePublish,
+    handleBack,
   } = usePrize();
 
   return (
@@ -42,7 +39,7 @@ export function Prize() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg p-8 shadow-sm mt-8">
+      <div className="bg-white rounded-lg p-8 shadow-sm my-8">
         <div>
           <h3 className="text-base font-medium text-gray-700 mb-4">配分金額</h3>
           <div className="flex justify-between items-center mb-6">
@@ -119,35 +116,13 @@ export function Prize() {
         </div>
       </div>
 
-      <div className="flex justify-end gap-4 mt-8">
-        <LoadingButton
-          type="button"
-          variant="secondary"
-          onClick={draft}
-          isLoading={isUpdating}
-          loadingText="保存中..."
-          defaultText="下書き保存"
-        />
-
-        <LoadingButton
-          type="button"
-          onClick={() => back(getValues())}
-          variant="secondary"
-          isLoading={isUpdating}
-          loadingText="保存中..."
-          defaultText="前へ戻る"
-        />
-
-        <LoadingButton
-          type="button"
-          variant="default"
-          disabled={isSubmitting}
-          onClick={handleSubmit(publish)}
-          isLoading={isUpdating}
-          loadingText="保存中..."
-          defaultText="コンテストを作成"
-        />
-      </div>
+      <ActionButtons
+        isLoading={isPending}
+        handleDraft={handleDraft}
+        handleBack={handleBack}
+        handleSubmit={handlePublish}
+        needNextButton={false}
+      />
     </div>
   );
 }

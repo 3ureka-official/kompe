@@ -1,8 +1,14 @@
 import { supabase, supabaseAdmin } from "@/lib/supabase";
-import { Contest, InspirationItem, AssetItem } from "@/types/Contest";
+import {
+  Contest,
+  InspirationItem,
+  AssetItem,
+  ContestImage,
+} from "@/types/Contest";
 import { updateAssets } from "./assetService";
 import { updateInspiration } from "./inspirationService";
 import { updateContestPrizes } from "./prizeService";
+import { updateContestImages } from "./contestImageService";
 import { deleteFiles } from "@/lib/storage";
 import { Application } from "@/types/Application";
 
@@ -37,15 +43,13 @@ export const createContest = async (
   prizeDistribution?: number[],
 ): Promise<string> => {
   try {
-    // prize_pool、prize_distribution、contest_prizes、assets、inspirations、sample、samplesはcontestsテーブルには保存しない
+    // prize_pool、prize_distribution、contest_prizes、assets、inspirationsはcontestsテーブルには保存しない
     const excludeKeys = [
       "prize_pool",
       "prize_distribution",
       "contest_prizes",
       "assets",
       "inspirations",
-      "sample",
-      "samples",
     ] as const;
     const restContestData = Object.fromEntries(
       Object.entries(contestData).filter(
@@ -67,8 +71,6 @@ export const createContest = async (
       | "updated_engagement_at"
     >;
 
-    console.log("contestData", restContestData);
-
     const { data: contest, error } = await supabase
       .from("contests")
       .insert({
@@ -88,8 +90,6 @@ export const createContest = async (
       await updateContestPrizes(prizeDistribution, contestId, brandId);
     }
 
-    console.log("contest", contest.id);
-
     return contest.id;
   } catch (error) {
     console.error("コンテスト作成エラー:", error);
@@ -108,11 +108,17 @@ export const getAllContests = async (
   try {
     const { data, error } = await supabase
       .from("contests")
-      .select("*, contest_payments(*), applications(*), contest_prizes(*)")
+      .select(
+        "*, contest_payments(*), applications(*), contest_prizes(*), contest_images(*)",
+      )
       .eq("brand_id", brandId)
       .order("contest_start_date", { ascending: false })
       .order("created_at", { ascending: false })
-      .order("rank", { ascending: true, referencedTable: "contest_prizes" });
+      .order("rank", { ascending: true, referencedTable: "contest_prizes" })
+      .order("display_order", {
+        ascending: true,
+        referencedTable: "contest_images",
+      });
 
     if (error) {
       throw new Error(error.message);
@@ -121,6 +127,7 @@ export const getAllContests = async (
     return data as (Contest & {
       applications: Application[];
       contest_prizes?: Array<{ rank: number; amount: number }>;
+      contest_images?: ContestImage[];
     })[];
   } catch (error) {
     console.error("コンテスト取得エラー:", error);
@@ -177,9 +184,10 @@ export const updateContest = async (
     "id" | "created_at" | "brand_id" | "contest_id"
   >[],
   prizeDistribution?: number[],
+  imageUrls?: string[],
 ): Promise<void> => {
   try {
-    // prize_pool、prize_distribution、contest_prizes、assets、inspirations、sample、samplesはcontestsテーブルには保存しない
+    // prize_pool、prize_distribution、contest_prizes、assets、inspirations、sample、samples、thumbnail_urlsはcontestsテーブルには保存しない
     const excludeKeys = [
       "prize_pool",
       "prize_distribution",
@@ -188,6 +196,7 @@ export const updateContest = async (
       "inspirations",
       "sample",
       "samples",
+      "thumbnail_urls",
     ] as const;
     const restContestData = Object.fromEntries(
       Object.entries(contestData).filter(
@@ -218,13 +227,18 @@ export const updateContest = async (
       throw new Error(error.message);
     }
 
-    updateAssets(assetsData, contestId, brandId);
+    await updateAssets(assetsData, contestId, brandId);
 
-    updateInspiration(inspirationData, contestId, brandId);
+    await updateInspiration(inspirationData, contestId, brandId);
 
     // 賞金レコードを更新
     if (prizeDistribution !== undefined) {
       await updateContestPrizes(prizeDistribution, contestId, brandId);
+    }
+
+    // 画像を更新
+    if (imageUrls !== undefined) {
+      await updateContestImages(imageUrls, contestId, brandId);
     }
   } catch (error) {
     console.error("コンテスト更新エラー:", error);

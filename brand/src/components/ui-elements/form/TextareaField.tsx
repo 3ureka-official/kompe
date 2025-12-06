@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { Controller, Control } from "react-hook-form";
+import { Controller, Control, FieldValues, Path } from "react-hook-form";
 import { FormField } from "@/components/ui-elements/form/FormField";
 import { Textarea } from "@/components/ui/Textarea";
 
-interface TextareaFieldProps {
-  control: Control<any>;
-  name: string;
+interface TextareaFieldProps<T extends FieldValues = FieldValues> {
+  control: Control<T>;
+  name: Path<T>;
   label?: string;
   placeholder?: string;
   required?: boolean;
@@ -18,7 +18,7 @@ interface TextareaFieldProps {
   descriptionClassName?: string;
 }
 
-export function TextareaField({
+export function TextareaField<T extends FieldValues = FieldValues>({
   control,
   name,
   label,
@@ -29,7 +29,7 @@ export function TextareaField({
   showCharCount = false,
   description,
   descriptionClassName,
-}: TextareaFieldProps) {
+}: TextareaFieldProps<T>) {
   return (
     <Controller
       control={control}

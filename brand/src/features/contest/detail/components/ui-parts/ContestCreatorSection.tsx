@@ -1,46 +1,57 @@
+import { useMemo, useState } from "react";
 import { Contest, ContestPrize } from "@/types/Contest";
 import { useGetApplication } from "@/features/contest/detail/hooks/useGetApplication";
-import { formatDateTime, formatNumber } from "@/utils/format";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/Table";
-import Image from "next/image";
-import { PurchaseProofStatus } from "@/types/PurchaseProofStatus";
-import { useContestCreatorSection } from "@/features/contest/detail/hooks/useContestCreatorSection";
+import { formatDateTime } from "@/utils/format";
+import { getContestDetailStatusType } from "@/utils/getContestStatus";
+import { ApplicationTable } from "@/features/contest/detail/components/ui-elements/ApplicationTable";
+import { RankingTable } from "@/features/contest/detail/components/ui-elements/RankingTable";
+import { ShippingNotificationDialog } from "@/features/contest/detail/components/ui-parts/ShippingNotificationDialog";
+import { useGetShippingNotifications } from "@/features/contest/detail/hooks/useShippingSampleNotification";
+import { Application } from "@/types/Application";
 
 type Props = {
   contest: Contest & { contest_prizes?: ContestPrize[] };
 };
 
-const statusLabels: Record<PurchaseProofStatus, string> = {
-  NOT_REQUIRED: "不要",
-  NOT_SUBMITTED: "未提出",
-  PENDING: "確認待ち",
-  APPROVED: "承認済み",
-  REJECTED: "却下",
-};
-
-const statusColors: Record<PurchaseProofStatus, string> = {
-  NOT_REQUIRED: "bg-gray-100 text-gray-800",
-  NOT_SUBMITTED: "bg-gray-100 text-gray-800",
-  PENDING: "bg-yellow-100 text-yellow-800",
-  APPROVED: "bg-green-100 text-green-800",
-  REJECTED: "bg-red-100 text-red-800",
-};
-
 export function ContestCreatorSection({ contest }: Props) {
   const { getApplicationQuery } = useGetApplication(contest.id);
   const { data: applications, isPending } = getApplicationQuery;
-  const requiresPurchaseProof = contest.requires_purchase_proof || false;
 
-  const { renderRankColor } = useContestCreatorSection({
-    contestId: contest.id,
-  });
+  const { data: shippingNotifications } = useGetShippingNotifications(
+    contest.id,
+  );
+
+  const status = getContestDetailStatusType(contest);
+
+  // 応募期間・動画制作期間は ApplicationTable、開催期間・終了は RankingTable
+  const showApplicationTable =
+    status === "entry" || status === "video_production";
+
+  // ダイアログの状態管理
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedApplication, setSelectedApplication] =
+    useState<Application | null>(null);
+
+  // ソート済みのアプリケーションリスト
+  const sortedApplications = useMemo(() => {
+    if (!applications) return [];
+
+    if (showApplicationTable) {
+      // 応募期間・動画制作期間：応募日が新しい順
+      return [...applications].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
+    } else {
+      // 開催期間・終了：再生数が多い順（順位が高い順）
+      return [...applications].sort((a, b) => b.views - a.views);
+    }
+  }, [applications, showApplicationTable]);
+
+  const handleShippingNotify = (application: Application) => {
+    setSelectedApplication(application);
+    setIsDialogOpen(true);
+  };
 
   if (isPending) {
     return <div>Loading...</div>;
@@ -52,117 +63,34 @@ export function ContestCreatorSection({ contest }: Props) {
         <div className="text-sm text-gray-500">
           {applications?.length}名が参加中
         </div>
-        <div className="text-sm text-gray-500">
-          更新時間：{formatDateTime(new Date(contest.updated_engagement_at))}
-        </div>
+        {!showApplicationTable && applications && applications.length > 0 && (
+          <div className="text-sm text-gray-500">
+            更新時間：{formatDateTime(new Date(contest.updated_engagement_at))}
+          </div>
+        )}
       </div>
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table className="min-w-full divide-y divide-gray-200">
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead
-                  scope="col"
-                  className="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                ></TableHead>
-                <TableHead
-                  scope="col"
-                  className="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                ></TableHead>
-                <TableHead
-                  scope="col"
-                  className="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  再生数
-                </TableHead>
-                <TableHead
-                  scope="col"
-                  className="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  いいね数
-                </TableHead>
-                <TableHead
-                  scope="col"
-                  className="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  コメント数
-                </TableHead>
-                <TableHead
-                  scope="col"
-                  className="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  シェア数
-                </TableHead>
-                <TableHead
-                  scope="col"
-                  className="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  賞金
-                </TableHead>
-                {requiresPurchaseProof && (
-                  <TableHead
-                    scope="col"
-                    className="py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    購入証明
-                  </TableHead>
-                )}
-              </TableRow>
-            </TableHeader>
-            <TableBody className="bg-white divide-y divide-gray-200">
-              {applications?.map((application, index) => (
-                <TableRow
-                  key={application.id}
-                  className="hover:bg-gray-50 cursor-pointer transition-colors mx-6"
-                  onClick={() =>
-                    window.open(
-                      `https://www.tiktok.com/@${application.creator.username}`,
-                      "_blank",
-                      "noopener,noreferrer",
-                    )
-                  }
-                >
-                  <TableCell
-                    className={`py-4 whitespace-nowrap text-sm text-gray-900 flex items-center justify-center`}
-                  >
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${renderRankColor(index, contest.contest_prizes)}`}
-                    >
-                      {index + 1}
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {application.creator.display_name}
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatNumber(application.views)}
-                  </TableCell>
-                  <TableCell className="py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatNumber(application.likes)}
-                  </TableCell>
-                  <TableCell className="py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatNumber(application.comments)}
-                  </TableCell>
-                  <TableCell className="py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatNumber(application.shares)}
-                  </TableCell>
-                  <TableCell className="py-4 whitespace-nowrap text-sm text-gray-900">
-                    {contest.contest_prizes && contest.contest_prizes[index]
-                      ? `${formatNumber(contest.contest_prizes[index].amount)}円`
-                      : "0円"}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+
+      {showApplicationTable ? (
+        <ApplicationTable
+          applications={sortedApplications}
+          shippingNotifications={shippingNotifications}
+          onShippingNotify={handleShippingNotify}
+        />
+      ) : (
+        <RankingTable
+          applications={sortedApplications}
+          contestPrizes={contest.contest_prizes}
+        />
+      )}
+
+      <ShippingNotificationDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        application={selectedApplication}
+        contestId={contest.id}
+        brandId={contest.brand_id}
+        shippingNotifications={shippingNotifications || []}
+      />
     </div>
   );
 }

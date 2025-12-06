@@ -1,24 +1,17 @@
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { briefSchema } from "@/features/contest/form/schemas/createContestSchema";
+import { briefSchema } from "@/features/contest/form/schemas/briefSchema";
 import { CreateContestContext } from "@/features/contest/common/contexts/CreateContestContext";
 
 export function useBrief() {
-  const { data, next, back, submit, isUpdating, updateData } =
+  const { data, next, back, submit, isPending, updateData } =
     useContext(CreateContestContext);
 
   const { control, handleSubmit, getValues, reset } = useForm({
     resolver: yupResolver(briefSchema),
     mode: "onSubmit",
-    defaultValues: {
-      description: data.description || "",
-      requirements: data.requirements || "",
-      requires_purchase_proof: data.requires_purchase_proof || false,
-      purchase_product_name: data.purchase_product_name || null,
-      purchase_product_url: data.purchase_product_url || null,
-      purchase_description: data.purchase_description || null,
-    },
+    defaultValues: briefSchema.cast(data),
   });
 
   useEffect(() => {
@@ -37,7 +30,7 @@ export function useBrief() {
     control,
     handleSubmit,
     getValues,
-    isUpdating,
+    isPending,
     draft,
     next,
     back,

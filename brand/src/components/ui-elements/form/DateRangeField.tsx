@@ -1,26 +1,25 @@
 "use client";
 
-import { Control, Controller } from "react-hook-form";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { DateInput } from "@/components/ui-elements/form/DateInput";
 import { FieldError } from "@/components/ui/field";
-import { Label } from "@/components/ui/Label";
 import { FormField } from "@/components/ui-elements/form/FormField";
 
-interface DateRangeFieldProps {
-  control: Control<any>;
-  name1: string;
-  name2: string;
+interface DateRangeFieldProps<T extends FieldValues = FieldValues> {
+  control: Control<T>;
+  name1: Path<T>;
+  name2: Path<T>;
   required: boolean;
   label: string;
 }
 
-export function DateRangeField({
+export function DateRangeField<T extends FieldValues = FieldValues>({
   control,
   name1,
   name2,
   required = false,
   label,
-}: DateRangeFieldProps) {
+}: DateRangeFieldProps<T>) {
   return (
     <FormField label={label} required={required}>
       <div className="flex items-center gap-2">

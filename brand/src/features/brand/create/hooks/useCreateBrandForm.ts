@@ -28,6 +28,7 @@ export function useCreateBrandForm() {
   } = useForm({
     resolver: yupResolver(brandFormSchema),
     mode: "onBlur",
+    defaultValues: brandFormSchema.cast({}),
   });
 
   const description = watch("description");

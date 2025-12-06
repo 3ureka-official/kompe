@@ -3,23 +3,22 @@
 import { SampleProductSection } from "@/features/contest/form/components/ui-parts/SampleProductSection";
 import { ReturnAddressSection } from "@/features/contest/form/components/ui-parts/ReturnAddressSection";
 import { Toggle } from "@/components/ui-elements/Toggle";
-import { LoadingButton } from "@/components/ui-elements/LoadingButton";
 import { useSamples } from "@/features/contest/form/hooks/useSamples";
 import { ActionButtons } from "./ActionButtons";
 
 export function Samples() {
   const {
-    handleSubmit,
-    getValues,
+    control,
     hasSamples,
     sample,
-    errors,
-    isUpdating,
-    handleSampleChange,
+    watchSampleImageUrl,
+    isPending,
     handleToggleChange,
-    draft,
+    handleSampleImageSubmit,
+    handleDeleteSampleImage,
+    handleDraft,
     handleNext,
-    back,
+    handleBack,
   } = useSamples();
 
   return (
@@ -38,64 +37,27 @@ export function Samples() {
       {hasSamples && (
         <div className="bg-white rounded-lg p-8 shadow-sm">
           <SampleProductSection
-            sample={sample}
-            onChange={handleSampleChange}
-            errors={
-              errors.sample_product_name ||
-              errors.sample_rental_or_purchase ||
-              errors.sample_price_per_creator ||
-              errors.sample_return_postal_code ||
-              errors.sample_return_prefecture ||
-              errors.sample_return_city ||
-              errors.sample_return_address_line
-                ? {
-                    product_name: errors.sample_product_name?.message,
-                    rental_or_purchase:
-                      errors.sample_rental_or_purchase?.message,
-                    price_per_creator: errors.sample_price_per_creator?.message,
-                    return_postal_code:
-                      errors.sample_return_postal_code?.message,
-                    return_prefecture: errors.sample_return_prefecture?.message,
-                    return_city: errors.sample_return_city?.message,
-                    return_address_line:
-                      errors.sample_return_address_line?.message,
-                  }
-                : undefined
-            }
+            control={control}
+            sampleImageUrl={watchSampleImageUrl}
+            onSampleImageSubmit={handleSampleImageSubmit}
+            onDeleteSampleImage={handleDeleteSampleImage}
+            isLoading={isPending}
           />
         </div>
       )}
 
       {/* 返却住所についてセクション */}
-      {hasSamples && sample.rental_or_purchase === "RENTAL" && (
+      {hasSamples && sample.sample_provide_type === "RENTAL" && (
         <div className="bg-white rounded-lg p-8 shadow-sm">
-          <ReturnAddressSection
-            sample={sample}
-            onChange={handleSampleChange}
-            errors={
-              errors.sample_return_postal_code ||
-              errors.sample_return_prefecture ||
-              errors.sample_return_city ||
-              errors.sample_return_address_line
-                ? {
-                    return_postal_code:
-                      errors.sample_return_postal_code?.message,
-                    return_prefecture: errors.sample_return_prefecture?.message,
-                    return_city: errors.sample_return_city?.message,
-                    return_address_line:
-                      errors.sample_return_address_line?.message,
-                  }
-                : undefined
-            }
-          />
+          <ReturnAddressSection control={control} sample={sample} />
         </div>
       )}
 
       <ActionButtons
-        isLoading={isUpdating}
-        handleDraft={draft}
-        handleBack={() => back(getValues())}
-        handleNext={handleSubmit((data) => handleNext(data))}
+        isLoading={isPending}
+        handleDraft={handleDraft}
+        handleBack={handleBack}
+        handleNext={handleNext}
         needSubmitButton={false}
       />
     </div>

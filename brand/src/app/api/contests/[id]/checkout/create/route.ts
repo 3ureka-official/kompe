@@ -1,14 +1,18 @@
 import { NextResponse, NextRequest } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getBearer, userClientFromBearer } from "@/lib/supabase";
-import { checkoutSchema } from "@/schema/stripe/checkoutSchema";
+
+const FEE_RATE = process.env.CONTEST_TAX_PERCENTAGE
+  ? parseFloat(process.env.CONTEST_TAX_PERCENTAGE) / 100 + 1
+  : 1.1;
 
 export async function POST(
   req: NextRequest,
-  ctx: { params: Promise<{ id: string }> },
+  ctx: { params: Promise<{ id: string; originPath: string }> },
 ) {
   try {
     const { id: contestId } = await ctx.params;
+    const { originPath } = await req.json();
 
     // 1) 認証（Bearer 必須）
     const bearer = getBearer(req);
@@ -25,27 +29,26 @@ export async function POST(
     if (!profile)
       return NextResponse.json({ error: "not_found_user" }, { status: 404 });
 
-    // 2) 入力バリデーション（Yup）
-    const raw = await req.json().catch(() => ({}));
-    const { amountJpy } = await checkoutSchema.validate(raw, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
-
-    // 3) コンテスト取得
+    // 2) コンテスト取得
     const { data: contest } = await user
       .from("contests")
-      .select("id, brand_id")
+      .select("id, brand_id, contest_prizes(amount)")
       .eq("id", contestId)
       .maybeSingle();
     if (!contest)
       return NextResponse.json({ error: "contest_not_found" }, { status: 404 });
 
+    const amountJpy = contest.contest_prizes.reduce(
+      (acc, prize) => acc + prize.amount,
+      0,
+    );
+    const resultAmountJpy = Math.floor(amountJpy * FEE_RATE);
+
     const transferGroup = `contest:${contestId}`;
     const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/contests/${contestId}?checkout=success&session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/contests/${contestId}?checkout=cancel`;
+    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}${originPath}`;
 
-    // 4) Checkout Session 作成
+    // 3) Checkout Session 作成
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
@@ -53,8 +56,10 @@ export async function POST(
         {
           price_data: {
             currency: "jpy",
-            product_data: { name: `コンテスト賞金の支払い` },
-            unit_amount: amountJpy,
+            product_data: {
+              name: `コンテスト賞金の支払い（手数料：${process.env.CONTEST_TAX_PERCENTAGE ?? "10"}%）`,
+            },
+            unit_amount: resultAmountJpy,
           },
           quantity: 1,
         },

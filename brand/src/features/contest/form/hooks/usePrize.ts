@@ -1,23 +1,20 @@
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { prizeSchema } from "@/features/contest/form/schemas/createContestSchema";
+import {
+  PrizeFormData,
+  prizeSchema,
+} from "@/features/contest/form/schemas/prizeSchema";
 import { CreateContestContext } from "@/features/contest/common/contexts/CreateContestContext";
 
 export function usePrize() {
-  const { data, back, submit, isUpdating } = useContext(CreateContestContext);
+  const { data, back, submit, isPending, updateData } =
+    useContext(CreateContestContext);
 
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    getValues,
-    reset,
-    formState: { isSubmitting },
-  } = useForm({
+  const { control, handleSubmit, watch, setValue, getValues, reset } = useForm({
     resolver: yupResolver(prizeSchema),
     mode: "onBlur",
+    defaultValues: prizeSchema.cast(data),
   });
 
   const watchedprize_pool = watch("prize_pool");
@@ -53,32 +50,34 @@ export function usePrize() {
     setValue("prize_distribution", newDistribution);
   };
 
-  const draft = () => {
+  const handleDraft = () => {
     const values = getValues();
+    updateData(values);
     submit(true, values);
   };
 
-  const publish = () => {
-    if (isSubmitting || isUpdating) return;
-
+  const handleBack = () => {
     const values = getValues();
-    submit(false, values);
+    back(values);
   };
+
+  const handlePublish = handleSubmit((values: PrizeFormData | undefined) => {
+    if (!values) return;
+    updateData(values);
+    submit(false, values);
+  });
 
   return {
     control,
-    handleSubmit,
     watchedprize_pool,
     watchedDistribution,
     totalPrize,
-    isSubmitting,
-    isUpdating,
+    isPending,
     addWinner,
     removeWinner,
     updateAmount,
-    draft,
-    publish,
-    back,
-    getValues,
+    handleDraft,
+    handlePublish,
+    handleBack,
   };
 }

@@ -4,7 +4,8 @@ import { Session } from "next-auth";
 import HeaderAvatar from "./headerAvatar";
 import SignInButton from "./signInButton";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export const WorkHistoriesHeader = ({
   session,
