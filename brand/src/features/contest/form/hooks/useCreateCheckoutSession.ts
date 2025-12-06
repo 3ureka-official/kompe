@@ -5,9 +5,9 @@ export const useCreateCheckoutSession = () =>
   useMutation({
     mutationFn: ({
       contestId,
-      amountJpy,
+      originPath,
     }: {
       contestId: string;
-      amountJpy: number;
-    }) => createCheckoutSession(contestId, amountJpy),
+      originPath: string;
+    }) => createCheckoutSession(contestId, originPath),
   });

@@ -5,6 +5,7 @@ import { useCreateCheckoutSession } from "@/features/contest/form/hooks/useCreat
 import { ContestCreateFormData } from "@/features/contest/form/schemas/createContestSchema";
 import { AssetItem, InspirationItem } from "@/types/Contest";
 import { Brand } from "@/types/Brand";
+import { SAMPLE_OPTIONS } from "../../common/constants/contest.constant";
 
 function useContestSubmit(
   data: Partial<ContestCreateFormData>,
@@ -14,10 +15,17 @@ function useContestSubmit(
 ) {
   const router = useRouter();
   const { upsertContest, isPending } = useUpsertContest();
-  const { mutate: createCheckoutSession } = useCreateCheckoutSession();
+  const {
+    mutate: createCheckoutSession,
+    isPending: isCreatingCheckoutSession,
+  } = useCreateCheckoutSession();
 
   const submit = useCallback(
-    async (isDraft: boolean, newData: Partial<ContestCreateFormData>) => {
+    async (
+      isDraft: boolean,
+      newData: Partial<ContestCreateFormData>,
+      shouldNavigate: boolean = true,
+    ) => {
       const mergedData = { ...data, ...newData };
 
       const assetsData: Omit<
@@ -64,28 +72,17 @@ function useContestSubmit(
           restMergedData.video_production_end_date || "",
         contest_start_date: restMergedData.contest_start_date || "",
         contest_end_date: restMergedData.contest_end_date || "",
-        thumbnail_url: restMergedData.thumbnail_url || "",
-        requires_purchase_proof:
-          restMergedData.requires_purchase_proof || false,
-        purchase_product_name: restMergedData.purchase_product_name || null,
-        purchase_product_url: restMergedData.purchase_product_url || null,
-        purchase_description: restMergedData.purchase_description || null,
         has_sample: restMergedData.has_sample || false,
-        sample_product_name: restMergedData.sample_product_name || null,
-        sample_rental_or_purchase:
-          (restMergedData.sample_rental_or_purchase as
-            | "RENTAL"
-            | "PURCHASE"
-            | null) || null,
-        sample_price_per_creator:
-          restMergedData.sample_price_per_creator || null,
+        sample_product_name: restMergedData.sample_product_name || "",
+        sample_image_url: restMergedData.sample_image_url || "",
+        sample_provide_type:
+          restMergedData.sample_provide_type || SAMPLE_OPTIONS[0].value,
         sample_return_postal_code:
-          restMergedData.sample_return_postal_code || null,
-        sample_return_prefecture:
-          restMergedData.sample_return_prefecture || null,
-        sample_return_city: restMergedData.sample_return_city || null,
+          restMergedData.sample_return_postal_code || "",
+        sample_return_prefecture: restMergedData.sample_return_prefecture || "",
+        sample_return_city: restMergedData.sample_return_city || "",
         sample_return_address_line:
-          restMergedData.sample_return_address_line || null,
+          restMergedData.sample_return_address_line || "",
         is_draft: isDraft,
       };
 
@@ -94,14 +91,21 @@ function useContestSubmit(
       if (!brand?.id) return;
 
       const onSuccess = async (resultContestId: string) => {
+        const pathname = window.location.pathname;
+        const params = new URLSearchParams(window.location.search);
+
+        if (!shouldNavigate) {
+          // 遷移しない場合は何もしない
+          return;
+        }
+
         clearInitFlag?.();
         if (!isDraft) {
-          const prizePool = prizeDistribution.reduce(
-            (sum, amount) => sum + amount,
-            0,
-          );
           createCheckoutSession(
-            { contestId: resultContestId, amountJpy: prizePool },
+            {
+              contestId: resultContestId,
+              originPath: `${pathname}?${params.toString()}`,
+            },
             {
               onSuccess: (data) => {
                 window.location.href = data.url;
@@ -124,6 +128,7 @@ function useContestSubmit(
         assetsData,
         inspirationData,
         prizeDistribution,
+        imageUrls: mergedData.thumbnail_urls || [],
         onSuccess,
         onError,
       });
@@ -141,7 +146,7 @@ function useContestSubmit(
 
   return {
     submit,
-    isUpdating: isPending,
+    isPending: isPending || isCreatingCheckoutSession,
   };
 }
 

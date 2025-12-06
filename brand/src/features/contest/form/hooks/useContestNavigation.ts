@@ -1,4 +1,5 @@
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { steps } from "@/features/contest/form/components/ui-parts/ContestFormLayout";
 
@@ -18,7 +19,7 @@ function useContestNavigation() {
       const stepValue = typeof newStep === "function" ? newStep(step) : newStep;
       const params = new URLSearchParams(searchParams.toString());
       params.set("step", stepValue.toString());
-      router.push(`?${params.toString()}`, { scroll: false });
+      router.push(`?${params.toString()}`);
     },
     [step, searchParams, router],
   );
