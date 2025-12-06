@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe";
 import {
   upsertPendingFromSession,
   upsertSucceededFromPI,
+  upsertFailedFromPI,
 } from "@/services/supabase/contestPaymentService";
 import { updateContestPublic } from "@/services/supabase/contestService";
 
@@ -48,6 +49,12 @@ export async function POST(req: NextRequest) {
           );
         }
 
+        const amountNet = session.amount_total ?? 0;
+        const amountGross =
+          amountNet /
+          (1 + parseFloat(process.env.CONTEST_TAX_PERCENTAGE ?? "10") / 100);
+        const amountFee = amountNet - amountGross;
+
         // 台帳の仮登録（pending）
         await upsertPendingFromSession({
           brand_id: brandId,
@@ -57,9 +64,9 @@ export async function POST(req: NextRequest) {
           stripe_charge_id: null,
           transfer_group: session.metadata?.transfer_group ?? "",
           currency: session.currency ?? "jpy",
-          amount_gross: session.amount_total ?? 0,
-          amount_fee: 0,
-          amount_net: 0,
+          amount_gross: amountGross,
+          amount_fee: amountFee,
+          amount_net: amountNet,
           status: "pending",
           available_on: null,
         });
@@ -102,6 +109,12 @@ export async function POST(req: NextRequest) {
         const brandId =
           (chargeEvt.metadata?.brand_id ?? session?.metadata?.brand_id) || null;
 
+        const amountNet = chargeEvt.amount ?? 0;
+        const amountGross =
+          amountNet /
+          (1 + parseFloat(process.env.CONTEST_TAX_PERCENTAGE ?? "10") / 100);
+        const amountFee = amountNet - amountGross;
+
         await upsertSucceededFromPI({
           brand_id: brandId,
           contest_id: contestId,
@@ -109,9 +122,9 @@ export async function POST(req: NextRequest) {
           stripe_payment_intent_id: String(chargeEvt.payment_intent),
           stripe_charge_id: chargeEvt.id,
           transfer_group: chargeEvt.transfer_group ?? "",
-          amount_gross: chargeEvt.amount,
-          amount_fee: bt.fee ?? 0,
-          amount_net: chargeEvt.amount - (bt.fee ?? 0),
+          amount_gross: amountGross,
+          amount_fee: amountFee,
+          amount_net: amountNet,
           status: "succeeded",
           currency: chargeEvt.currency ?? "jpy",
           available_on: bt.available_on
@@ -122,6 +135,49 @@ export async function POST(req: NextRequest) {
         if (contestId) {
           await updateContestPublic(contestId);
         }
+
+        break;
+      }
+
+      case "payment_intent.payment_failed": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+
+        // 対応する Checkout Session を逆引き
+        const sessions = await stripe.checkout.sessions.list({
+          payment_intent: paymentIntent.id,
+          limit: 1,
+        });
+        const session = sessions.data[0] ?? null;
+        const sessionId = session?.id ?? null;
+
+        const contestId =
+          (paymentIntent.metadata?.contest_id ??
+            session?.metadata?.contest_id) ||
+          null;
+        const brandId =
+          (paymentIntent.metadata?.brand_id ?? session?.metadata?.brand_id) ||
+          null;
+
+        const amountNet = paymentIntent.amount ?? 0;
+        const amountGross =
+          amountNet /
+          (1 + parseFloat(process.env.CONTEST_TAX_PERCENTAGE ?? "10") / 100);
+        const amountFee = amountNet - amountGross;
+
+        await upsertFailedFromPI({
+          brand_id: brandId,
+          contest_id: contestId,
+          stripe_checkout_session_id: sessionId,
+          stripe_payment_intent_id: paymentIntent.id,
+          stripe_charge_id: null,
+          transfer_group: paymentIntent.transfer_group ?? "",
+          amount_gross: amountGross,
+          amount_fee: amountFee,
+          amount_net: amountNet,
+          status: "failed",
+          currency: paymentIntent.currency ?? "jpy",
+          available_on: null,
+        });
 
         break;
       }
